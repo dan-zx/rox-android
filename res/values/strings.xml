@@ -6,5 +6,11 @@
     <!-- LoginActivity -->
     <string name="title_activity_login">Login</string>
     <string name="label_connect_to_foursquare">CONNECT TO</string>
+    <string name="connected_to_foursquare">Hey looks like you’re connected to Foursquare!</string>
+    <string name="foursquare_not_installed_message">To do this, you’ll need the latest version of Foursquare installed</string>
+    <string name="foursquare_auth_canceled">Authentication canceled</string>
+    <string name="foursquare_auth_denied">Authentication denied</string>
+    <string name="foursquare_oauth_error_message_format">Authentication error: %1$s [%2$s]</string>
+    <string name="foursquare_unknown_error_message_format">Unknown error: %s</string>
 
 </resources>

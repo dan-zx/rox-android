@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="foursquare_auth_code_key">FSQ_AUTH_CODE</string>
+
+</resources>
