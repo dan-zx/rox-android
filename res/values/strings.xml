@@ -1,6 +1,10 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
 
     <string name="app_name">Gray Fox</string>
+
+    <!-- LoginActivity -->
+    <string name="title_activity_login">Login</string>
+    <string name="label_connect_to_foursquare">CONNECT TO</string>
 
 </resources>
