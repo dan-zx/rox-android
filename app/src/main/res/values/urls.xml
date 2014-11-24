@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="gf_api_host_scheme">http</string>
+    <string name="gf_api_host">10.0.2.2:8080/gray-fox-server</string>
+    <string name="gf_api_path">api/v1/</string>
+
+    <!-- App Users API -->
+    <string name="gf_api_app_users_path">users</string>
+    <string name="gf_api_app_users_register_path">register</string>
+
+    <!-- Recommendations API -->
+    <string name="gf_api_recommendations_path">recommendations</string>
+    <string name="gf_api_recommendations_recommend_path">recommend</string>
+    <string name="gf_api_recommendations_search_path">search</string>
+
+</resources>
