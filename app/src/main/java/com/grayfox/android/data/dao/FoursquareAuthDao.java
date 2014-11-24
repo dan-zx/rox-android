@@ -7,7 +7,7 @@ package com.grayfox.android.data.dao;
  * @author Daniel Pedraza-Arcega
  * @since version 1.0
  */
-public interface FoursquareAuthDAO {
+public interface FoursquareAuthDao {
 
     /**
      * Fetches the current authentication code.

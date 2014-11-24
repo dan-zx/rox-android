@@ -3,6 +3,7 @@ package com.grayfox.android.activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -16,8 +17,8 @@ import com.foursquare.android.nativeoauth.FoursquareOAuthException;
 import com.foursquare.android.nativeoauth.model.AuthCodeResponse;
 
 import com.grayfox.android.R;
-import com.grayfox.android.data.dao.FoursquareAuthDAO;
-import com.grayfox.android.data.dao.impl.DAOFactory;
+import com.grayfox.android.data.dao.FoursquareAuthDao;
+import com.grayfox.android.data.dao.impl.DaoFactory;
 
 /**
  * Connects this app with Foursquare.
@@ -25,12 +26,12 @@ import com.grayfox.android.data.dao.impl.DAOFactory;
  * @author Daniel Pedraza-Arcega
  * @since version 1.0
  */
-public class LoginActivity extends Activity {
+public class LoginActivity extends ActionBarActivity {
 
     private static final int REQUEST_CODE_FOURSQUARE_CONNECT = 200;
     private static final String TAG = Activity.class.getSimpleName();
 
-    private FoursquareAuthDAO foursquareAuthDao;
+    private FoursquareAuthDao foursquareAuthDao;
     private Button connectToFoursquareButton;
     private TextView connectToFoursquareText;
 
@@ -38,7 +39,7 @@ public class LoginActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        foursquareAuthDao = new DAOFactory(this).getFoursquareAuthDAO();
+        foursquareAuthDao = new DaoFactory(this).getFoursquareAuthDAO();
         boolean isConnectedToFoursquare = foursquareAuthDao.fetchAuthCode() != null;
         connectToFoursquareButton = (Button) findViewById(R.id.connect_to_foursquare_button);
         connectToFoursquareText = (TextView) findViewById(R.id.connected_to_foursquare_text);

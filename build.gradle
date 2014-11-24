@@ -1,0 +1,15 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:0.13.2'
+    }
+}
+
+allprojects {
+    repositories {
+        jcenter()
+        maven { url 'https://dl.dropboxusercontent.com/u/1995295/m2repository' }
+    }
+}
