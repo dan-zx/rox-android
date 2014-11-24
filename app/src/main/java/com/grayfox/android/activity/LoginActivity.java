@@ -18,7 +18,7 @@ import com.foursquare.android.nativeoauth.model.AuthCodeResponse;
 
 import com.grayfox.android.R;
 import com.grayfox.android.data.dao.FoursquareAuthDao;
-import com.grayfox.android.data.dao.impl.DaoFactory;
+import com.grayfox.android.dao.impl.DaoFactory;
 
 /**
  * Connects this app with Foursquare.

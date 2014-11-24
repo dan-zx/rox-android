@@ -1,4 +1,4 @@
-package com.grayfox.android.data.dao;
+package com.grayfox.android.dao;
 
 /**
  * Foursquare Authentication Data Access Object interface. Defines the methods to retrieve and save

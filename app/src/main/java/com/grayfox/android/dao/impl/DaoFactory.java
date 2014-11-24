@@ -1,9 +1,9 @@
-package com.grayfox.android.data.dao.impl;
+package com.grayfox.android.dao.impl;
 
 import android.content.Context;
 
-import com.grayfox.android.data.dao.FoursquareAuthDao;
-import com.grayfox.android.data.dao.impl.sharedpreferences.FoursquareAuthSharedPreferencesDAO;
+import com.grayfox.android.dao.FoursquareAuthDao;
+import com.grayfox.android.dao.impl.sharedpreferences.FoursquareAuthSharedPreferencesDao;
 
 /**
  * Creates the current DAOs implementations.
@@ -26,6 +26,6 @@ public class DaoFactory {
 
     /** @return a new FoursquareAuthDAO. */
     public FoursquareAuthDao getFoursquareAuthDAO() {
-        return new FoursquareAuthSharedPreferencesDAO(appContext);
+        return new FoursquareAuthSharedPreferencesDao(appContext);
     }
 }

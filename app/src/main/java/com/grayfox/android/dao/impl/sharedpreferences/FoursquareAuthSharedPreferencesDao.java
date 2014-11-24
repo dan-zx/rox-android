@@ -1,10 +1,10 @@
-package com.grayfox.android.data.dao.impl.sharedpreferences;
+package com.grayfox.android.dao.impl.sharedpreferences;
 
 import android.content.Context;
 import android.preference.PreferenceManager;
 
 import com.grayfox.android.R;
-import com.grayfox.android.data.dao.FoursquareAuthDao;
+import com.grayfox.android.dao.FoursquareAuthDao;
 
 /**
  * Foursquare Authentication DAO whose data source are shared preferences.
@@ -12,7 +12,7 @@ import com.grayfox.android.data.dao.FoursquareAuthDao;
  * @author Daniel Pedraza-Arcega
  * @since version 1.0
  */
-public class FoursquareAuthSharedPreferencesDAO implements FoursquareAuthDao {
+public class FoursquareAuthSharedPreferencesDao implements FoursquareAuthDao {
 
     private final Context context;
 
@@ -21,7 +21,7 @@ public class FoursquareAuthSharedPreferencesDAO implements FoursquareAuthDao {
      * 
      * @param context the application context.
      */
-    public FoursquareAuthSharedPreferencesDAO(Context context) {
+    public FoursquareAuthSharedPreferencesDao(Context context) {
         this.context = context;
     }
 
