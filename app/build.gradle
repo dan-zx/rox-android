@@ -33,6 +33,7 @@ dependencies {
     compile 'com.android.support:appcompat-v7:21.0.2'
     compile 'com.google.android.gms:play-services:6.1.71'
     compile 'com.foursquare:foursquare-android-oauth:1.0'
+    compile 'com.shamanland:fab:0.0.5'
     compile 'com.google.code.gson:gson:2.3.1'
     compile 'org.roboguice:roboguice:3.0.1'
     provided 'org.roboguice:roboblender:3.0.1'
