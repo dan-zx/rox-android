@@ -4,11 +4,8 @@ import android.util.Log;
 
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
-import java.net.ProtocolException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -28,7 +25,7 @@ class UrlConnectionRequestBuilder extends RequestBuilder {
             connection.setConnectTimeout(DEFAULT_TIMEOUT);
             connection.setReadTimeout(DEFAULT_TIMEOUT);
             formParams = new ArrayList<>();
-        } catch (IOException e) {
+        } catch (Exception e) {
             Log.e(TAG, "Error opening connection", e);
         }
     }
@@ -50,7 +47,7 @@ class UrlConnectionRequestBuilder extends RequestBuilder {
             case GET:case OPTIONS:case HEAD:case PUT:case DELETE:case TRACE:
                 try {
                     connection.setRequestMethod(method.getValue());
-                } catch (ProtocolException e) {
+                } catch (Exception e) {
                     Log.e(TAG, "Error setting request method", e);
                 }
                 break;
@@ -65,13 +62,13 @@ class UrlConnectionRequestBuilder extends RequestBuilder {
         try {
             out = new BufferedOutputStream(connection.getOutputStream());
             out.write(data.getBytes());
-        } catch (IOException e) {
+        } catch (Exception e) {
             Log.e(TAG, "Error opening stream", e);
         } finally {
             if (out != null) {
                 try {
                     out.close();
-                } catch (IOException e) {
+                } catch (Exception e) {
                     Log.e(TAG, "Error closing stream", e);
                 }
             }
@@ -105,7 +102,7 @@ class UrlConnectionRequestBuilder extends RequestBuilder {
                 result.append(URLEncoder.encode(pair[0], Charset.UTF_8.getValue()));
                 result.append("=");
                 result.append(URLEncoder.encode(pair[1], Charset.UTF_8.getValue()));
-            } catch (UnsupportedEncodingException e) {
+            } catch (Exception e) {
                 Log.e(TAG, "Error encoding form paramaters", e);
             }
         }
@@ -123,7 +120,7 @@ class UrlConnectionRequestBuilder extends RequestBuilder {
             int responseCode = connection.getResponseCode();
             Log.d(TAG, "responseCode=" + responseCode);
             return responseCode;
-        } catch (IOException e) {
+        } catch (Exception e) {
             Log.e(TAG, "Error getting response code", e);
         } finally {
             connection.disconnect();
@@ -152,13 +149,13 @@ class UrlConnectionRequestBuilder extends RequestBuilder {
                     responseText = stringBuilder.toString();
                     break;
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             Log.e(TAG, "Error getting response", e);
         } finally {
             if (reader != null) {
                 try {
                     reader.close();
-                } catch (IOException e) {
+                } catch (Exception e) {
                     Log.e(TAG, "Error closing stream", e);
                 }
             }

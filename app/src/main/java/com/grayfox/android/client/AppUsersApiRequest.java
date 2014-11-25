@@ -2,29 +2,31 @@ package com.grayfox.android.client;
 
 import android.content.Context;
 import android.net.Uri;
+import android.os.AsyncTask;
 
 import com.google.gson.Gson;
 
 import com.grayfox.android.R;
 import com.grayfox.android.client.model.AccessToken;
+import com.grayfox.android.dao.AppAccessTokenDao;
 import com.grayfox.android.http.Charset;
 import com.grayfox.android.http.ContentType;
 import com.grayfox.android.http.Header;
 import com.grayfox.android.http.Method;
 import com.grayfox.android.http.RequestBuilder;
 
+import javax.inject.Inject;
+
 public class AppUsersApiRequest extends BaseApiRequest {
+
+    private final AppAccessTokenDao appAccessTokenDao;
 
     private String foursquareAuthorizationCode;
 
-    protected AppUsersApiRequest(Context context) {
+    @Inject
+    public AppUsersApiRequest(Context context, AppAccessTokenDao appAccessTokenDao) {
         super(context);
-    }
-
-    @Override
-    public AppUsersApiRequest accessToken(String accessToken) {
-        super.accessToken(accessToken);
-        return this;
+        this.appAccessTokenDao = appAccessTokenDao;
     }
 
     public AppUsersApiRequest foursquareAuthorizationCode(String foursquareAuthorizationCode) {
@@ -32,7 +34,29 @@ public class AppUsersApiRequest extends BaseApiRequest {
         return this;
     }
 
-    public AccessToken awaitAccessToken() {
+    public void asyncAccessToken(final RequestCallback<String> callback) {
+        if (isConnected()) {
+            new AsyncTask<Void, Void, String>() {
+
+                @Override
+                protected String doInBackground(Void... voids) {
+                    return awaitAccessToken();
+                }
+
+                @Override
+                protected void onPostExecute(String accessToken) {
+                    if (callback != null) {
+                        if (accessToken != null) callback.onSuccess(accessToken);
+                        else callback.onFailure(getString(R.string.grayfox_api_request_error));
+                    }
+                }
+            }.execute();
+        } else {
+            if (callback != null) callback.onFailure(getString(R.string.network_unavailable));
+        }
+    }
+
+    public String awaitAccessToken() {
         String url = new Uri.Builder().scheme(getString(R.string.gf_api_host_scheme))
                 .encodedAuthority(getString(R.string.gf_api_host))
                 .appendEncodedPath(getString(R.string.gf_api_path))
@@ -47,7 +71,11 @@ public class AppUsersApiRequest extends BaseApiRequest {
                 .setHeader(Header.ACCEPT_CHARSET, Charset.UTF_8.getValue())
                 .makeForResult();
 
-        if (json != null) return new Gson().fromJson(json, AccessToken.class);
+        if (json != null) {
+            String accessToken = new Gson().fromJson(json, AccessToken.class).getToken();
+            appAccessTokenDao.saveAccessToken(accessToken);
+            return accessToken;
+        }
         else return null;
     }
 }

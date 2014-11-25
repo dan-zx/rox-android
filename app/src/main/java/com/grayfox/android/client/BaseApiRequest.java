@@ -1,10 +1,12 @@
 package com.grayfox.android.client;
 
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 
 import java.util.Locale;
 
-abstract class BaseApiRequest {
+public abstract class BaseApiRequest {
 
     private final Context context;
 
@@ -14,17 +16,14 @@ abstract class BaseApiRequest {
         this.context = context;
     }
 
-    public BaseApiRequest accessToken(String accessToken) {
-        this.accessToken = accessToken;
-        return this;
-    }
-
-    protected String getAccessToken() {
-        return accessToken;
-    }
-
     protected Context getContext() {
         return context;
+    }
+
+    protected boolean isConnected() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = connectivityManager.getActiveNetworkInfo();
+        return netInfo != null && netInfo.isConnectedOrConnecting();
     }
 
     protected String getString(int resId) {
@@ -37,5 +36,11 @@ abstract class BaseApiRequest {
 
     protected String getClientAcceptLanguage() {
         return Locale.getDefault().toString().replace('_', '-');
+    }
+
+    public static interface RequestCallback<T> {
+
+        void onSuccess(T t);
+        void onFailure(String reason);
     }
 }
