@@ -31,8 +31,8 @@ import roboguice.inject.InjectView;
  * @author Daniel Pedraza-Arcega
  * @since version 1.0
  */
-@ContentView(R.layout.activity_login)
-public class LoginActivity extends RoboActionBarActivity {
+@ContentView(R.layout.activity_sign_in)
+public class SignInActivity extends RoboActionBarActivity {
 
     private static final int REQUEST_CODE_FOURSQUARE_CONNECT = 200;
     private static final String TAG = Activity.class.getSimpleName();
@@ -49,11 +49,12 @@ public class LoginActivity extends RoboActionBarActivity {
         super.onCreate(savedInstanceState);
         if (appAccessTokenDao.fetchAccessToken() != null) finishAndGotoMainActivity();
         else {
+            setTitle(R.string.title_activity_sign_in);
             connectToFoursquareButton.setOnClickListener(new View.OnClickListener() {
 
                 @Override
                 public void onClick(View v) {
-                    Intent intent = FoursquareOAuth.getConnectIntent(LoginActivity.this, getString(R.string.foursquare_client_id));
+                    Intent intent = FoursquareOAuth.getConnectIntent(SignInActivity.this, getString(R.string.foursquare_client_id));
                     if (FoursquareOAuth.isPlayStoreIntent(intent)) {
                         toastMessage(R.string.foursquare_not_installed_message);
                         startActivity(intent);

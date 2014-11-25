@@ -3,8 +3,8 @@
 
     <string name="app_name">Gray Fox</string>
 
-    <!-- LoginActivity -->
-    <string name="title_activity_login">Login</string>
+    <!-- SignInActivity -->
+    <string name="title_activity_sign_in">Connect to Foursquare</string>
     <string name="label_connect_to_foursquare">CONNECT TO</string>
     <string name="connected_to_foursquare">Hey looks like you’re connected to Foursquare!</string>
     <string name="foursquare_not_installed_message">To do this, you’ll need the latest version of Foursquare installed</string>

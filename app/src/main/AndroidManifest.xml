@@ -23,9 +23,7 @@
             android:name="com.google.android.maps.v2.API_KEY"
             android:value="@string/google_maps_v2_api_key" />
 
-        <activity
-            android:name="com.grayfox.android.activity.LoginActivity"
-            android:label="@string/title_activity_login">
+        <activity android:name=".activity.SignInActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
