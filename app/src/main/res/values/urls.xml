@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="gf_api_host_scheme">http</string>
-    <string name="gf_api_host">192.168.1.208:8080/gray-fox-server</string>
+    <string name="gf_api_host_scheme">https</string>
+    <string name="gf_api_host">gray-fox.herokuapp.com</string>
     <string name="gf_api_path">api/v1/</string>
 
     <!-- App Users API -->
