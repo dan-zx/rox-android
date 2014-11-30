@@ -37,3 +37,6 @@ proguard/
 .idea/
 .gradle/
 build/
+
+# Keystores
+keystores/

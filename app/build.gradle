@@ -15,6 +15,15 @@ android {
         debug {
             storeFile file("../keystores/debug.keystore")
         }
+        release {
+            storeFile file("../keystores/release.keystore")
+            File propsFile = file("../keystores/secure.properties");
+            Properties props = new Properties();
+            props.load(new FileInputStream(propsFile))
+            storePassword props.getProperty("storePassword")
+            keyAlias props.getProperty("keyAlias")
+            keyPassword props.getProperty("keyPassword")
+        }
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_7
@@ -23,6 +32,7 @@ android {
     buildTypes {
         release {
             runProguard false
+            signingConfig signingConfigs.release
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
