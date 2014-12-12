@@ -3,13 +3,13 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:0.13.2'
+        classpath 'com.android.tools.build:gradle:1.0.0'
+        classpath 'org.robolectric:robolectric-gradle-plugin:0.14.1'
     }
 }
 
 allprojects {
     repositories {
         jcenter()
-        maven { url 'https://dl.dropboxusercontent.com/u/1995295/m2repository' }
     }
 }

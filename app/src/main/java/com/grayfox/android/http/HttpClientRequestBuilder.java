@@ -115,21 +115,21 @@ class HttpClientRequestBuilder extends RequestBuilder {
     }
 
     @Override
-    public Integer make() {
+    public Integer make() throws RequestException {
         try {
             setUpHeaders();
             setUpFormParams();
             HttpResponse response = httpClient.execute(request);
             Log.d(TAG, "responseCode=" + response.getStatusLine().getStatusCode());
             return response.getStatusLine().getStatusCode();
-        } catch (Exception ex) {
-            Log.e(TAG, "Error getting response code", ex);
-            return null;
+        } catch (Exception e) {
+            Log.e(TAG, "Error getting response code", e);
+            throw new RequestException("Error getting response code", e);
         }
     }
 
     @Override
-    public String makeForResult() {
+    public String makeForResult() throws RequestException {
         try {
             setUpHeaders();
             setUpFormParams();
@@ -139,12 +139,14 @@ class HttpClientRequestBuilder extends RequestBuilder {
             switch (responseCode) {
                 case HttpStatus.SC_OK: case HttpStatus.SC_CREATED:
                     HttpEntity entity = response.getEntity();
-                    return entity != null ? EntityUtils.toString(entity, Charset.UTF_8.getValue()) : null;
+                    String responseText = entity != null ? EntityUtils.toString(entity, Charset.UTF_8.getValue()) : null;
+                    Log.d(TAG, "responseText=" + responseText);
+                    return responseText;
+                default: return null;
             }
-        } catch (Exception ex) {
-            Log.e(TAG, "Error getting response code", ex);
+        } catch (Exception e) {
+            Log.e(TAG, "Error getting response", e);
+            throw new RequestException("Error getting response", e);
         }
-
-        return null;
     }
 }

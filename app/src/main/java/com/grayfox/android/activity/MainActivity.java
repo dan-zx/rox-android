@@ -1,10 +1,10 @@
 package com.grayfox.android.activity;
 
+import android.app.ProgressDialog;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -14,15 +14,15 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 
 import com.grayfox.android.R;
-import com.grayfox.android.client.BaseApiRequest;
-import com.grayfox.android.client.RecommenderApiRequest;
+import com.grayfox.android.client.RecommenderApi;
 import com.grayfox.android.client.model.Location;
 import com.grayfox.android.client.model.Poi;
 import com.grayfox.android.client.model.Recommendation;
+import com.grayfox.android.client.task.RecommendedSearchAsyncTask;
 
 import com.shamanland.fab.FloatingActionButton;
 
-import javax.inject.Inject;
+import java.lang.ref.WeakReference;
 
 import roboguice.activity.RoboActionBarActivity;
 import roboguice.inject.ContentView;
@@ -33,8 +33,8 @@ public class MainActivity extends RoboActionBarActivity {
 
     @InjectView(R.id.search_button) private FloatingActionButton searchButton;
 
-    @Inject private RecommenderApiRequest recommenderApiRequest;
-
+    private SearchTask searchTask;
+    private ProgressDialog searchProgressDialog;
     private GoogleMap map;
 
     @Override
@@ -50,6 +50,15 @@ public class MainActivity extends RoboActionBarActivity {
         });
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (searchProgressDialog != null && searchProgressDialog.isShowing()) {
+            searchTask.cancel(true);
+            searchProgressDialog.dismiss();
+        }
+    }
+
     private void setUpMapIfNeeded() {
         if (map == null) {
             map = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map_fragment)).getMap();
@@ -63,22 +72,15 @@ public class MainActivity extends RoboActionBarActivity {
         Location location = new Location();
         location.setLatitude(map.getCameraPosition().target.latitude);
         location.setLongitude(map.getCameraPosition().target.longitude);
-        recommenderApiRequest.radius(3000).category("shops")
-                .transportation(RecommenderApiRequest.Transportation.DRIVING)
+        searchTask = new SearchTask(this);
+        searchTask.radius(3000).category("shops")
+                .transportation(RecommenderApi.Transportation.DRIVING)
                 .location(location)
-                .asyncSearch(new BaseApiRequest.RequestCallback<Recommendation>() {
+                .request();
+    }
 
-                    @Override
-                    public void onSuccess(Recommendation recommendation) {
-                        onRecommendationAcquired(recommendation);
-                    }
-
-                    @Override
-                    public void onFailure(String reason) {
-                        Toast.makeText(getApplicationContext(),
-                                reason, Toast.LENGTH_SHORT).show();
-                    }
-                });
+    private void onPreSearch() {
+        searchProgressDialog = ProgressDialog.show(this, null, getString(R.string.search_in_progress), true, false);
     }
 
     private void onRecommendationAcquired(Recommendation recommendation) {
@@ -100,6 +102,38 @@ public class MainActivity extends RoboActionBarActivity {
                 pathOptions.add(new LatLng(point.getLatitude(), point.getLongitude()));
             }
             map.addPolyline(pathOptions);
+        }
+    }
+
+    private void onSearchFinally() {
+        searchProgressDialog.dismiss();
+    }
+
+    private static class SearchTask extends RecommendedSearchAsyncTask {
+
+        private WeakReference<MainActivity> reference;
+
+        private SearchTask(MainActivity activity) {
+            super(activity.getApplicationContext());
+            reference = new WeakReference<>(activity);
+        }
+
+        @Override
+        protected void onPreExecute() throws Exception {
+            MainActivity activity = reference.get();
+            if (activity != null) activity.onPreSearch();
+        }
+
+        @Override
+        protected void onSuccess(Recommendation recommendation) throws Exception {
+            MainActivity activity = reference.get();
+            if (activity != null) activity.onRecommendationAcquired(recommendation);
+        }
+
+        @Override
+        protected void onFinally() throws RuntimeException {
+            MainActivity activity = reference.get();
+            if (activity != null) activity.onSearchFinally();
         }
     }
 }

@@ -4,8 +4,8 @@ import android.app.Application;
 
 import com.google.inject.AbstractModule;
 
-import com.grayfox.android.client.AppUsersApiRequest;
-import com.grayfox.android.client.RecommenderApiRequest;
+import com.grayfox.android.client.AppUsersApi;
+import com.grayfox.android.client.RecommenderApi;
 
 public class ConfigModule extends AbstractModule {
 
@@ -17,7 +17,7 @@ public class ConfigModule extends AbstractModule {
 
     @Override
     protected void configure() {
-        bind(AppUsersApiRequest.class);
-        bind(RecommenderApiRequest.class);
+        bind(AppUsersApi.class);
+        bind(RecommenderApi.class);
     }
 }

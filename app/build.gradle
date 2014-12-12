@@ -1,15 +1,17 @@
 apply plugin: 'com.android.application'
+apply plugin: 'robolectric'
+apply plugin: 'idea'
 
 android {
     compileSdkVersion 21
-    buildToolsVersion "21.1.1"
+    buildToolsVersion "21.1.2"
 
     defaultConfig {
         applicationId "com.grayfox.android"
-        minSdkVersion 10
+        minSdkVersion 15
         targetSdkVersion 21
         versionCode 1
-        versionName "1.0-ALPHA"
+        versionName "1.0-SNAPSHOT"
     }
     signingConfigs {
         debug {
@@ -31,20 +33,46 @@ android {
     }
     buildTypes {
         release {
-            runProguard false
+            minifyEnabled false
             signingConfig signingConfigs.release
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+    }
+    packagingOptions {
+        exclude 'LICENSE.txt'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/NOTICE'
+    }
+}
+
+robolectric {
+    include '**/*Test.class'
+    exclude '**/espresso/**/*.class'
+}
+
+repositories {
+    maven {
+        url 'https://dl.dropboxusercontent.com/u/1995295/m2repository'
     }
 }
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.android.support:appcompat-v7:21.0.2'
-    compile 'com.google.android.gms:play-services:6.1.71'
+    compile 'com.android.support:appcompat-v7:21.0.3'
+    compile 'com.google.android.gms:play-services-maps:6.5.87'
     compile 'com.foursquare:foursquare-android-oauth:1.0'
     compile 'com.shamanland:fab:0.0.5'
     compile 'com.google.code.gson:gson:2.3.1'
     compile 'org.roboguice:roboguice:3.0.1'
     provided 'org.roboguice:roboblender:3.0.1'
+    androidTestCompile 'junit:junit:4.12'
+    androidTestCompile 'org.assertj:assertj-core:1.7.0'
+    androidTestCompile 'org.robolectric:robolectric:2.4'
+}
+
+idea {
+    module {
+        testOutputDir = file('build/test-classes/debug')
+    }
 }

@@ -16,6 +16,7 @@
 
     <!-- MainActivity -->
     <string name="title_activity_main">Main</string>
+    <string name="search_in_progress">Searching&#8230;</string>
 
     <!-- Errors -->
     <string name="network_unavailable">A stable connection is required to perform request</string>

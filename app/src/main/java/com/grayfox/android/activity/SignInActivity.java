@@ -1,6 +1,5 @@
 package com.grayfox.android.activity;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,11 +12,11 @@ import com.foursquare.android.nativeoauth.FoursquareDenyException;
 import com.foursquare.android.nativeoauth.FoursquareOAuth;
 import com.foursquare.android.nativeoauth.FoursquareOAuthException;
 import com.foursquare.android.nativeoauth.model.AuthCodeResponse;
-
 import com.grayfox.android.R;
-import com.grayfox.android.client.AppUsersApiRequest;
-import com.grayfox.android.client.BaseApiRequest;
 import com.grayfox.android.dao.AppAccessTokenDao;
+import com.grayfox.android.client.task.RegisterAppUserAsyncTask;
+
+import java.lang.ref.WeakReference;
 
 import javax.inject.Inject;
 
@@ -35,14 +34,13 @@ import roboguice.inject.InjectView;
 public class SignInActivity extends RoboActionBarActivity {
 
     private static final int REQUEST_CODE_FOURSQUARE_CONNECT = 200;
-    private static final String TAG = Activity.class.getSimpleName();
 
     @InjectView(R.id.connect_to_foursquare_button) private Button connectToFoursquareButton;
 
     @Inject private AppAccessTokenDao appAccessTokenDao;
-    @Inject private AppUsersApiRequest appUsersApiRequest;
 
     private ProgressDialog registerProgressDialog;
+    private RegisterTask registerTask;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +63,15 @@ public class SignInActivity extends RoboActionBarActivity {
     }
 
     @Override
+    protected void onPause() {
+        super.onPause();
+        if (registerProgressDialog != null && registerProgressDialog.isShowing()) {
+            registerTask.cancel(true);
+            registerProgressDialog.dismiss();
+        }
+    }
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
             case REQUEST_CODE_FOURSQUARE_CONNECT:
@@ -79,23 +86,8 @@ public class SignInActivity extends RoboActionBarActivity {
         Exception exception = codeResponse.getException();
         if (exception == null) {
             String code = codeResponse.getCode();
-            registerProgressDialog = ProgressDialog.show(this, null, getString(R.string.register_in_progress), true, false);
-            appUsersApiRequest
-                    .foursquareAuthorizationCode(code)
-                    .asyncAccessToken(new BaseApiRequest.RequestCallback<String>() {
-
-                        @Override
-                        public void onSuccess(String accessToken) {
-                            registerProgressDialog.dismiss();
-                            finishAndGotoMainActivity();
-                        }
-
-                        @Override
-                        public void onFailure(String reason) {
-                            registerProgressDialog.dismiss();
-                            toastMessage(reason);
-                        }
-                    });
+            registerTask = new RegisterTask(this);
+            registerTask.foursquareAuthorizationCode(code).request();
         } else {
             if (exception instanceof FoursquareCancelException) toastMessage(R.string.foursquare_auth_canceled);
             else if (exception instanceof FoursquareDenyException)toastMessage(R.string.foursquare_auth_denied);
@@ -105,6 +97,18 @@ public class SignInActivity extends RoboActionBarActivity {
                 toastMessage(getString(R.string.foursquare_oauth_error_message_format, errorMessage, errorCode));
             } else toastMessage(getString(R.string.foursquare_unknown_error_message_format, exception.getMessage()));
         }
+    }
+
+    private void onPreRegister() {
+        registerProgressDialog = ProgressDialog.show(this, null, getString(R.string.register_in_progress), true, false);
+    }
+
+    private void onRegisterSuccess() {
+        finishAndGotoMainActivity();
+    }
+
+    private void onRegisterFinally() {
+        registerProgressDialog.dismiss();
     }
 
     private void finishAndGotoMainActivity() {
@@ -125,5 +129,33 @@ public class SignInActivity extends RoboActionBarActivity {
                 message,
                 Toast.LENGTH_SHORT)
                 .show();
+    }
+
+    private static class RegisterTask extends RegisterAppUserAsyncTask {
+
+        private WeakReference<SignInActivity> reference;
+
+        private RegisterTask(SignInActivity activity) {
+            super(activity.getApplicationContext());
+            reference = new WeakReference<>(activity);
+        }
+
+        @Override
+        protected void onPreExecute() throws Exception {
+            SignInActivity activity = reference.get();
+            if (activity != null) activity.onPreRegister();
+        }
+
+        @Override
+        protected void onSuccess(Void nothing) throws Exception {
+            SignInActivity activity = reference.get();
+            if (activity != null) activity.onRegisterSuccess();
+        }
+
+        @Override
+        protected void onFinally() throws RuntimeException {
+            SignInActivity activity = reference.get();
+            if (activity != null) activity.onRegisterFinally();
+        }
     }
 }

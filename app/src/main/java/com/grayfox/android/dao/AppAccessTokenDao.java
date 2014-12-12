@@ -8,6 +8,6 @@ import com.grayfox.android.dao.impl.sharedpreferences.AppAccessTokenSharedPrefer
 public interface AppAccessTokenDao {
 
     String fetchAccessToken();
-    void saveAccessToken(String accessToken);
+    void saveOrUpdateAccessToken(String accessToken);
     void deleteAccessToken();
 }

@@ -111,7 +111,7 @@ class UrlConnectionRequestBuilder extends RequestBuilder {
     }
 
     @Override
-    public Integer make() {
+    public Integer make() throws RequestException {
         if (!formParams.isEmpty()) {
             String encodedParams = encodeFormParams();
             setData(encodedParams);
@@ -122,16 +122,14 @@ class UrlConnectionRequestBuilder extends RequestBuilder {
             return responseCode;
         } catch (Exception e) {
             Log.e(TAG, "Error getting response code", e);
+            throw new RequestException("Error getting response code", e);
         } finally {
             connection.disconnect();
         }
-
-        return null;
     }
 
     @Override
-    public String makeForResult() {
-        String responseText = null;
+    public String makeForResult() throws RequestException {
         BufferedReader reader = null;
         if (!formParams.isEmpty()) {
             String encodedParams = encodeFormParams();
@@ -146,23 +144,23 @@ class UrlConnectionRequestBuilder extends RequestBuilder {
                     StringBuilder stringBuilder = new StringBuilder();
                     String line;
                     while ((line = reader.readLine()) != null) stringBuilder.append(line).append('\n');
-                    responseText = stringBuilder.toString();
-                    break;
+                    Log.d(TAG, "responseText=" + stringBuilder.toString());
+                    return stringBuilder.toString();
+                default: return null;
             }
         } catch (Exception e) {
             Log.e(TAG, "Error getting response", e);
+            throw new RequestException("Error getting response", e);
         } finally {
             if (reader != null) {
                 try {
                     reader.close();
                 } catch (Exception e) {
                     Log.e(TAG, "Error closing stream", e);
+                    throw new RequestException("Error closing stream", e);
                 }
             }
             connection.disconnect();
         }
-
-        Log.d(TAG, "responseText=" + responseText);
-        return  responseText;
     }
 }

@@ -24,7 +24,7 @@ public class AppAccessTokenSharedPreferencesDao implements AppAccessTokenDao {
     }
 
     @Override
-    public void saveAccessToken(String accessToken) {
+    public void saveOrUpdateAccessToken(String accessToken) {
         PreferenceManager.getDefaultSharedPreferences(context)
                 .edit()
                 .putString(context.getString(R.string.app_access_token_key), accessToken)
