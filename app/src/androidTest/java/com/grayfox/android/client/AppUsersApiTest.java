@@ -36,4 +36,9 @@ public class AppUsersApiTest {
     public void testRegister() throws Exception {
         assertThat(appUsersApi.awaitAccessToken("fakeCode")).isNotNull().isNotEmpty();
     }
+
+    @Test
+    public void testGetSelfUser() throws Exception {
+        assertThat(appUsersApi.awaitSelfUser("fakeToken")).isNotNull();
+    }
 }

@@ -7,6 +7,7 @@ import com.google.gson.Gson;
 
 import com.grayfox.android.R;
 import com.grayfox.android.client.model.AccessToken;
+import com.grayfox.android.client.model.User;
 import com.grayfox.android.http.Charset;
 import com.grayfox.android.http.ContentType;
 import com.grayfox.android.http.Header;
@@ -31,13 +32,32 @@ public class AppUsersApi extends BaseApi {
                 .appendQueryParameter("foursquare-authorization-code", foursquareAuthorizationCode)
                 .build().toString();
 
-        String json = RequestBuilder.newInstance(url).setMethod(Method.GET)
+        String json = new RequestBuilder(url).setMethod(Method.GET)
                 .setHeader(Header.ACCEPT, ContentType.APPLICATION_JSON.getMimeType())
                 .setHeader(Header.ACCEPT_LANGUAGE, getClientAcceptLanguage())
                 .setHeader(Header.ACCEPT_CHARSET, Charset.UTF_8.getValue())
                 .makeForResult();
 
         if (json != null) return new Gson().fromJson(json, AccessToken.class).getToken();
+        else return null;
+    }
+
+    public User awaitSelfUser(String appAccessToken) {
+        String url = new Uri.Builder().scheme(getString(R.string.gf_api_host_scheme))
+                .encodedAuthority(getString(R.string.gf_api_host))
+                .appendEncodedPath(getString(R.string.gf_api_path))
+                .appendEncodedPath(getString(R.string.gf_api_app_users_path))
+                .appendEncodedPath(getString(R.string.gf_api_app_users_self_path))
+                .appendQueryParameter("app-access-token", appAccessToken)
+                .build().toString();
+
+        String json = new RequestBuilder(url).setMethod(Method.GET)
+                .setHeader(Header.ACCEPT, ContentType.APPLICATION_JSON.getMimeType())
+                .setHeader(Header.ACCEPT_LANGUAGE, getClientAcceptLanguage())
+                .setHeader(Header.ACCEPT_CHARSET, Charset.UTF_8.getValue())
+                .makeForResult();
+
+        if (json != null) return new Gson().fromJson(json, User.class);
         else return null;
     }
 }

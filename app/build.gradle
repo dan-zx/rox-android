@@ -62,6 +62,7 @@ dependencies {
     compile 'com.android.support:appcompat-v7:21.0.3'
     compile 'com.google.android.gms:play-services-maps:6.5.87'
     compile 'com.foursquare:foursquare-android-oauth:1.0'
+    compile 'com.jakewharton:disklrucache:2.0.2'
     compile 'com.shamanland:fab:0.0.5'
     compile 'com.google.code.gson:gson:2.3.1'
     compile 'org.roboguice:roboguice:3.0.1'

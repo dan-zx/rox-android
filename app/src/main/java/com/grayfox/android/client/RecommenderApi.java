@@ -36,7 +36,7 @@ public class RecommenderApi extends BaseApi {
                 .appendQueryParameter("category", category)
                 .build().toString();
 
-        String json = RequestBuilder.newInstance(url).setMethod(Method.GET)
+        String json = new RequestBuilder(url).setMethod(Method.GET)
                 .setHeader(Header.ACCEPT, ContentType.APPLICATION_JSON.getMimeType())
                 .setHeader(Header.ACCEPT_LANGUAGE, getClientAcceptLanguage())
                 .setHeader(Header.ACCEPT_CHARSET, Charset.UTF_8.getValue())

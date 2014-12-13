@@ -18,6 +18,10 @@
     <string name="title_activity_main">Main</string>
     <string name="search_in_progress">Searching&#8230;</string>
 
+    <!-- DRAWER -->
+    <string name="drawer_open">Menu Opened</string>
+    <string name="drawer_close">Menu Closed</string>
+
     <!-- Errors -->
     <string name="network_unavailable">A stable connection is required to perform request</string>
     <string name="grayfox_api_request_error">Request unsuccessful. Try again</string>

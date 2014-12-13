@@ -14,13 +14,13 @@ public class RequestBuilderTest {
 
     @Test
     public void testMakeRequest() throws Exception {
-        Integer result = RequestBuilder.newInstance("http://www.google.com").setMethod(Method.GET).make();
+        Integer result = new RequestBuilder("http://www.google.com").setMethod(Method.GET).make();
         assertThat(result).isNotNull().isBetween(200, 201);
     }
 
     @Test
     public void testMakeRequestForResult() throws Exception {
-        String result = RequestBuilder.newInstance("http://www.google.com").setMethod(Method.GET).makeForResult();
+        String result = new RequestBuilder("http://www.google.com").setMethod(Method.GET).makeForResult();
         assertThat(result).isNotNull().isNotEmpty();
     }
 }
