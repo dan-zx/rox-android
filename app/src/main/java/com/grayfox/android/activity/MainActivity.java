@@ -1,6 +1,8 @@
 package com.grayfox.android.activity;
 
+import android.content.Intent;
 import android.content.res.Configuration;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -11,13 +13,19 @@ import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.grayfox.android.R;
+import com.grayfox.android.client.model.User;
+import com.grayfox.android.client.task.GetSelfUserAsyncTask;
 import com.grayfox.android.fragment.ExploreFragment;
+import com.grayfox.android.util.Images;
 import com.grayfox.android.widget.DrawerItem;
 import com.grayfox.android.widget.DrawerItemAdapter;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,6 +45,9 @@ public class MainActivity extends RoboActionBarActivity {
 
     private int currentTitleId;
     private ActionBarDrawerToggle drawerToggle;
+    private User user;
+    private TextView userNameText;
+    private ImageView userPicture;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,7 +109,10 @@ public class MainActivity extends RoboActionBarActivity {
 
     private void setupDrawerHeader() {
         View headerView = getLayoutInflater().inflate(R.layout.drawer_header, null);
+        userNameText = (TextView) headerView.findViewById(R.id.user_name_text);
+        userPicture = (ImageView) headerView.findViewById(R.id.profile_image);
         drawerOptions.addHeaderView(headerView);
+        new GetSelfUserTask(this).execute();
     }
 
     private void setupDrawerMenu() {
@@ -127,8 +141,8 @@ public class MainActivity extends RoboActionBarActivity {
     private void onDrawerMenuSelected(int position) {
         switch (position) {
             case 0:
-                //Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://foursquare.com/users/USER_ID"));
-                //startActivity(intent);
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://foursquare.com/users/" + user.getId()));
+                startActivity(intent);
                 break;
             case 1:
                 setupFragment(new ExploreFragment());
@@ -140,5 +154,30 @@ public class MainActivity extends RoboActionBarActivity {
                 break;
         }
         drawerLayout.closeDrawers();
+    }
+
+    private void onGetSelfUserSuccess(User user) {
+        this.user = user;
+        userNameText.setText(new StringBuilder().append(user.getFirstName()).append(" ").append(user.getLastName()));
+        new Images.ImageLoader(this)
+                .setImageView(userPicture)
+                .setLoadingResourceImageId(R.drawable.ic_contact_picture)
+                .execute(user.getPhotoUrl());
+    }
+
+    private static class GetSelfUserTask extends GetSelfUserAsyncTask {
+
+        private WeakReference<MainActivity> reference;
+
+        private GetSelfUserTask(MainActivity activity) {
+            super(activity.getApplicationContext());
+            reference = new WeakReference<>(activity);
+        }
+
+        @Override
+        protected void onSuccess(User user) throws Exception {
+            MainActivity activity = reference.get();
+            if (activity != null) activity.onGetSelfUserSuccess(user);
+        }
     }
 }

@@ -19,7 +19,7 @@
         circle_image_view:border_width="1dp" />
 
     <TextView
-        android:id="@+id/user_name"
+        android:id="@+id/user_name_text"
         style="@style/AppTextAppearance.Overlay"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -27,6 +27,5 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="10dp"
         android:gravity="center"
-        android:text="Lorem ipsum"
         android:textStyle="bold" />
 </RelativeLayout>

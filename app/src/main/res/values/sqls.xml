@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="create_db_schema">
+        <item>
+            CREATE TABLE user (
+                _id INTEGER PRIMARY KEY,
+                foursquare_id VARCHAR NOT NULL,
+                first_name VARCHAR NOT NULL,
+                last_name VARCHAR NOT NULL,
+                photo_url VARCHAR NOT NULL
+            );
+        </item>
+    </string-array>
+</resources>

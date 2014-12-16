@@ -10,21 +10,21 @@ import com.grayfox.android.http.RequestBuilder;
 
 import roboguice.util.RoboAsyncTask;
 
-abstract class NetworkAsyncTask<T>  extends RoboAsyncTask<T> {
+abstract class NetworkAsyncTask<T> extends RoboAsyncTask<T> {
 
     protected NetworkAsyncTask(Context context) {
         super(context);
     }
 
     private boolean isConnected() {
-        ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        ConnectivityManager connectivityManager = (ConnectivityManager) getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo netInfo = connectivityManager.getActiveNetworkInfo();
         return netInfo != null && netInfo.isConnectedOrConnecting();
     }
 
     public void request() {
         if (isConnected()) execute();
-        else Toast.makeText(context, R.string.network_unavailable, Toast.LENGTH_LONG).show();
+        else Toast.makeText(getContext(), R.string.network_unavailable, Toast.LENGTH_LONG).show();
     }
 
     @Override
@@ -33,6 +33,6 @@ abstract class NetworkAsyncTask<T>  extends RoboAsyncTask<T> {
     }
 
     protected void onRequestException(Throwable e) {
-        Toast.makeText(context, R.string.grayfox_api_request_error, Toast.LENGTH_LONG).show();
+        Toast.makeText(getContext(), R.string.grayfox_api_request_error, Toast.LENGTH_LONG).show();
     }
 }
