@@ -8,7 +8,7 @@ android {
 
     defaultConfig {
         applicationId "com.grayfox.android"
-        minSdkVersion 15
+        minSdkVersion 10
         targetSdkVersion 21
         versionCode 1
         versionName "1.0-SNAPSHOT"
@@ -63,6 +63,7 @@ dependencies {
     compile 'com.google.android.gms:play-services-maps:6.5.87'
     compile 'com.foursquare:foursquare-android-oauth:1.0'
     compile 'com.jakewharton:disklrucache:2.0.2'
+    compile 'de.hdodenhof:circleimageview:1.2.1'
     compile 'com.shamanland:fab:0.0.5'
     compile 'com.google.code.gson:gson:2.3.1'
     compile 'org.roboguice:roboguice:3.0.1'

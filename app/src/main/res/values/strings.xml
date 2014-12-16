@@ -14,13 +14,14 @@
     <string name="foursquare_unknown_error_message_format">Unknown error: %s</string>
     <string name="register_in_progress">Registering&#8230;</string>
 
-    <!-- MainActivity -->
-    <string name="title_activity_main">Main</string>
+    <!-- ExploreFragment -->
     <string name="search_in_progress">Searching&#8230;</string>
 
-    <!-- DRAWER -->
+    <!-- Drawer -->
     <string name="drawer_open">Menu Opened</string>
     <string name="drawer_close">Menu Closed</string>
+    <string name="drawer_explore_option">Explore</string>
+    <string name="drawer_settings_option">Settings</string>
 
     <!-- Errors -->
     <string name="network_unavailable">A stable connection is required to perform request</string>
