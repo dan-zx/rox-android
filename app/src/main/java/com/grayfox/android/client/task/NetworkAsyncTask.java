@@ -33,6 +33,6 @@ abstract class NetworkAsyncTask<T> extends RoboAsyncTask<T> {
     }
 
     protected void onRequestException(Throwable e) {
-        Toast.makeText(getContext(), R.string.grayfox_api_request_error, Toast.LENGTH_LONG).show();
+        Toast.makeText(getContext(), R.string.network_request_error, Toast.LENGTH_LONG).show();
     }
 }

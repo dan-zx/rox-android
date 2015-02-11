@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_access_token_key">APP_ACCESS_TOKEN</string>
+    <string name="access_token_key">ACCESS_TOKEN</string>
 
 </resources>

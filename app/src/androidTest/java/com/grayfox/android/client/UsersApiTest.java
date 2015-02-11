@@ -20,25 +20,25 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @Config(emulateSdk = 18)
 @RunWith(RobolectricTestRunner.class)
-public class AppUsersApiTest {
+public class UsersApiTest {
 
-    @Inject private AppUsersApi appUsersApi;
+    @Inject private UsersApi usersApi;
 
     @Before
     public void setUp() throws Exception {
         Robolectric.getFakeHttpLayer().interceptHttpRequests(false);
         Injector injector = RoboGuice.overrideApplicationInjector(Robolectric.application, new ConfigModule(Robolectric.application));
         injector.injectMembers(this);
-        assertThat(appUsersApi).isNotNull();
+        assertThat(usersApi).isNotNull();
     }
 
     @Test
     public void testRegister() throws Exception {
-        assertThat(appUsersApi.awaitAccessToken("fakeCode")).isNotNull().isNotEmpty();
+        assertThat(usersApi.awaitAccessToken("fakeCode")).isNotNull().isNotEmpty();
     }
 
     @Test
     public void testGetSelfUser() throws Exception {
-        assertThat(appUsersApi.awaitSelfUser("fakeToken")).isNotNull();
+        assertThat(usersApi.awaitSelfUser("fakeToken")).isNotNull();
     }
 }

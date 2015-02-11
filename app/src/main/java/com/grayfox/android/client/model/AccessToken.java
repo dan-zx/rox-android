@@ -6,21 +6,21 @@ public class AccessToken implements Serializable {
 
     private static final long serialVersionUID = 564037530412089830L;
 
-    private String appAccessToken;
+    private String accessToken;
 
     public String getToken() {
-        return appAccessToken;
+        return accessToken;
     }
 
     public void setToken(String appAccessToken) {
-        this.appAccessToken = appAccessToken;
+        this.accessToken = appAccessToken;
     }
 
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((appAccessToken == null) ? 0 : appAccessToken.hashCode());
+        result = prime * result + ((accessToken == null) ? 0 : accessToken.hashCode());
         return result;
     }
 
@@ -30,15 +30,15 @@ public class AccessToken implements Serializable {
         if (obj == null) return false;
         if (getClass() != obj.getClass()) return false;
         AccessToken other = (AccessToken) obj;
-        if (appAccessToken == null) {
-            if (other.appAccessToken != null) return false;
-        } else if (!appAccessToken.equals(other.appAccessToken)) return false;
+        if (accessToken == null) {
+            if (other.accessToken != null) return false;
+        } else if (!accessToken.equals(other.accessToken)) return false;
         return true;
     }
 
     @Override
     public String toString() {
-        return new StringBuilder().append("AppAccessToken [appAccessToken=").append(appAccessToken)
+        return new StringBuilder().append("AccessToken [accessToken=").append(accessToken)
                 .append("]").toString();
     }
 }

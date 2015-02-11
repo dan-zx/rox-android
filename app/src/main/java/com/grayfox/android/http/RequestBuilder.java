@@ -132,15 +132,11 @@ public class RequestBuilder {
             reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
             int responseCode = connection.getResponseCode();
             Log.d(TAG, "responseCode=" + responseCode);
-            switch (responseCode) {
-                case 200:case 201:
-                    StringBuilder stringBuilder = new StringBuilder();
-                    String line;
-                    while ((line = reader.readLine()) != null) stringBuilder.append(line).append('\n');
-                    Log.d(TAG, "responseText=" + stringBuilder.toString());
-                    return stringBuilder.toString();
-                default: return null;
-            }
+            StringBuilder stringBuilder = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) stringBuilder.append(line).append('\n');
+            Log.d(TAG, "responseText=" + stringBuilder.toString());
+            return stringBuilder.toString();
         } catch (Exception e) {
             Log.e(TAG, "Error getting response", e);
             throw new RequestException("Error getting response", e);

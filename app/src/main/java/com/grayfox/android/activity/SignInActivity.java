@@ -13,8 +13,8 @@ import com.foursquare.android.nativeoauth.FoursquareOAuth;
 import com.foursquare.android.nativeoauth.FoursquareOAuthException;
 import com.foursquare.android.nativeoauth.model.AuthCodeResponse;
 import com.grayfox.android.R;
-import com.grayfox.android.dao.AppAccessTokenDao;
-import com.grayfox.android.client.task.RegisterAppUserAsyncTask;
+import com.grayfox.android.dao.AccessTokenDao;
+import com.grayfox.android.client.task.RegisterUserAsyncTask;
 
 import java.lang.ref.WeakReference;
 
@@ -37,7 +37,7 @@ public class SignInActivity extends RoboActionBarActivity {
 
     @InjectView(R.id.connect_to_foursquare_button) private Button connectToFoursquareButton;
 
-    @Inject private AppAccessTokenDao appAccessTokenDao;
+    @Inject private AccessTokenDao accessTokenDao;
 
     private ProgressDialog registerProgressDialog;
     private RegisterTask registerTask;
@@ -45,7 +45,7 @@ public class SignInActivity extends RoboActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (appAccessTokenDao.fetchAccessToken() != null) finishAndGotoMainActivity();
+        if (accessTokenDao.fetchAccessToken() != null) finishAndGotoMainActivity();
         else {
             setTitle(R.string.title_activity_sign_in);
             connectToFoursquareButton.setOnClickListener(new View.OnClickListener() {
@@ -131,7 +131,7 @@ public class SignInActivity extends RoboActionBarActivity {
                 .show();
     }
 
-    private static class RegisterTask extends RegisterAppUserAsyncTask {
+    private static class RegisterTask extends RegisterUserAsyncTask {
 
         private WeakReference<SignInActivity> reference;
 

@@ -6,8 +6,8 @@ import android.database.sqlite.SQLiteOpenHelper;
 import com.google.inject.AbstractModule;
 import com.google.inject.name.Names;
 
-import com.grayfox.android.client.AppUsersApi;
-import com.grayfox.android.client.RecommenderApi;
+import com.grayfox.android.client.UsersApi;
+import com.grayfox.android.client.RecommendationsApi;
 import com.grayfox.android.dao.source.sqlite.GrayFoxDatabaseHelper;
 
 public class ConfigModule extends AbstractModule {
@@ -20,8 +20,8 @@ public class ConfigModule extends AbstractModule {
 
     @Override
     protected void configure() {
-        bind(AppUsersApi.class);
-        bind(RecommenderApi.class);
+        bind(UsersApi.class);
+        bind(RecommendationsApi.class);
         bind(SQLiteOpenHelper.class)
                 .annotatedWith(Names.named("GrayFoxDbHelper"))
                 .toInstance(new GrayFoxDatabaseHelper(context));

@@ -25,6 +25,7 @@
 
     <!-- Errors -->
     <string name="network_unavailable">A stable connection is required to perform request</string>
-    <string name="grayfox_api_request_error">Request unsuccessful. Try again</string>
+    <string name="network_request_error">Request unsuccessful. Try again</string>
+    <string name="grayfox_api_request_error">Wrong server response. Try again</string>
 
 </resources>

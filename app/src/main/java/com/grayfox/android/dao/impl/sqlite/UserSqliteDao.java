@@ -32,19 +32,15 @@ public class UserSqliteDao implements UserDao {
         User user = null;
         SQLiteDatabase database = databaseHelper.getReadableDatabase();
         try {
-            String[] columns = {UserEntry._ID,
-                    UserEntry.FOURSQUARE_ID,
-                    UserEntry.FIRST_NAME,
-                    UserEntry.LAST_NAME,
-                    UserEntry.PHOTO_URL};
+            String[] columns = {UserEntry._ID, UserEntry.NAME, UserEntry.LAST_NAME, UserEntry.PHOTO_URL, UserEntry.FOURSQUARE_ID};
             cursor = database.query(UserEntry.TABLE_NAME, columns, WHERE_ID_CLAUSE, new String[] {String.valueOf(USER_ID)}, null, null, null);
             if (cursor.getCount() > 0) {
                 cursor.moveToFirst();
                 user = new User();
-                user.setId(cursor.getString(cursor.getColumnIndexOrThrow(UserEntry.FOURSQUARE_ID)));
-                user.setFirstName(cursor.getString(cursor.getColumnIndexOrThrow(UserEntry.FIRST_NAME)));
+                user.setName(cursor.getString(cursor.getColumnIndexOrThrow(UserEntry.NAME)));
                 user.setLastName(cursor.getString(cursor.getColumnIndexOrThrow(UserEntry.LAST_NAME)));
                 user.setPhotoUrl(cursor.getString(cursor.getColumnIndexOrThrow(UserEntry.PHOTO_URL)));
+                user.setFoursquareId(cursor.getString(cursor.getColumnIndexOrThrow(UserEntry.FOURSQUARE_ID)));
             }
         } catch (Exception ex) {
             Log.e(TAG, "Could not complete fetch current user", ex);
@@ -89,10 +85,10 @@ public class UserSqliteDao implements UserDao {
         try {
             ContentValues values = new ContentValues();
             values.put(UserEntry._ID, USER_ID);
-            values.put(UserEntry.FOURSQUARE_ID, user.getId());
-            values.put(UserEntry.FIRST_NAME, user.getFirstName());
+            values.put(UserEntry.NAME, user.getName());
             values.put(UserEntry.LAST_NAME, user.getLastName());
             values.put(UserEntry.PHOTO_URL, user.getPhotoUrl());
+            values.put(UserEntry.FOURSQUARE_ID, user.getFoursquareId());
             database.insert(UserEntry.TABLE_NAME, null, values);
             database.setTransactionSuccessful();
         } catch (Exception ex) {
@@ -108,10 +104,10 @@ public class UserSqliteDao implements UserDao {
         database.beginTransaction();
         try {
             ContentValues values = new ContentValues();
-            values.put(UserEntry.FOURSQUARE_ID, user.getId());
-            values.put(UserEntry.FIRST_NAME, user.getFirstName());
+            values.put(UserEntry.NAME, user.getName());
             values.put(UserEntry.LAST_NAME, user.getLastName());
             values.put(UserEntry.PHOTO_URL, user.getPhotoUrl());
+            values.put(UserEntry.FOURSQUARE_ID, user.getFoursquareId());
             String[] whereArgs = {String.valueOf(USER_ID)};
             database.update(UserEntry.TABLE_NAME, values, WHERE_ID_CLAUSE, whereArgs);
             database.setTransactionSuccessful();
@@ -126,9 +122,9 @@ public class UserSqliteDao implements UserDao {
     private static class UserEntry implements BaseColumns {
 
         private static final String TABLE_NAME = "user";
-        private static final String FOURSQUARE_ID = "foursquare_id";
-        private static final String FIRST_NAME = "first_name";
+        private static final String NAME = "name";
         private static final String LAST_NAME = "last_name";
         private static final String PHOTO_URL = "photo_url";
+        private static final String FOURSQUARE_ID = "foursquare_id";
     }
 }

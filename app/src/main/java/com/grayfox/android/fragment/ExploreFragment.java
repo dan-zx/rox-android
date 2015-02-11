@@ -8,7 +8,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
@@ -16,15 +15,16 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 
 import com.grayfox.android.R;
-import com.grayfox.android.client.RecommenderApi;
+import com.grayfox.android.client.RecommendationsApi;
 import com.grayfox.android.client.model.Location;
 import com.grayfox.android.client.model.Poi;
 import com.grayfox.android.client.model.Recommendation;
-import com.grayfox.android.client.task.RecommendedSearchAsyncTask;
 
+import com.grayfox.android.client.task.RecommendationsByFriendsLikesAsyncTask;
 import com.shamanland.fab.FloatingActionButton;
 
 import java.lang.ref.WeakReference;
+import java.util.Arrays;
 
 import roboguice.fragment.RoboFragment;
 import roboguice.inject.InjectView;
@@ -88,8 +88,8 @@ public class ExploreFragment extends RoboFragment {
         location.setLatitude(map.getCameraPosition().target.latitude);
         location.setLongitude(map.getCameraPosition().target.longitude);
         searchTask = new SearchTask(this);
-        searchTask.radius(3000).category("shops")
-                .transportation(RecommenderApi.Transportation.DRIVING)
+        searchTask.transportation(RecommendationsApi.Transportation.DRIVING)
+                .radius(50_000)
                 .location(location)
                 .request();
     }
@@ -98,25 +98,24 @@ public class ExploreFragment extends RoboFragment {
         searchProgressDialog = ProgressDialog.show(getActivity(), null, getString(R.string.search_in_progress), true, false);
     }
 
-    private void onRecommendationAcquired(Recommendation recommendation) {
+    private void onRecommendationsAcquired(Recommendation[] recommendations) {
         map.clear();
-        Log.d("TAG", recommendation.toString());
-        if (!recommendation.getPois().isEmpty()) {
-            for (Poi poi : recommendation.getPois()) {
-                map.addMarker(new MarkerOptions()
-                        .position(new LatLng(poi.getLocation().getLatitude(), poi.getLocation().getLongitude()))
-                        .title(poi.getName()));
+        Log.d("TAG", Arrays.deepToString(recommendations));
+        for (Recommendation recommendation : recommendations) {
+            if (recommendation.getPois().length > 0) {
+                for (Poi poi : recommendation.getPois()) {
+                    map.addMarker(new MarkerOptions()
+                            .position(new LatLng(poi.getLocation().getLatitude(), poi.getLocation().getLongitude()))
+                            .title(poi.getName()));
+                }
             }
-            map.animateCamera(CameraUpdateFactory.newLatLng(
-                    new LatLng(recommendation.getPois().get(0).getLocation().getLatitude(), recommendation.getPois().get(0).getLocation().getLongitude())));
-        }
-
-        if (!recommendation.getRoutePoints().isEmpty()) {
-            PolylineOptions pathOptions = new PolylineOptions().color(Color.RED);
-            for (Location point : recommendation.getRoutePoints()) {
-                pathOptions.add(new LatLng(point.getLatitude(), point.getLongitude()));
+            if (recommendation.getRoute().length > 0) {
+                PolylineOptions pathOptions = new PolylineOptions().color(Color.RED);
+                for (Location point : recommendation.getRoute()) {
+                    pathOptions.add(new LatLng(point.getLatitude(), point.getLongitude()));
+                }
+                map.addPolyline(pathOptions);
             }
-            map.addPolyline(pathOptions);
         }
     }
 
@@ -124,7 +123,7 @@ public class ExploreFragment extends RoboFragment {
         searchProgressDialog.dismiss();
     }
 
-    private static class SearchTask extends RecommendedSearchAsyncTask {
+    private static class SearchTask extends RecommendationsByFriendsLikesAsyncTask {
 
         private WeakReference<ExploreFragment> reference;
 
@@ -140,9 +139,9 @@ public class ExploreFragment extends RoboFragment {
         }
 
         @Override
-        protected void onSuccess(Recommendation recommendation) throws Exception {
+        protected void onSuccess(Recommendation[] recommendations) throws Exception {
             ExploreFragment fragment = reference.get();
-            if (fragment != null) fragment.onRecommendationAcquired(recommendation);
+            if (fragment != null) fragment.onRecommendationsAcquired(recommendations);
         }
 
         @Override

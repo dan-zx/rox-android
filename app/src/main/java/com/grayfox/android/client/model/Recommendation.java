@@ -1,37 +1,38 @@
 package com.grayfox.android.client.model;
 
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.List;
 
 public class Recommendation implements Serializable {
 
     private static final long serialVersionUID = 4322497520093419157L;
 
-    private List<Poi> pois;
-    private List<Location> routePoints;
+    private Poi[] pois;
+    private Location[] route;
 
-    public List<Poi> getPois() {
+    public Poi[] getPois() {
         return pois;
     }
 
-    public void setPois(List<Poi> pois) {
+    public void setPois(Poi[] pois) {
         this.pois = pois;
     }
 
-    public List<Location> getRoutePoints() {
-        return routePoints;
+    public Location[] getRoute() {
+        return route;
     }
 
-    public void setRoutePoints(List<Location> routePoints) {
-        this.routePoints = routePoints;
+    public void setRoute(Location[] route) {
+        this.route = route;
     }
 
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((pois == null) ? 0 : pois.hashCode());
-        result = prime * result + ((routePoints == null) ? 0 : routePoints.hashCode());
+        result = prime * result + Arrays.hashCode(pois);
+        result = prime * result + Arrays.hashCode(route);
         return result;
     }
 
@@ -41,18 +42,15 @@ public class Recommendation implements Serializable {
         if (obj == null) return false;
         if (getClass() != obj.getClass()) return false;
         Recommendation other = (Recommendation) obj;
-        if (pois == null) {
-            if (other.pois != null) return false;
-        } else if (!pois.equals(other.pois)) return false;
-        if (routePoints == null) {
-            if (other.routePoints != null) return false;
-        } else if (!routePoints.equals(other.routePoints)) return false;
+        if (!Arrays.equals(pois, other.pois)) return false;
+        if (!Arrays.equals(route, other.route)) return false;
         return true;
     }
 
     @Override
     public String toString() {
-        return new StringBuilder().append("Recommendation [pois=").append(pois)
-                .append(", routePoints=").append(routePoints).append("]").toString();
+        StringBuilder builder = new StringBuilder();
+        builder.append("Recommendation [pois=").append(Arrays.toString(pois)).append(", route=").append(Arrays.toString(route)).append("]");
+        return builder.toString();
     }
 }

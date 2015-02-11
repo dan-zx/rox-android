@@ -141,8 +141,10 @@ public class MainActivity extends RoboActionBarActivity {
     private void onDrawerMenuSelected(int position) {
         switch (position) {
             case 0:
-                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://foursquare.com/users/" + user.getId()));
-                startActivity(intent);
+                if (user != null) {
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://foursquare.com/users/" + user.getFoursquareId()));
+                    startActivity(intent);
+                }
                 break;
             case 1:
                 setupFragment(new ExploreFragment());
@@ -158,11 +160,13 @@ public class MainActivity extends RoboActionBarActivity {
 
     private void onGetSelfUserSuccess(User user) {
         this.user = user;
-        userNameText.setText(new StringBuilder().append(user.getFirstName()).append(" ").append(user.getLastName()));
-        new Images.ImageLoader(this)
-                .setImageView(userPicture)
-                .setLoadingResourceImageId(R.drawable.ic_contact_picture)
-                .execute(user.getPhotoUrl());
+        if (user != null) {
+            userNameText.setText(new StringBuilder().append(user.getName()).append(" ").append(user.getLastName()));
+            new Images.ImageLoader(this)
+                    .setImageView(userPicture)
+                    .setLoadingResourceImageId(R.drawable.ic_contact_picture)
+                    .execute(user.getPhotoUrl());
+        }
     }
 
     private static class GetSelfUserTask extends GetSelfUserAsyncTask {

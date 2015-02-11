@@ -2,16 +2,17 @@
 <resources>
 
     <string name="gf_api_host_scheme">http</string>
-    <string name="gf_api_host">192.168.1.208:8080/gray-fox-server</string>
+    <string name="gf_api_host">192.168.1.75:8080/gray-fox-server</string>
     <string name="gf_api_path">api</string>
 
     <!-- App Users API -->
     <string name="gf_api_app_users_path">users</string>
     <string name="gf_api_app_users_self_path">self</string>
-    <string name="gf_api_app_users_register_path">register</string>
+    <string name="gf_api_app_users_register_with_foursquare_path">register/foursquare</string>
 
     <!-- Recommendations API -->
     <string name="gf_api_recommendations_path">recommendations</string>
-    <string name="gf_api_recommendations_search_path">search</string>
+    <string name="gf_api_recommendations_by_likes_path">bylikes</string>
+    <string name="gf_api_recommendations_by_friends_likes_path">byfriendslikes</string>
 
 </resources>

@@ -4,10 +4,10 @@
         <item>
             CREATE TABLE user (
                 _id INTEGER PRIMARY KEY,
-                foursquare_id VARCHAR NOT NULL,
-                first_name VARCHAR NOT NULL,
+                name VARCHAR NOT NULL,
                 last_name VARCHAR NOT NULL,
-                photo_url VARCHAR NOT NULL
+                photo_url VARCHAR NOT NULL,
+                foursquare_id VARCHAR NOT NULL
             );
         </item>
     </string-array>
