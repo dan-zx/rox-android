@@ -1,13 +1,11 @@
 package com.grayfox.android.dao;
 
 import com.google.inject.Injector;
-
 import com.grayfox.android.config.ConfigModule;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;

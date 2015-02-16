@@ -1,6 +1,6 @@
 package com.grayfox.android.client.model;
 
-public class Result<T> {
+public class ApiResponse<T> {
 
     public static class ErrorResponse {
 
@@ -84,11 +84,12 @@ public class Result<T> {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public boolean equals(Object obj) {
         if (this == obj) return true;
         if (obj == null) return false;
         if (getClass() != obj.getClass()) return false;
-        Result<T> other = (Result<T>) obj;
+        ApiResponse<T> other = (ApiResponse<T>) obj;
         if (error == null) {
             if (other.error != null) return false;
         } else if (!error.equals(other.error)) return false;

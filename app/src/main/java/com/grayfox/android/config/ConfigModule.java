@@ -5,9 +5,8 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.name.Names;
-
-import com.grayfox.android.client.UsersApi;
 import com.grayfox.android.client.RecommendationsApi;
+import com.grayfox.android.client.UsersApi;
 import com.grayfox.android.dao.source.sqlite.GrayFoxDatabaseHelper;
 
 public class ConfigModule extends AbstractModule {

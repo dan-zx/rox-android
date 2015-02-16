@@ -2,7 +2,7 @@
 <resources>
 
     <string name="gf_api_host_scheme">http</string>
-    <string name="gf_api_host">192.168.1.75:8080/gray-fox-server</string>
+    <string name="gf_api_host">192.168.1.123:8080/gray-fox-server</string>
     <string name="gf_api_path">api</string>
 
     <!-- App Users API -->

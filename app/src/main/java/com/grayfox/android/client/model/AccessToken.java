@@ -12,8 +12,8 @@ public class AccessToken implements Serializable {
         return accessToken;
     }
 
-    public void setToken(String appAccessToken) {
-        this.accessToken = appAccessToken;
+    public void setToken(String accessToken) {
+        this.accessToken = accessToken;
     }
 
     @Override

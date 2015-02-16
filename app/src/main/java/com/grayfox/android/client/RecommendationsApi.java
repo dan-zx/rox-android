@@ -5,9 +5,9 @@ import android.net.Uri;
 import android.util.Log;
 
 import com.grayfox.android.R;
+import com.grayfox.android.client.model.ApiResponse;
 import com.grayfox.android.client.model.Location;
 import com.grayfox.android.client.model.Recommendation;
-import com.grayfox.android.client.model.Result;
 import com.grayfox.android.http.Charset;
 import com.grayfox.android.http.ContentType;
 import com.grayfox.android.http.Header;
@@ -39,18 +39,18 @@ public class RecommendationsApi extends BaseApi {
                 .appendQueryParameter("transportation", transportation != null ? transportation.name() : null)
                 .build().toString();
 
-        String json = new RequestBuilder(url).setMethod(Method.GET)
+        String json = RequestBuilder.newInstance(url).setMethod(Method.GET)
                 .setHeader(Header.ACCEPT, ContentType.APPLICATION_JSON.getMimeType())
                 .setHeader(Header.ACCEPT_LANGUAGE, getClientAcceptLanguage())
                 .setHeader(Header.ACCEPT_CHARSET, Charset.UTF_8.getValue())
                 .makeForResult();
 
         if (json != null) {
-            Result<Recommendation[]> result = parse(json, Recommendation[].class);
-            if (result.getError() == null) return result.getResponse();
+            ApiResponse<Recommendation[]> apiResponse = parse(json, Recommendation[].class);
+            if (apiResponse.getError() == null) return apiResponse.getResponse();
             else {
-                Log.e(TAG, "Response error ->" + result.getError());
-                throw new ApiException(result.getError().getErrorMessage());
+                Log.e(TAG, "Response error ->" + apiResponse.getError());
+                throw new ApiException(apiResponse.getError().getErrorMessage());
             }
         } else {
             Log.e(TAG, "Null response");
@@ -70,18 +70,18 @@ public class RecommendationsApi extends BaseApi {
                 .appendQueryParameter("transportation", transportation != null ? transportation.name() : null)
                 .build().toString();
 
-        String json = new RequestBuilder(url).setMethod(Method.GET)
+        String json = RequestBuilder.newInstance(url).setMethod(Method.GET)
                 .setHeader(Header.ACCEPT, ContentType.APPLICATION_JSON.getMimeType())
                 .setHeader(Header.ACCEPT_LANGUAGE, getClientAcceptLanguage())
                 .setHeader(Header.ACCEPT_CHARSET, Charset.UTF_8.getValue())
                 .makeForResult();
 
         if (json != null) {
-            Result<Recommendation[]> result = parse(json, Recommendation[].class);
-            if (result.getError() == null) return result.getResponse();
+            ApiResponse<Recommendation[]> apiResponse = parse(json, Recommendation[].class);
+            if (apiResponse.getError() == null) return apiResponse.getResponse();
             else {
-                Log.e(TAG, "Response error ->" + result.getError());
-                throw new ApiException(result.getError().getErrorMessage());
+                Log.e(TAG, "Response error ->" + apiResponse.getError());
+                throw new ApiException(apiResponse.getError().getErrorMessage());
             }
         } else {
             Log.e(TAG, "Null response");

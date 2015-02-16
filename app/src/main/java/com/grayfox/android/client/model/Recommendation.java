@@ -2,37 +2,58 @@ package com.grayfox.android.client.model;
 
 import java.io.Serializable;
 import java.util.Arrays;
-import java.util.List;
 
 public class Recommendation implements Serializable {
 
+    public static enum Type { SOCIAL, SELF }
+
     private static final long serialVersionUID = 4322497520093419157L;
 
-    private Poi[] pois;
-    private Location[] route;
+    private Type type;
+    private String reason;
+    private Poi[] poiSequence;
+    private Location[] routePoints;
 
-    public Poi[] getPois() {
-        return pois;
+    public Type getType() {
+        return type;
     }
 
-    public void setPois(Poi[] pois) {
-        this.pois = pois;
+    public void setType(Type type) {
+        this.type = type;
     }
 
-    public Location[] getRoute() {
-        return route;
+    public String getReason() {
+        return reason;
     }
 
-    public void setRoute(Location[] route) {
-        this.route = route;
+    public void setReason(String reason) {
+        this.reason = reason;
+    }
+
+    public Poi[] getPoiSequence() {
+        return poiSequence;
+    }
+
+    public void setPoiSequence(Poi[] poiSequence) {
+        this.poiSequence = poiSequence;
+    }
+
+    public Location[] getRoutePoints() {
+        return routePoints;
+    }
+
+    public void setRoutePoints(Location[] routePoints) {
+        this.routePoints = routePoints;
     }
 
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + Arrays.hashCode(pois);
-        result = prime * result + Arrays.hashCode(route);
+        result = prime * result + ((type == null) ? 0 : type.hashCode());
+        result = prime * result + ((reason == null) ? 0 : reason.hashCode());
+        result = prime * result + Arrays.hashCode(poiSequence);
+        result = prime * result + Arrays.hashCode(routePoints);
         return result;
     }
 
@@ -42,15 +63,15 @@ public class Recommendation implements Serializable {
         if (obj == null) return false;
         if (getClass() != obj.getClass()) return false;
         Recommendation other = (Recommendation) obj;
-        if (!Arrays.equals(pois, other.pois)) return false;
-        if (!Arrays.equals(route, other.route)) return false;
+        if (!Arrays.equals(poiSequence, other.poiSequence)) return false;
+        if (!Arrays.equals(routePoints, other.routePoints)) return false;
         return true;
     }
 
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append("Recommendation [pois=").append(Arrays.toString(pois)).append(", route=").append(Arrays.toString(route)).append("]");
+        builder.append("Recommendation [poiSequence=").append(Arrays.toString(poiSequence)).append(", routePoints=").append(Arrays.toString(routePoints)).append("]");
         return builder.toString();
     }
 }

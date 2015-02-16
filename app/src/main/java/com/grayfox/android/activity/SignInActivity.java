@@ -13,8 +13,8 @@ import com.foursquare.android.nativeoauth.FoursquareOAuth;
 import com.foursquare.android.nativeoauth.FoursquareOAuthException;
 import com.foursquare.android.nativeoauth.model.AuthCodeResponse;
 import com.grayfox.android.R;
-import com.grayfox.android.dao.AccessTokenDao;
 import com.grayfox.android.client.task.RegisterUserAsyncTask;
+import com.grayfox.android.dao.AccessTokenDao;
 
 import java.lang.ref.WeakReference;
 

@@ -6,7 +6,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
-import com.grayfox.android.client.model.Result;
+import com.grayfox.android.client.model.ApiResponse;
 
 import java.util.Locale;
 
@@ -32,23 +32,23 @@ abstract class BaseApi {
         return Locale.getDefault().toString().replace('_', '-');
     }
 
-    protected <T> Result<T> parse(String json, Class<T> responseClass) {
+    protected <T> ApiResponse<T> parse(String json, Class<T> responseClass) {
         JsonObject obj = new JsonParser().parse(json).getAsJsonObject();
-        Result.ErrorResponse error = new Gson().fromJson(obj.get("error"), Result.ErrorResponse.class);
+        ApiResponse.ErrorResponse error = new Gson().fromJson(obj.get("error"), ApiResponse.ErrorResponse.class);
         T response = new Gson().fromJson(obj.get("response"), responseClass);
-        Result<T> result = new Result<>();
-        result.setError(error);
-        result.setResponse(response);
-        return result;
+        ApiResponse<T> apiResponse = new ApiResponse<>();
+        apiResponse.setError(error);
+        apiResponse.setResponse(response);
+        return apiResponse;
     }
 
-    protected <T> Result<T> parse(String json, TypeToken<T> type) {
+    protected <T> ApiResponse<T> parse(String json, TypeToken<T> type) {
         JsonObject obj = new JsonParser().parse(json).getAsJsonObject();
-        Result.ErrorResponse error = new Gson().fromJson(obj.get("error"), Result.ErrorResponse.class);
+        ApiResponse.ErrorResponse error = new Gson().fromJson(obj.get("error"), ApiResponse.ErrorResponse.class);
         T response = new Gson().fromJson(obj.get("response"), type.getType());
-        Result<T> result = new Result<>();
-        result.setError(error);
-        result.setResponse(response);
-        return result;
+        ApiResponse<T> apiResponse = new ApiResponse<>();
+        apiResponse.setError(error);
+        apiResponse.setResponse(response);
+        return apiResponse;
     }
 }

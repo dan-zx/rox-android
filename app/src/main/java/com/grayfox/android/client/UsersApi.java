@@ -4,11 +4,9 @@ import android.content.Context;
 import android.net.Uri;
 import android.util.Log;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.grayfox.android.R;
 import com.grayfox.android.client.model.AccessToken;
-import com.grayfox.android.client.model.Result;
+import com.grayfox.android.client.model.ApiResponse;
 import com.grayfox.android.client.model.User;
 import com.grayfox.android.http.Charset;
 import com.grayfox.android.http.ContentType;
@@ -36,18 +34,18 @@ public class UsersApi extends BaseApi {
                 .appendQueryParameter("foursquare-authorization-code", foursquareAuthorizationCode)
                 .build().toString();
 
-        String json = new RequestBuilder(url).setMethod(Method.GET)
+        String json = RequestBuilder.newInstance(url).setMethod(Method.GET)
                 .setHeader(Header.ACCEPT, ContentType.APPLICATION_JSON.getMimeType())
                 .setHeader(Header.ACCEPT_LANGUAGE, getClientAcceptLanguage())
                 .setHeader(Header.ACCEPT_CHARSET, Charset.UTF_8.getValue())
                 .makeForResult();
 
         if (json != null) {
-            Result<AccessToken> result = parse(json, AccessToken.class);
-            if (result.getError() == null) return result.getResponse().getToken();
+            ApiResponse<AccessToken> apiResponse = parse(json, AccessToken.class);
+            if (apiResponse.getError() == null) return apiResponse.getResponse().getToken();
             else {
-                Log.e(TAG, "Response error ->" + result.getError());
-                throw new ApiException(result.getError().getErrorMessage());
+                Log.e(TAG, "Response error ->" + apiResponse.getError());
+                throw new ApiException(apiResponse.getError().getErrorMessage());
             }
         } else {
             Log.e(TAG, "Null response");
@@ -64,18 +62,18 @@ public class UsersApi extends BaseApi {
                 .appendQueryParameter("access-token", accessToken)
                 .build().toString();
 
-        String json = new RequestBuilder(url).setMethod(Method.GET)
+        String json = RequestBuilder.newInstance(url).setMethod(Method.GET)
                 .setHeader(Header.ACCEPT, ContentType.APPLICATION_JSON.getMimeType())
                 .setHeader(Header.ACCEPT_LANGUAGE, getClientAcceptLanguage())
                 .setHeader(Header.ACCEPT_CHARSET, Charset.UTF_8.getValue())
                 .makeForResult();
 
         if (json != null) {
-            Result<User> result = parse(json, User.class);
-            if (result.getError() == null) return result.getResponse();
+            ApiResponse<User> apiResponse = parse(json, User.class);
+            if (apiResponse.getError() == null) return apiResponse.getResponse();
             else {
-                Log.e(TAG, "Response error ->" + result.getError());
-                throw new ApiException(result.getError().getErrorMessage());
+                Log.e(TAG, "Response error ->" + apiResponse.getError());
+                throw new ApiException(apiResponse.getError().getErrorMessage());
             }
         } else {
             Log.e(TAG, "Null response");

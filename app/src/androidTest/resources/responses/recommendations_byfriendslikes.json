@@ -1,0 +1,78 @@
+{
+   "response":[
+      {
+         "type":"SOCIAL",
+         "reason":"A tu amigo Alberto Morales le gusta Restaurante mexicano",
+         "poiSequence":[
+            {
+               "name":"Antojitos Vicky",
+               "location":{
+                  "latitude":19.00448944157235,
+                  "longitude":-98.20103645324707
+               },
+               "foursquareId":"4df2359f18386ecb4e2b495f",
+               "categories":[
+                  {
+                     "name":"Restaurante mexicano",
+                     "foursquareId":"4bf58dd8d48988d1c1941735"
+                  }
+               ]
+            },
+            {
+               "name":"Centro Comercial AngelÃ³polis",
+               "location":{
+                  "latitude":19.031720155946587,
+                  "longitude":-98.23283101009555
+               },
+               "foursquareId":"4b9d70a1f964a520e2ac36e3",
+               "categories":[
+                  {
+                     "name":"Centro comercial",
+                     "foursquareId":"4bf58dd8d48988d1fd941735"
+                  }
+               ]
+            }
+         ],
+         "routePoints":[
+            {
+               "latitude":18.9901,
+               "longitude":-98.20636
+            },
+            {
+               "latitude":18.98993,
+               "longitude":-98.20563000000001
+            }
+         ]
+      },
+      {
+         "type":"SOCIAL",
+         "reason":"A tu amigo Miguel Nieva le gusta Restaurante mexicano",
+         "poiSequence":[
+            {
+               "name":"Cocina EconÃ³mica La Casita",
+               "location":{
+                  "latitude":19.006396510172955,
+                  "longitude":-98.20425510406494
+               },
+               "foursquareId":"501872331648a8285596c0b8",
+               "categories":[
+                  {
+                     "name":"Restaurante mexicano",
+                     "foursquareId":"4bf58dd8d48988d1c1941735"
+                  }
+               ]
+            }
+         ],
+         "routePoints":[
+            {
+               "latitude":18.9901,
+               "longitude":-98.20636
+            },
+            {
+               "latitude":18.98993,
+               "longitude":-98.20563000000001
+            }
+         ]
+      }
+   ]
+}

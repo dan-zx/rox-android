@@ -13,13 +13,11 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
-
 import com.grayfox.android.R;
 import com.grayfox.android.client.RecommendationsApi;
 import com.grayfox.android.client.model.Location;
 import com.grayfox.android.client.model.Poi;
 import com.grayfox.android.client.model.Recommendation;
-
 import com.grayfox.android.client.task.RecommendationsByFriendsLikesAsyncTask;
 import com.shamanland.fab.FloatingActionButton;
 
@@ -102,16 +100,16 @@ public class ExploreFragment extends RoboFragment {
         map.clear();
         Log.d("TAG", Arrays.deepToString(recommendations));
         for (Recommendation recommendation : recommendations) {
-            if (recommendation.getPois().length > 0) {
-                for (Poi poi : recommendation.getPois()) {
+            if (recommendation.getPoiSequence().length > 0) {
+                for (Poi poi : recommendation.getPoiSequence()) {
                     map.addMarker(new MarkerOptions()
                             .position(new LatLng(poi.getLocation().getLatitude(), poi.getLocation().getLongitude()))
                             .title(poi.getName()));
                 }
             }
-            if (recommendation.getRoute().length > 0) {
+            if (recommendation.getRoutePoints().length > 0) {
                 PolylineOptions pathOptions = new PolylineOptions().color(Color.RED);
-                for (Location point : recommendation.getRoute()) {
+                for (Location point : recommendation.getRoutePoints()) {
                     pathOptions.add(new LatLng(point.getLatitude(), point.getLongitude()));
                 }
                 map.addPolyline(pathOptions);
