@@ -31,7 +31,7 @@ public class UsersApi extends BaseApi {
                 .appendEncodedPath(getString(R.string.gf_api_path))
                 .appendEncodedPath(getString(R.string.gf_api_app_users_path))
                 .appendEncodedPath(getString(R.string.gf_api_app_users_register_with_foursquare_path))
-                .appendQueryParameter("foursquare-authorization-code", foursquareAuthorizationCode)
+                .appendQueryParameter("authorization-code", foursquareAuthorizationCode)
                 .build().toString();
 
         String json = RequestBuilder.newInstance(url).setMethod(Method.GET)
