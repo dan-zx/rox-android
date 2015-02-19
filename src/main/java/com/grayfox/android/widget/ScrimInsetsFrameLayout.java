@@ -66,6 +66,7 @@ public class ScrimInsetsFrameLayout extends FrameLayout {
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     protected boolean fitSystemWindows(Rect insets) {
         mInsets = new Rect(insets);
         setWillNotDraw(mInsetForeground == null);

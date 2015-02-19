@@ -8,8 +8,85 @@ buildscript {
     }
 }
 
-allprojects {
-    repositories {
-        jcenter()
+apply plugin: 'com.android.application'
+apply plugin: 'robolectric'
+apply plugin: 'idea'
+
+android {
+    compileSdkVersion 21
+    buildToolsVersion '21.1.2'
+
+    defaultConfig {
+        applicationId 'com.grayfox.android'
+        minSdkVersion 10
+        targetSdkVersion 21
+        versionCode 1
+        versionName '1.0-SNAPSHOT'
+    }
+    signingConfigs {
+        debug {
+            storeFile file('keystores/debug.keystore')
+        }
+        release {
+            storeFile file('keystores/release.keystore')
+            File propsFile = file('keystores/secure.properties');
+            Properties props = new Properties();
+            props.load(new FileInputStream(propsFile))
+            storePassword props.getProperty('storePassword')
+            keyAlias props.getProperty('keyAlias')
+            keyPassword props.getProperty('keyPassword')
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_7
+        targetCompatibility JavaVersion.VERSION_1_7
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            signingConfig signingConfigs.release
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    packagingOptions {
+        exclude 'LICENSE.txt'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/NOTICE'
+    }
+}
+
+robolectric {
+    include '**/*Test.class'
+    exclude '**/espresso/**/*.class'
+}
+
+repositories {
+    jcenter()
+    maven { url 'https://dl.dropboxusercontent.com/u/1995295/m2repository' }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile 'com.android.support:appcompat-v7:21.0.3'
+    compile 'com.google.android.gms:play-services-maps:6.5.87'
+    compile 'com.foursquare:foursquare-android-oauth:1.1-SNAPSHOT'
+    compile 'com.jakewharton:disklrucache:2.0.2'
+    compile 'de.hdodenhof:circleimageview:1.2.1'
+    compile 'com.shamanland:fab:0.0.8'
+    compile 'com.google.code.gson:gson:2.3.1'
+    compile 'org.roboguice:roboguice:3.0.1'
+    provided 'org.roboguice:roboblender:3.0.1'
+    androidTestCompile 'junit:junit:4.12'
+    androidTestCompile 'org.assertj:assertj-core:1.7.1'
+    androidTestCompile ('org.robolectric:robolectric:2.4') {
+        exclude group: 'commons-logging', module: 'commons-logging'
+        exclude group: 'org.apache.httpcomponents', module: 'httpclient'
+    }
+}
+
+idea {
+    module {
+        testOutputDir = file('build/test-classes/debug')
     }
 }

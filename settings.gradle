@@ -1,1 +1,1 @@
-include ':app'
+rootProject.name = 'grayfox-android'
