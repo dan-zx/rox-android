@@ -20,7 +20,7 @@ import android.widget.TextView;
 import com.grayfox.android.R;
 import com.grayfox.android.client.model.User;
 import com.grayfox.android.client.task.GetSelfUserAsyncTask;
-import com.grayfox.android.fragment.ExploreFragment;
+import com.grayfox.android.fragment.ExploreFragment2;
 import com.grayfox.android.util.Images;
 import com.grayfox.android.widget.DrawerItem;
 import com.grayfox.android.widget.DrawerItemAdapter;
@@ -54,7 +54,7 @@ public class MainActivity extends RoboActionBarActivity {
         super.onCreate(savedInstanceState);
         setupNavigationDrawer();
         if (savedInstanceState == null) {
-            setupFragment(new ExploreFragment());
+            setupFragment(new ExploreFragment2());
             setTitle(R.string.drawer_explore_option);
         }
     }
@@ -147,7 +147,7 @@ public class MainActivity extends RoboActionBarActivity {
                 }
                 break;
             case 1:
-                setupFragment(new ExploreFragment());
+                setupFragment(new ExploreFragment2());
                 setTitle(R.string.drawer_explore_option);
                 break;
             case 2:
