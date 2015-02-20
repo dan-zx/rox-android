@@ -9,11 +9,17 @@ public abstract class RequestBuilder {
     }
 
     public abstract RequestBuilder setTimeout(int timeout);
+
     public abstract RequestBuilder setMethod(Method method);
+
     public abstract RequestBuilder setData(String data);
+
     public abstract RequestBuilder addFormParam(String name, String value);
+
     public abstract RequestBuilder setHeader(Header header, String value);
+
     public abstract Integer make() throws RequestException;
+
     public abstract String makeForResult() throws RequestException;
 
     public static class RequestException extends RuntimeException {

@@ -34,7 +34,7 @@ public class UserSqliteDao implements UserDao {
         SQLiteDatabase database = databaseHelper.getReadableDatabase();
         try {
             String[] columns = {UserEntry._ID, UserEntry.NAME, UserEntry.LAST_NAME, UserEntry.PHOTO_URL, UserEntry.FOURSQUARE_ID};
-            cursor = database.query(UserEntry.TABLE_NAME, columns, WHERE_ID_CLAUSE, new String[] {String.valueOf(USER_ID)}, null, null, null);
+            cursor = database.query(UserEntry.TABLE_NAME, columns, WHERE_ID_CLAUSE, new String[]{String.valueOf(USER_ID)}, null, null, null);
             if (cursor.getCount() > 0) {
                 cursor.moveToFirst();
                 user = new User();

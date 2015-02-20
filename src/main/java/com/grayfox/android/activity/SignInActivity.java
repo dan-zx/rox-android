@@ -27,7 +27,7 @@ import javax.inject.Inject;
 
 /**
  * Connects this app with Foursquare.
- * 
+ *
  * @author Daniel Pedraza-Arcega
  * @since version 1.0
  */
@@ -81,7 +81,7 @@ public class SignInActivity extends RoboActionBarActivity {
             default: super.onActivityResult(requestCode, resultCode, data);
         }
     }
-    
+
     private void onCompleteFoursquareConnect(int resultCode, Intent data) {
         AuthCodeResponse codeResponse = FoursquareOAuth.getAuthCodeFromResult(resultCode, data);
         Exception exception = codeResponse.getException();
@@ -91,7 +91,7 @@ public class SignInActivity extends RoboActionBarActivity {
             registerTask.foursquareAuthorizationCode(code).request();
         } else {
             if (exception instanceof FoursquareCancelException) toastMessage(R.string.foursquare_auth_canceled);
-            else if (exception instanceof FoursquareDenyException)toastMessage(R.string.foursquare_auth_denied);
+            else if (exception instanceof FoursquareDenyException) toastMessage(R.string.foursquare_auth_denied);
             else if (exception instanceof FoursquareOAuthException) {
                 String errorMessage = exception.getMessage();
                 String errorCode = ((FoursquareOAuthException) exception).getErrorCode();
@@ -119,12 +119,12 @@ public class SignInActivity extends RoboActionBarActivity {
     }
 
     private void toastMessage(int messageId) {
-        Toast.makeText(getApplicationContext(), 
-                messageId, 
+        Toast.makeText(getApplicationContext(),
+                messageId,
                 Toast.LENGTH_SHORT)
                 .show();
     }
-    
+
     private void toastMessage(String message) {
         Toast.makeText(getApplicationContext(),
                 message,

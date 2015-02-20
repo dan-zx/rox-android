@@ -39,12 +39,9 @@ public class MainActivity extends RoboActionBarActivity {
     private static final String FRAGMENT_TAG = "CURRENT_FRAGMENT";
     private static final String CURRENT_TITLE_KEY = "CURRENT_TITLE";
 
-    @InjectView(R.id.drawer_options)
-    private ListView drawerOptions;
-    @InjectView(R.id.drawer_layout)
-    private DrawerLayout drawerLayout;
-    @InjectView(R.id.toolbar)
-    private Toolbar toolbar;
+    @InjectView(R.id.drawer_options) private ListView drawerOptions;
+    @InjectView(R.id.drawer_layout)  private DrawerLayout drawerLayout;
+    @InjectView(R.id.toolbar)        private Toolbar toolbar;
 
     private int currentTitleId;
     private ActionBarDrawerToggle drawerToggle;

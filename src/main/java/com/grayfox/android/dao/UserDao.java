@@ -9,6 +9,8 @@ import com.grayfox.android.dao.impl.sqlite.UserSqliteDao;
 public interface UserDao {
 
     User fetchCurrent();
+
     void saveOrUpdate(User user);
+
     void deleteCurrent();
 }

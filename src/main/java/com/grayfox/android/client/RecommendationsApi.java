@@ -18,7 +18,7 @@ import javax.inject.Inject;
 
 public class RecommendationsApi extends BaseApi {
 
-    public static enum Transportation { DRIVING, WALKING, BICYCLING, TRANSIT }
+    public static enum Transportation {DRIVING, WALKING, BICYCLING, TRANSIT}
 
     private static final String TAG = RecommendationsApi.class.getSimpleName();
 

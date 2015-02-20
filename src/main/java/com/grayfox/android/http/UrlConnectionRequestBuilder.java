@@ -43,7 +43,7 @@ public class UrlConnectionRequestBuilder extends RequestBuilder {
             case POST:
                 connection.setDoOutput(true);
                 break;
-            case GET:case OPTIONS:case HEAD:case PUT:case DELETE:case TRACE:
+            case GET: case OPTIONS: case HEAD: case PUT: case DELETE: case TRACE:
                 try {
                     connection.setRequestMethod(method.getValue());
                 } catch (Exception e) {
@@ -78,7 +78,7 @@ public class UrlConnectionRequestBuilder extends RequestBuilder {
     @Override
     public UrlConnectionRequestBuilder addFormParam(String name, String value) {
         Log.d(TAG, "Param={" + name + ", " + value + "}");
-        formParams.add(new String[] {name, value});
+        formParams.add(new String[]{name, value});
         return this;
     }
 
