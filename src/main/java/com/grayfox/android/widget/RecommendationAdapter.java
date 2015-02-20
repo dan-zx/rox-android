@@ -27,6 +27,7 @@ public class RecommendationAdapter extends RecyclerView.Adapter<RecommendationAd
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
+        // TODO: Fetch category icon from web
         holder.categoryImageView.setImageResource(R.drawable.ic_generic_category);
         holder.categoryNameView.setText(recommendation.getPoiSequence()[position].getCategories()[0].getName());
         holder.poiNameView.setText(recommendation.getPoiSequence()[position].getName());

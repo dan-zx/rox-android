@@ -27,7 +27,8 @@
         android:layout_toRightOf="@id/poi_pin_layout"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:layout_marginTop="4dp"
-        android:layout_marginLeft="7dp" />
+        android:layout_marginLeft="7dp"
+        android:layout_marginRight="4dp" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -36,6 +37,7 @@
         android:layout_toRightOf="@id/poi_pin_layout"
         android:layout_below="@id/poi_name"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:layout_marginLeft="7dp" />
+        android:layout_marginLeft="7dp"
+        android:layout_marginRight="4dp" />
 
 </RelativeLayout>

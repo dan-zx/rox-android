@@ -2,8 +2,6 @@ package com.grayfox.android.fragment;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.PagerTabStrip;
 import android.support.v4.view.ViewPager;
@@ -16,6 +14,7 @@ import com.grayfox.android.client.RecommendationsApi;
 import com.grayfox.android.client.model.Location;
 import com.grayfox.android.client.model.Recommendation;
 import com.grayfox.android.client.task.RecommendationsByFriendsLikesAsyncTask;
+
 import roboguice.fragment.RoboFragment;
 import roboguice.inject.InjectView;
 
@@ -40,7 +39,7 @@ public class ExploreFragment2 extends RoboFragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        swipeRouteDetailFragmentsAdapter = new SwipeRouteDetailFragmentsAdapter(getChildFragmentManager());
+        swipeRouteDetailFragmentsAdapter = new SwipeRouteDetailFragmentsAdapter();
         viewPager.setAdapter(swipeRouteDetailFragmentsAdapter);
     }
 
@@ -85,12 +84,12 @@ public class ExploreFragment2 extends RoboFragment {
         searchProgressDialog.dismiss();
     }
 
-    private static class SwipeRouteDetailFragmentsAdapter extends FragmentStatePagerAdapter {
+    private class SwipeRouteDetailFragmentsAdapter extends FragmentStatePagerAdapter {
 
         private List<RouteDetailFragment> fragments;
 
-        private SwipeRouteDetailFragmentsAdapter(FragmentManager fragmentManager) {
-            super(fragmentManager);
+        private SwipeRouteDetailFragmentsAdapter() {
+            super(getChildFragmentManager());
             fragments = new ArrayList<>();
         }
 
@@ -112,7 +111,7 @@ public class ExploreFragment2 extends RoboFragment {
 
         @Override
         public CharSequence getPageTitle(int position) {
-            if (!fragments.isEmpty() && position >= 0) return "Ruta " + position;
+            if (!fragments.isEmpty() && position >= 0) return getString(R.string.route_format, position + 1);
             else return null;
         }
     }
