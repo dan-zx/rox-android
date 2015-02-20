@@ -18,7 +18,7 @@ android {
 
     defaultConfig {
         applicationId 'com.grayfox.android'
-        minSdkVersion 10
+        minSdkVersion 15
         targetSdkVersion 21
         versionCode 1
         versionName '1.0-SNAPSHOT'
@@ -63,14 +63,13 @@ robolectric {
 
 repositories {
     jcenter()
-    maven { url 'https://dl.dropboxusercontent.com/u/1995295/m2repository' }
 }
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:appcompat-v7:21.0.3'
     compile 'com.google.android.gms:play-services-maps:6.5.87'
-    compile 'com.foursquare:foursquare-android-oauth:1.1-SNAPSHOT'
+    compile 'com.foursquare:foursquare-android-oauth:1.0.2'
     compile 'com.jakewharton:disklrucache:2.0.2'
     compile 'de.hdodenhof:circleimageview:1.2.1'
     compile 'com.shamanland:fab:0.0.8'
@@ -79,7 +78,7 @@ dependencies {
     provided 'org.roboguice:roboblender:3.0.1'
     androidTestCompile 'junit:junit:4.12'
     androidTestCompile 'org.assertj:assertj-core:1.7.1'
-    androidTestCompile ('org.robolectric:robolectric:2.4') {
+    androidTestCompile('org.robolectric:robolectric:2.4') {
         exclude group: 'commons-logging', module: 'commons-logging'
         exclude group: 'org.apache.httpcomponents', module: 'httpclient'
     }
