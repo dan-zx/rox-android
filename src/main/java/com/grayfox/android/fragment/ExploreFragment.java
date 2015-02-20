@@ -1,68 +1,52 @@
 package com.grayfox.android.fragment;
 
 import android.app.ProgressDialog;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
+import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.view.PagerTabStrip;
+import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.PolylineOptions;
-
 import com.grayfox.android.R;
 import com.grayfox.android.client.RecommendationsApi;
 import com.grayfox.android.client.model.Location;
-import com.grayfox.android.client.model.Poi;
 import com.grayfox.android.client.model.Recommendation;
 import com.grayfox.android.client.task.RecommendationsByFriendsLikesAsyncTask;
-
-import com.shamanland.fab.FloatingActionButton;
 
 import roboguice.fragment.RoboFragment;
 import roboguice.inject.InjectView;
 
 import java.lang.ref.WeakReference;
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ExploreFragment extends RoboFragment {
 
-    @InjectView(R.id.search_button) private FloatingActionButton searchButton;
+    @InjectView(R.id.pager_strip) private PagerTabStrip pagerStrip;
+    @InjectView(R.id.view_pager)  private ViewPager viewPager;
 
-    private GoogleMap map;
-    private SupportMapFragment mapFragment;
+    private SwipeRouteDetailFragmentsAdapter swipeRouteDetailFragmentsAdapter;
     private ProgressDialog searchProgressDialog;
     private SearchTask searchTask;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_explore, container, false);
+        return inflater.inflate(R.layout.fragment_explore2, container, false);
     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mapFragment = SupportMapFragment.newInstance();
-        getChildFragmentManager()
-                .beginTransaction()
-                .replace(R.id.map_content, mapFragment)
-                .commit();
-        searchButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onSearch();
-            }
-        });
+        swipeRouteDetailFragmentsAdapter = new SwipeRouteDetailFragmentsAdapter();
+        viewPager.setAdapter(swipeRouteDetailFragmentsAdapter);
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-        setupMapIfNeeded();
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        onSearch();
     }
 
     @Override
@@ -74,19 +58,10 @@ public class ExploreFragment extends RoboFragment {
         }
     }
 
-    private void setupMapIfNeeded() {
-        if (map == null) {
-            map = mapFragment.getMap();
-            if (map != null) {
-                map.setMyLocationEnabled(true);
-            }
-        }
-    }
-
     private void onSearch() {
         Location location = new Location();
-        location.setLatitude(map.getCameraPosition().target.latitude);
-        location.setLongitude(map.getCameraPosition().target.longitude);
+        location.setLatitude(18.989961);
+        location.setLongitude(-98.206079);
         searchTask = new SearchTask(this);
         searchTask.transportation(RecommendationsApi.Transportation.DRIVING)
                 .radius(50_000)
@@ -99,28 +74,46 @@ public class ExploreFragment extends RoboFragment {
     }
 
     private void onRecommendationsAcquired(Recommendation[] recommendations) {
-        map.clear();
-        Log.d("TAG", Arrays.deepToString(recommendations));
-        for (Recommendation recommendation : recommendations) {
-            if (recommendation.getPoiSequence().length > 0) {
-                for (Poi poi : recommendation.getPoiSequence()) {
-                    map.addMarker(new MarkerOptions()
-                            .position(new LatLng(poi.getLocation().getLatitude(), poi.getLocation().getLongitude()))
-                            .title(poi.getName()));
-                }
-            }
-            if (recommendation.getRoutePoints().length > 0) {
-                PolylineOptions pathOptions = new PolylineOptions().color(Color.RED);
-                for (Location point : recommendation.getRoutePoints()) {
-                    pathOptions.add(new LatLng(point.getLatitude(), point.getLongitude()));
-                }
-                map.addPolyline(pathOptions);
-            }
+        if (recommendations != null) for (Recommendation recommendation : recommendations) {
+            RouteDetailFragment fragment = RouteDetailFragment.newInstance(recommendation);
+            swipeRouteDetailFragmentsAdapter.addFragment(fragment);
         }
     }
 
     private void onSearchFinally() {
         searchProgressDialog.dismiss();
+    }
+
+    private class SwipeRouteDetailFragmentsAdapter extends FragmentStatePagerAdapter {
+
+        private List<RouteDetailFragment> fragments;
+
+        private SwipeRouteDetailFragmentsAdapter() {
+            super(getChildFragmentManager());
+            fragments = new ArrayList<>();
+        }
+
+        private void addFragment(RouteDetailFragment fragment) {
+            fragments.add(fragment);
+            notifyDataSetChanged();
+        }
+
+        @Override
+        public RouteDetailFragment getItem(int position) {
+            if (!fragments.isEmpty() && position >= 0) return fragments.get(position);
+            else return null;
+        }
+
+        @Override
+        public int getCount() {
+            return fragments.size();
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            if (!fragments.isEmpty() && position >= 0) return getString(R.string.route_format, position + 1);
+            else return null;
+        }
     }
 
     private static class SearchTask extends RecommendationsByFriendsLikesAsyncTask {
