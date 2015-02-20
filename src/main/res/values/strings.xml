@@ -14,9 +14,15 @@
     <string name="foursquare_unknown_error_message_format">Unknown error: %s</string>
     <string name="register_in_progress">Registering&#8230;</string>
 
+    <!-- RouteDisplayingActivity -->
+    <string name="title_activity_route_displaying">Route</string>
+
     <!-- ExploreFragment -->
     <string name="search_in_progress">Searching&#8230;</string>
     <string name="route_format">Route %d</string>
+
+    <!-- RouteDetailFragment -->
+    <string name="action_view_in_map">View in map</string>
 
     <!-- Drawer -->
     <string name="drawer_open">Menu Opened</string>
