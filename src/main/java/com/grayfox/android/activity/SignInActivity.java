@@ -12,17 +12,18 @@ import com.foursquare.android.nativeoauth.FoursquareDenyException;
 import com.foursquare.android.nativeoauth.FoursquareOAuth;
 import com.foursquare.android.nativeoauth.FoursquareOAuthException;
 import com.foursquare.android.nativeoauth.model.AuthCodeResponse;
+
 import com.grayfox.android.R;
 import com.grayfox.android.client.task.RegisterUserAsyncTask;
 import com.grayfox.android.dao.AccessTokenDao;
+import roboguice.activity.RoboActionBarActivity;
+
+import roboguice.inject.ContentView;
+import roboguice.inject.InjectView;
 
 import java.lang.ref.WeakReference;
 
 import javax.inject.Inject;
-
-import roboguice.activity.RoboActionBarActivity;
-import roboguice.inject.ContentView;
-import roboguice.inject.InjectView;
 
 /**
  * Connects this app with Foursquare.

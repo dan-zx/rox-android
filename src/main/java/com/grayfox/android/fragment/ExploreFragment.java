@@ -13,19 +13,21 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
+
 import com.grayfox.android.R;
 import com.grayfox.android.client.RecommendationsApi;
 import com.grayfox.android.client.model.Location;
 import com.grayfox.android.client.model.Poi;
 import com.grayfox.android.client.model.Recommendation;
 import com.grayfox.android.client.task.RecommendationsByFriendsLikesAsyncTask;
-import com.shamanland.fab.FloatingActionButton;
 
-import java.lang.ref.WeakReference;
-import java.util.Arrays;
+import com.shamanland.fab.FloatingActionButton;
 
 import roboguice.fragment.RoboFragment;
 import roboguice.inject.InjectView;
+
+import java.lang.ref.WeakReference;
+import java.util.Arrays;
 
 public class ExploreFragment extends RoboFragment {
 

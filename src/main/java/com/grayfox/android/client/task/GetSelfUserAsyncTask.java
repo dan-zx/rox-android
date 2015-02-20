@@ -9,9 +9,9 @@ import com.grayfox.android.client.model.User;
 import com.grayfox.android.dao.AccessTokenDao;
 import com.grayfox.android.dao.UserDao;
 
-import javax.inject.Inject;
-
 import roboguice.util.RoboAsyncTask;
+
+import javax.inject.Inject;
 
 public abstract class GetSelfUserAsyncTask extends RoboAsyncTask<User> {
 

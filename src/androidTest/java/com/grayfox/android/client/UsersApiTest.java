@@ -1,25 +1,27 @@
 package com.grayfox.android.client;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import com.google.inject.Injector;
+
 import com.grayfox.android.client.model.User;
 import com.grayfox.android.config.ConfigModule;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
+
+import roboguice.RoboGuice;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
 import javax.inject.Inject;
-
-import roboguice.RoboGuice;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 @Config(emulateSdk = 18)
 @RunWith(RobolectricTestRunner.class)

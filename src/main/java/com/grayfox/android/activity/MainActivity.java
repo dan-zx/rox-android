@@ -25,13 +25,13 @@ import com.grayfox.android.util.Images;
 import com.grayfox.android.widget.DrawerItem;
 import com.grayfox.android.widget.DrawerItemAdapter;
 
-import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import java.util.List;
-
 import roboguice.activity.RoboActionBarActivity;
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
+
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.List;
 
 @ContentView(R.layout.activity_main)
 public class MainActivity extends RoboActionBarActivity {
@@ -39,9 +39,12 @@ public class MainActivity extends RoboActionBarActivity {
     private static final String FRAGMENT_TAG = "CURRENT_FRAGMENT";
     private static final String CURRENT_TITLE_KEY = "CURRENT_TITLE";
 
-    @InjectView(R.id.drawer_options) private ListView drawerOptions;
-    @InjectView(R.id.drawer_layout)  private DrawerLayout drawerLayout;
-    @InjectView(R.id.toolbar)        private Toolbar toolbar;
+    @InjectView(R.id.drawer_options)
+    private ListView drawerOptions;
+    @InjectView(R.id.drawer_layout)
+    private DrawerLayout drawerLayout;
+    @InjectView(R.id.toolbar)
+    private Toolbar toolbar;
 
     private int currentTitleId;
     private ActionBarDrawerToggle drawerToggle;
