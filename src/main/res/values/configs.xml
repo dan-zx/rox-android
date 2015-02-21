@@ -2,6 +2,10 @@
 <resources>
 
     <string name="foursquare_client_id">B4BRRJR2DUYMKFHJEYFUF24QXWSJKA4XGMHOELJEQOW2XTAG</string>
+    <!--
+    Release <string name="google_maps_v2_api_key">AIzaSyC0M1fZjX-VLg7E0nquzpjICZUYbofgk1c</string>
+    Debug   <string name="google_maps_v2_api_key">AIzaSyAd-aJgCw96V97fR9ljOvUZhpdA0jZOvc8</string>
+    -->
     <string name="google_maps_v2_api_key">AIzaSyAd-aJgCw96V97fR9ljOvUZhpdA0jZOvc8</string>
 
 </resources>

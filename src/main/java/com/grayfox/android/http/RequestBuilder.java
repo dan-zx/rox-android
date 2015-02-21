@@ -2,7 +2,7 @@ package com.grayfox.android.http;
 
 public abstract class RequestBuilder {
 
-    public static final int DEFAULT_TIMEOUT = 30000;
+    public static final int DEFAULT_TIMEOUT = 60_000;
 
     public static RequestBuilder newInstance(String url) {
         return new UrlConnectionRequestBuilder(url);
