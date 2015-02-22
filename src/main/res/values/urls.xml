@@ -7,7 +7,7 @@
     <string name="gf_api_host">192.168.1.123:8080/gray-fox-server</string>
     <string name="gf_api_host">10.0.2.2:8080/gray-fox-server</string>
     -->
-    <string name="gf_api_host">10.0.2.2:8080/gray-fox-server</string>
+    <string name="gf_api_host">192.168.1.123:8080/gray-fox-server</string>
     <string name="gf_api_path">api</string>
 
     <!-- App Users API -->

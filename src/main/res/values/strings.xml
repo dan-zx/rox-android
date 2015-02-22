@@ -20,9 +20,14 @@
     <!-- ExploreFragment -->
     <string name="search_in_progress">Searching&#8230;</string>
     <string name="route_format">Route %d</string>
+    <string name="waiting_location_update">Waiting for location&#8230;</string>
+    <string name="location_update_timeout">Location update timeout</string>
+    <string name="enable_location_updates">Enable location providers</string>
 
     <!-- RouteDetailFragment -->
     <string name="action_view_in_map">View in map</string>
+
+    <string name="your_location">Your location</string>
 
     <!-- Drawer -->
     <string name="drawer_open">Menu Opened</string>
