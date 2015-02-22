@@ -3,7 +3,6 @@ package com.grayfox.android.fragment;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.v4.app.FragmentStatePagerAdapter;
-import android.support.v4.view.PagerTabStrip;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +16,8 @@ import com.grayfox.android.client.model.Recommendation;
 import com.grayfox.android.client.task.RecommendationsByFriendsLikesAsyncTask;
 import com.grayfox.android.location.LocationRequester;
 
+import com.shamanland.fab.FloatingActionButton;
+
 import roboguice.fragment.RoboFragment;
 import roboguice.inject.InjectView;
 
@@ -26,8 +27,8 @@ import java.util.List;
 
 public class ExploreFragment extends RoboFragment implements LocationRequester.LocationCallback {
 
-    @InjectView(R.id.pager_strip) private PagerTabStrip pagerStrip;
-    @InjectView(R.id.view_pager)  private ViewPager viewPager;
+    @InjectView(R.id.search_button) private FloatingActionButton searchButton;
+    @InjectView(R.id.view_pager)    private ViewPager viewPager;
 
     private SwipeRouteDetailFragmentsAdapter swipeRouteDetailFragmentsAdapter;
     private ProgressDialog searchProgressDialog;
@@ -38,7 +39,7 @@ public class ExploreFragment extends RoboFragment implements LocationRequester.L
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_explore2, container, false);
+        return inflater.inflate(R.layout.fragment_explore, container, false);
     }
 
     @Override
@@ -46,6 +47,13 @@ public class ExploreFragment extends RoboFragment implements LocationRequester.L
         super.onViewCreated(view, savedInstanceState);
         swipeRouteDetailFragmentsAdapter = new SwipeRouteDetailFragmentsAdapter();
         viewPager.setAdapter(swipeRouteDetailFragmentsAdapter);
+        searchButton.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+                onRefreshSearch();
+            }
+        });
     }
 
     @Override
@@ -78,9 +86,13 @@ public class ExploreFragment extends RoboFragment implements LocationRequester.L
     }
 
     private void onRecommendationsAcquired(Recommendation[] recommendations) {
-        if (recommendations != null) for (Recommendation recommendation : recommendations) {
-            RouteDetailFragment fragment = RouteDetailFragment.newInstance(currentLocation, recommendation);
-            swipeRouteDetailFragmentsAdapter.addFragment(fragment);
+        if (recommendations != null) {
+            swipeRouteDetailFragmentsAdapter.clearFragments();
+            for (Recommendation recommendation : recommendations) {
+                RouteDetailFragment fragment = RouteDetailFragment.newInstance(currentLocation, recommendation);
+                swipeRouteDetailFragmentsAdapter.addFragment(fragment);
+            }
+            viewPager.setCurrentItem(0);
         }
     }
 
@@ -123,6 +135,11 @@ public class ExploreFragment extends RoboFragment implements LocationRequester.L
         private SwipeRouteDetailFragmentsAdapter() {
             super(getChildFragmentManager());
             fragments = new ArrayList<>();
+        }
+
+        private void clearFragments() {
+            fragments.clear();
+            notifyDataSetChanged();
         }
 
         private void addFragment(RouteDetailFragment fragment) {
