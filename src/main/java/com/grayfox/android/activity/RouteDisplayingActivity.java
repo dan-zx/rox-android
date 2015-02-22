@@ -12,11 +12,13 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 
 import com.grayfox.android.R;
+import com.grayfox.android.client.model.Location;
 import com.grayfox.android.client.model.Poi;
 import com.grayfox.android.client.model.Recommendation;
 
@@ -27,11 +29,14 @@ import roboguice.inject.ContentView;
 public class RouteDisplayingActivity extends RoboActionBarActivity implements OnMapReadyCallback {
 
     private static final String RECOMMENDATION_ARG = "RECOMMENDATION";
+    private static final String ORIGIN_LOCATION_ARG = "ORIGIN_LOCATION";
 
+    private Location origin;
     private Recommendation recommendation;
 
-    public static Intent getIntent(Context context, Recommendation recommendation) {
+    public static Intent getIntent(Context context, Location origin, Recommendation recommendation) {
         Intent intent = new Intent(context, RouteDisplayingActivity.class);
+        intent.putExtra(ORIGIN_LOCATION_ARG, origin);
         intent.putExtra(RECOMMENDATION_ARG, recommendation);
         return intent;
     }
@@ -40,6 +45,7 @@ public class RouteDisplayingActivity extends RoboActionBarActivity implements On
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        origin = (Location) getIntent().getExtras().getSerializable(ORIGIN_LOCATION_ARG);
         recommendation = (Recommendation) getIntent().getExtras().getSerializable(RECOMMENDATION_ARG);
         MapFragment mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
@@ -56,17 +62,18 @@ public class RouteDisplayingActivity extends RoboActionBarActivity implements On
             }
         }
         if (recommendation.getRoutePoints().length > 0) {
-            LatLng origin = null;
             PolylineOptions pathOptions = new PolylineOptions().color(Color.RED);
             for (int index = 0; index < recommendation.getRoutePoints().length; index++) {
-                if (index == 0) {
-                    origin = new LatLng(recommendation.getRoutePoints()[index].getLatitude(), recommendation.getRoutePoints()[index].getLongitude());
-                    pathOptions.add(origin);
-                } else pathOptions.add(new LatLng(recommendation.getRoutePoints()[index].getLatitude(), recommendation.getRoutePoints()[index].getLongitude()));
+                pathOptions.add(new LatLng(recommendation.getRoutePoints()[index].getLatitude(), recommendation.getRoutePoints()[index].getLongitude()));
             }
             googleMap.addPolyline(pathOptions);
-            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(origin, 13f));
         }
+        LatLng latLngOrigin = new LatLng(origin.getLatitude(), origin.getLongitude());
+        googleMap.addMarker(new MarkerOptions()
+                .position(latLngOrigin)
+                .title(getString(R.string.your_location))
+                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
+        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLngOrigin, 13f));
     }
 
     @Override

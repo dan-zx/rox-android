@@ -34,6 +34,7 @@ public class ExploreFragment extends RoboFragment implements LocationRequester.L
     private ProgressDialog locationUpdateProgressDialog;
     private SearchTask searchTask;
     private LocationRequester locationRequester;
+    private Location currentLocation;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -78,7 +79,7 @@ public class ExploreFragment extends RoboFragment implements LocationRequester.L
 
     private void onRecommendationsAcquired(Recommendation[] recommendations) {
         if (recommendations != null) for (Recommendation recommendation : recommendations) {
-            RouteDetailFragment fragment = RouteDetailFragment.newInstance(recommendation);
+            RouteDetailFragment fragment = RouteDetailFragment.newInstance(currentLocation, recommendation);
             swipeRouteDetailFragmentsAdapter.addFragment(fragment);
         }
     }
@@ -93,6 +94,7 @@ public class ExploreFragment extends RoboFragment implements LocationRequester.L
         Location myLocation = new Location();
         myLocation.setLatitude(location.getLatitude());
         myLocation.setLongitude(location.getLongitude());
+        currentLocation = myLocation;
         searchTask = new SearchTask(ExploreFragment.this);
         searchTask.transportation(RecommendationsApi.Transportation.DRIVING) // TODO: Hardcoded value
                 .radius(50_000) // TODO: Hardcoded value

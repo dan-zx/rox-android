@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.grayfox.android.R;
 import com.grayfox.android.activity.RouteDisplayingActivity;
+import com.grayfox.android.client.model.Location;
 import com.grayfox.android.client.model.Recommendation;
 import com.grayfox.android.widget.RecommendationAdapter;
 
@@ -22,13 +23,15 @@ import roboguice.inject.InjectView;
 public class RouteDetailFragment extends RoboFragment {
 
     private static final String RECOMMENDATION_ARG = "RECOMMENDATION";
+    private static final String ORIGIN_LOCATION_ARG = "ORIGIN_LOCATION";
 
     @InjectView(R.id.recommendation_reason) private TextView recommendationReasonView;
     @InjectView(R.id.poi_list)              private RecyclerView poiListView;
 
-    public static RouteDetailFragment newInstance(Recommendation recommendation) {
+    public static RouteDetailFragment newInstance(Location origin, Recommendation recommendation) {
         RouteDetailFragment fragment = new RouteDetailFragment();
         Bundle args = new Bundle();
+        args.putSerializable(ORIGIN_LOCATION_ARG, origin);
         args.putSerializable(RECOMMENDATION_ARG, recommendation);
         fragment.setArguments(args);
         return fragment;
@@ -57,17 +60,21 @@ public class RouteDetailFragment extends RoboFragment {
         recommendationReasonView.setText(getRecommendation().getReason());
         poiListView.setHasFixedSize(true);
         poiListView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        poiListView.setAdapter(new RecommendationAdapter(getRecommendation()));
+        poiListView.setAdapter(new RecommendationAdapter(getOriginLocation(), getRecommendation()));
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_view_in_map:
-                startActivity(RouteDisplayingActivity.getIntent(getActivity(), getRecommendation()));
+                startActivity(RouteDisplayingActivity.getIntent(getActivity(), getOriginLocation(), getRecommendation()));
                 return true;
             default: return super.onOptionsItemSelected(item);
         }
+    }
+
+    private Location getOriginLocation() {
+        return (Location) getArguments().getSerializable(ORIGIN_LOCATION_ARG);
     }
 
     private Recommendation getRecommendation() {

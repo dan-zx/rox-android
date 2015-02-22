@@ -8,13 +8,17 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.grayfox.android.R;
+import com.grayfox.android.client.model.Location;
 import com.grayfox.android.client.model.Recommendation;
+import com.grayfox.android.location.LocationGeocoder;
 
 public class RecommendationAdapter extends RecyclerView.Adapter<RecommendationAdapter.ViewHolder> {
 
+    private final Location origin;
     private final Recommendation recommendation;
 
-    public RecommendationAdapter(Recommendation recommendation) {
+    public RecommendationAdapter(Location origin, Recommendation recommendation) {
+        this.origin = origin;
         this.recommendation = recommendation;
     }
 
@@ -27,15 +31,21 @@ public class RecommendationAdapter extends RecyclerView.Adapter<RecommendationAd
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        // TODO: Fetch category icon from web
-        holder.categoryImageView.setImageResource(R.drawable.ic_generic_category);
-        holder.categoryNameView.setText(recommendation.getPoiSequence()[position].getCategories()[0].getName());
-        holder.poiNameView.setText(recommendation.getPoiSequence()[position].getName());
+        if (position == 0) {
+            holder.categoryImageView.setImageResource(R.drawable.ic_generic_category);
+            holder.categoryNameView.setText(LocationGeocoder.getAddress(holder.poiNameView.getContext(), origin));
+            holder.poiNameView.setText(R.string.your_location);
+        } else {
+            // TODO: Fetch category icon from web
+            holder.categoryImageView.setImageResource(R.drawable.ic_generic_category);
+            holder.categoryNameView.setText(recommendation.getPoiSequence()[position-1].getCategories()[0].getName());
+            holder.poiNameView.setText(recommendation.getPoiSequence()[position-1].getName());
+        }
     }
 
     @Override
     public int getItemCount() {
-        return recommendation.getPoiSequence().length;
+        return recommendation.getPoiSequence().length+1;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
