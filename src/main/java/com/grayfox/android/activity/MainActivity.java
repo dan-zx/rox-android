@@ -20,7 +20,8 @@ import android.widget.TextView;
 import com.grayfox.android.R;
 import com.grayfox.android.client.model.User;
 import com.grayfox.android.client.task.GetSelfUserAsyncTask;
-import com.grayfox.android.fragment.ExploreFragment;
+import com.grayfox.android.fragment.ExploreByFriendsLikesFragment;
+import com.grayfox.android.fragment.ExploreByLikesFragment;
 import com.grayfox.android.util.Images;
 import com.grayfox.android.widget.DrawerItem;
 import com.grayfox.android.widget.DrawerItemAdapter;
@@ -54,8 +55,8 @@ public class MainActivity extends RoboActionBarActivity {
         super.onCreate(savedInstanceState);
         setupNavigationDrawer();
         if (savedInstanceState == null) {
-            setupFragment(new ExploreFragment());
-            setTitle(R.string.drawer_explore_option);
+            setupFragment(new ExploreByLikesFragment());
+            setTitle(R.string.drawer_explore_by_your_likes_option);
         }
     }
 
@@ -117,8 +118,9 @@ public class MainActivity extends RoboActionBarActivity {
 
     private void setupDrawerMenu() {
         List<DrawerItem> drawerItems = new ArrayList<>(2);
-        drawerItems.add(new DrawerItem(R.drawable.ic_search_white_24dp, R.string.drawer_explore_option));
-        drawerItems.add(new DrawerItem(R.drawable.ic_settings_white_24dp, R.string.drawer_settings_option));
+        drawerItems.add(new DrawerItem(R.drawable.ic_person, R.string.drawer_explore_by_your_likes_option));
+        drawerItems.add(new DrawerItem(R.drawable.ic_group, R.string.drawer_explore_by_your_friends_likes_option));
+        drawerItems.add(new DrawerItem(R.drawable.ic_settings, R.string.drawer_settings_option));
         drawerOptions.setAdapter(new DrawerItemAdapter(drawerItems));
         drawerOptions.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -147,10 +149,14 @@ public class MainActivity extends RoboActionBarActivity {
                 }
                 break;
             case 1:
-                setupFragment(new ExploreFragment());
-                setTitle(R.string.drawer_explore_option);
+                setupFragment(new ExploreByLikesFragment());
+                setTitle(R.string.drawer_explore_by_your_likes_option);
                 break;
             case 2:
+                setupFragment(new ExploreByFriendsLikesFragment());
+                setTitle(R.string.drawer_explore_by_your_friends_likes_option);
+                break;
+            case 3:
                 //setupFragment(new SettingsFragment());
                 //setTitle(R.string.drawer_settings_option);
                 break;

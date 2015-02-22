@@ -32,7 +32,8 @@
     <!-- Drawer -->
     <string name="drawer_open">Menu Opened</string>
     <string name="drawer_close">Menu Closed</string>
-    <string name="drawer_explore_option">Explore</string>
+    <string name="drawer_explore_by_your_likes_option">Your likes</string>
+    <string name="drawer_explore_by_your_friends_likes_option">Your friends likes</string>
     <string name="drawer_settings_option">Settings</string>
 
     <!-- Errors -->

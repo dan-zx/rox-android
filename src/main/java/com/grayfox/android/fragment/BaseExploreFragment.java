@@ -1,19 +1,19 @@
 package com.grayfox.android.fragment;
 
-import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.view.PagerTabStrip;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.grayfox.android.R;
-import com.grayfox.android.client.RecommendationsApi;
 import com.grayfox.android.client.model.Location;
 import com.grayfox.android.client.model.Recommendation;
-import com.grayfox.android.client.task.RecommendationsByFriendsLikesAsyncTask;
 import com.grayfox.android.location.LocationRequester;
 
 import com.shamanland.fab.FloatingActionButton;
@@ -21,19 +21,18 @@ import com.shamanland.fab.FloatingActionButton;
 import roboguice.fragment.RoboFragment;
 import roboguice.inject.InjectView;
 
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ExploreFragment extends RoboFragment implements LocationRequester.LocationCallback {
+public abstract class BaseExploreFragment extends RoboFragment implements LocationRequester.LocationCallback {
 
-    @InjectView(R.id.search_button) private FloatingActionButton searchButton;
-    @InjectView(R.id.view_pager)    private ViewPager viewPager;
+    @InjectView(R.id.searching_layout) private LinearLayout searchingLayout;
+    @InjectView(R.id.searching_text)   private TextView searchingTextView;
+    @InjectView(R.id.search_button)    private FloatingActionButton searchButton;
+    @InjectView(R.id.pager_strip)      private PagerTabStrip pagerStrip;
+    @InjectView(R.id.view_pager)       private ViewPager viewPager;
 
     private SwipeRouteDetailFragmentsAdapter swipeRouteDetailFragmentsAdapter;
-    private ProgressDialog searchProgressDialog;
-    private ProgressDialog locationUpdateProgressDialog;
-    private SearchTask searchTask;
     private LocationRequester locationRequester;
     private Location currentLocation;
 
@@ -45,13 +44,16 @@ public class ExploreFragment extends RoboFragment implements LocationRequester.L
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        viewPager.setVisibility(View.GONE);
+        searchButton.setVisibility(View.VISIBLE);
+        searchingLayout.setVisibility(View.GONE);
         swipeRouteDetailFragmentsAdapter = new SwipeRouteDetailFragmentsAdapter();
         viewPager.setAdapter(swipeRouteDetailFragmentsAdapter);
         searchButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View view) {
-                onRefreshSearch();
+                onLocateUser();
             }
         });
     }
@@ -60,32 +62,57 @@ public class ExploreFragment extends RoboFragment implements LocationRequester.L
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         locationRequester = new LocationRequester(getActivity().getApplicationContext());
-        onRefreshSearch();
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        if (locationUpdateProgressDialog != null && locationUpdateProgressDialog.isShowing()) {
-            locationRequester.stopRequestingLocation();
-            locationUpdateProgressDialog.dismiss();
-        }
-        if (searchProgressDialog != null && searchProgressDialog.isShowing()) {
-            searchTask.cancel(true);
-            searchProgressDialog.dismiss();
-        }
+        locationRequester.stopRequestingLocation();
     }
 
-    private void onRefreshSearch() {
-        locationUpdateProgressDialog = ProgressDialog.show(getActivity(), null, getString(R.string.waiting_location_update), true, false);
+    private void onLocateUser() {
+        viewPager.setVisibility(View.GONE);
+        searchButton.setVisibility(View.GONE);
+        searchingLayout.setVisibility(View.VISIBLE);
+        searchingTextView.setText(R.string.waiting_location_update);
         locationRequester.requestSingle(this);
     }
 
-    private void onPreSearch() {
-        searchProgressDialog = ProgressDialog.show(getActivity(), null, getString(R.string.search_in_progress), true, false);
+    @Override
+    public void onLocationAcquired(android.location.Location location) {
+        Location myLocation = new Location();
+        myLocation.setLatitude(location.getLatitude());
+        myLocation.setLongitude(location.getLongitude());
+        currentLocation = myLocation;
     }
 
-    private void onRecommendationsAcquired(Recommendation[] recommendations) {
+    @Override
+    public void onLocationRequestTimeout() {
+        viewPager.setVisibility(View.GONE);
+        searchButton.setVisibility(View.VISIBLE);
+        searchingLayout.setVisibility(View.GONE);
+        Toast.makeText(getActivity().getApplicationContext(),
+                R.string.location_update_timeout, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onLocationProvidersDisabled() {
+        viewPager.setVisibility(View.GONE);
+        searchButton.setVisibility(View.VISIBLE);
+        searchingLayout.setVisibility(View.GONE);
+        Toast.makeText(getActivity().getApplicationContext(),
+                R.string.enable_location_updates, Toast.LENGTH_SHORT).show();
+    }
+
+    protected void onPreSearchRecommendations() {
+        viewPager.setVisibility(View.GONE);
+        searchButton.setVisibility(View.GONE);
+        searchingLayout.setVisibility(View.VISIBLE);
+        searchingTextView.setText(R.string.search_in_progress);
+    }
+
+    protected void onRecommendationsAcquired(Recommendation[] recommendations) {
+        viewPager.setVisibility(View.VISIBLE);
         if (recommendations != null) {
             swipeRouteDetailFragmentsAdapter.clearFragments();
             for (Recommendation recommendation : recommendations) {
@@ -96,36 +123,13 @@ public class ExploreFragment extends RoboFragment implements LocationRequester.L
         }
     }
 
-    private void onSearchFinally() {
-        searchProgressDialog.dismiss();
+    protected void onSearchRecommendationsFinally() {
+        searchingLayout.setVisibility(View.GONE);
+        searchButton.setVisibility(View.VISIBLE);
     }
 
-    @Override
-    public void onLocationAcquired(android.location.Location location) {
-        locationUpdateProgressDialog.dismiss();
-        Location myLocation = new Location();
-        myLocation.setLatitude(location.getLatitude());
-        myLocation.setLongitude(location.getLongitude());
-        currentLocation = myLocation;
-        searchTask = new SearchTask(ExploreFragment.this);
-        searchTask.transportation(RecommendationsApi.Transportation.DRIVING) // TODO: Hardcoded value
-                .radius(50_000) // TODO: Hardcoded value
-                .location(myLocation)
-                .request();
-    }
-
-    @Override
-    public void onLocationRequestTimeout() {
-        locationUpdateProgressDialog.dismiss();
-        Toast.makeText(getActivity().getApplicationContext(),
-                R.string.location_update_timeout, Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void onLocationProvidersDisabled() {
-        locationUpdateProgressDialog.dismiss();
-        Toast.makeText(getActivity().getApplicationContext(),
-                R.string.enable_location_updates, Toast.LENGTH_SHORT).show();
+    protected Location getCurrentLocation() {
+        return currentLocation;
     }
 
     private class SwipeRouteDetailFragmentsAdapter extends FragmentStatePagerAdapter {
@@ -160,36 +164,9 @@ public class ExploreFragment extends RoboFragment implements LocationRequester.L
 
         @Override
         public CharSequence getPageTitle(int position) {
-            if (!fragments.isEmpty() && position >= 0) return getString(R.string.route_format, position + 1);
+            if (!fragments.isEmpty() && position >= 0)
+                return getString(R.string.route_format, position + 1);
             else return null;
-        }
-    }
-
-    private static class SearchTask extends RecommendationsByFriendsLikesAsyncTask {
-
-        private WeakReference<ExploreFragment> reference;
-
-        private SearchTask(ExploreFragment fragment) {
-            super(fragment.getActivity().getApplicationContext());
-            reference = new WeakReference<>(fragment);
-        }
-
-        @Override
-        protected void onPreExecute() throws Exception {
-            ExploreFragment fragment = reference.get();
-            if (fragment != null) fragment.onPreSearch();
-        }
-
-        @Override
-        protected void onSuccess(Recommendation[] recommendations) throws Exception {
-            ExploreFragment fragment = reference.get();
-            if (fragment != null) fragment.onRecommendationsAcquired(recommendations);
-        }
-
-        @Override
-        protected void onFinally() throws RuntimeException {
-            ExploreFragment fragment = reference.get();
-            if (fragment != null) fragment.onSearchFinally();
         }
     }
 }
