@@ -22,9 +22,10 @@ import com.grayfox.android.client.model.User;
 import com.grayfox.android.client.task.GetSelfUserAsyncTask;
 import com.grayfox.android.fragment.ExploreByFriendsLikesFragment;
 import com.grayfox.android.fragment.ExploreByLikesFragment;
-import com.grayfox.android.util.Images;
 import com.grayfox.android.widget.DrawerItem;
 import com.grayfox.android.widget.DrawerItemAdapter;
+
+import com.squareup.picasso.Picasso;
 
 import roboguice.activity.RoboActionBarActivity;
 import roboguice.inject.ContentView;
@@ -169,11 +170,12 @@ public class MainActivity extends RoboActionBarActivity {
     private void onGetSelfUserSuccess(User user) {
         this.user = user;
         if (user != null) {
-            userNameText.setText(new StringBuilder().append(user.getName()).append(" ").append(user.getLastName()));
-            new Images.ImageLoader(this)
-                    .setImageView(userPicture)
-                    .setLoadingResourceImageId(R.drawable.ic_contact_picture)
-                    .execute(user.getPhotoUrl());
+            String userFullName = user.getLastName() == null || user.getLastName().trim().isEmpty() ? user.getName() : new StringBuilder().append(user.getName()).append(" ").append(user.getLastName()).toString();
+            userNameText.setText(userFullName);
+            Picasso.with(this)
+                    .load(user.getPhotoUrl())
+                    .placeholder(R.drawable.ic_contact_picture)
+                    .into(userPicture);
         }
     }
 

@@ -79,7 +79,7 @@ dependencies {
     compile 'de.hdodenhof:circleimageview:1.2.1'
     compile 'com.google.android.gms:play-services-maps:6.5.87'
     compile 'com.foursquare:foursquare-android-oauth:1.0.2'
-    compile 'com.jakewharton:disklrucache:2.0.2'
+    compile 'com.squareup.picasso:picasso:2.5.0'
     compile 'com.google.code.gson:gson:2.3.1'
     compile "org.roboguice:roboguice:${roboguiceVersion}"
     provided "org.roboguice:roboblender:${roboguiceVersion}"
