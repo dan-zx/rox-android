@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Gray Fox</string>
+    <string name="app_name" translatable="false">Gray Fox</string>
 
     <!-- SignInActivity -->
     <string name="title_activity_sign_in">Connect to Foursquare</string>
     <string name="label_connect_to_foursquare">CONNECT TO</string>
-    <string name="connected_to_foursquare">Hey looks like you’re connected to Foursquare!</string>
     <string name="foursquare_not_installed_message">To do this, you’ll need the latest version of Foursquare installed</string>
     <string name="foursquare_auth_canceled">Authentication canceled</string>
     <string name="foursquare_auth_denied">Authentication denied</string>
@@ -30,8 +29,8 @@
     <string name="your_location">Your location</string>
 
     <!-- Drawer -->
-    <string name="drawer_open">Menu Opened</string>
-    <string name="drawer_close">Menu Closed</string>
+    <string name="drawer_open">Menu opened</string>
+    <string name="drawer_close">Menu closed</string>
     <string name="drawer_explore_by_your_likes_option">Your likes</string>
     <string name="drawer_explore_by_your_friends_likes_option">Your friends likes</string>
     <string name="drawer_settings_option">Settings</string>

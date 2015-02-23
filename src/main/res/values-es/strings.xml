@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- SignInActivity -->
+    <string name="title_activity_sign_in">Conectarse a Foursquare</string>
+    <string name="label_connect_to_foursquare">CONECTARSE A</string>
+    <string name="foursquare_not_installed_message">Para hacer esto, necesitas la última versión de Foursquare instalada</string>
+    <string name="foursquare_auth_canceled">Autenticación cancelada</string>
+    <string name="foursquare_auth_denied">Autenticación denagada</string>
+    <string name="foursquare_oauth_error_message_format">Error de autenticación: %1$s [%2$s]</string>
+    <string name="foursquare_unknown_error_message_format">Error desconocido: %s</string>
+    <string name="register_in_progress">Registrando&#8230;</string>
+
+    <!-- RouteDisplayingActivity -->
+    <string name="title_activity_route_displaying">Ruta</string>
+
+    <!-- ExploreFragment -->
+    <string name="search_in_progress">Buscando&#8230;</string>
+    <string name="route_format">Ruta %d</string>
+    <string name="waiting_location_update">Esperando ubicación&#8230;</string>
+    <string name="location_update_timeout">Tiempo de espera de ubicación agotado</string>
+    <string name="enable_location_updates">Activa los servicios de ubicación primero</string>
+
+    <!-- RouteDetailFragment -->
+    <string name="action_view_in_map">Ver en map</string>
+
+    <string name="your_location">Tu ubicación</string>
+
+    <!-- Drawer -->
+    <string name="drawer_open">Menú abierto</string>
+    <string name="drawer_close">Menú cerrado</string>
+    <string name="drawer_explore_by_your_likes_option">Tus gustos</string>
+    <string name="drawer_explore_by_your_friends_likes_option">Los gustos de tus amigos</string>
+    <string name="drawer_settings_option">Configuración</string>
+
+    <!-- Errors -->
+    <string name="network_unavailable">Una conexión estable es necesaria para hacer la petición</string>
+    <string name="network_request_error">Petición no satisfactoria. Intente de nuevo</string>
+    <string name="grayfox_api_request_error">Respuesta errona del servidor. Intente de nuevo</string>
+
+</resources>
