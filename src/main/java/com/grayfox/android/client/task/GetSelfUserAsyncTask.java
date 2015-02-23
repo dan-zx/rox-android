@@ -9,17 +9,13 @@ import com.grayfox.android.client.model.User;
 import com.grayfox.android.dao.AccessTokenDao;
 import com.grayfox.android.dao.UserDao;
 
-import roboguice.util.RoboAsyncTask;
-
 import javax.inject.Inject;
 
-public abstract class GetSelfUserAsyncTask extends RoboAsyncTask<User> {
+public abstract class GetSelfUserAsyncTask extends BaseAsyncTask<User> {
 
     @Inject private AccessTokenDao accessTokenDao;
     @Inject private UsersApi usersApi;
     @Inject private UserDao userDao;
-
-    private boolean isActive;
 
     @Inject
     protected GetSelfUserAsyncTask(Context context) {
@@ -38,34 +34,9 @@ public abstract class GetSelfUserAsyncTask extends RoboAsyncTask<User> {
         return userDao.fetchCurrent();
     }
 
-    @Override
-    public void execute() {
-        isActive = true;
-        super.execute();
-    }
-
-    @Override
-    protected void onSuccess(User user) throws Exception {
-        isActive = false;
-    }
-
-    @Override
-    protected void onException(Exception e) throws RuntimeException {
-        isActive = false;
-    }
-
-    @Override
-    protected void onFinally() throws RuntimeException {
-        isActive = false;
-    }
-
     private boolean isConnected() {
         ConnectivityManager connectivityManager = (ConnectivityManager) getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo netInfo = connectivityManager.getActiveNetworkInfo();
         return netInfo != null && netInfo.isConnectedOrConnecting();
-    }
-
-    public boolean isActive() {
-        return isActive;
     }
 }
