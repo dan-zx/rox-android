@@ -11,7 +11,7 @@ public class LocationRequester {
 
     private static final long TIMEOUT = 60_000;
 
-    private boolean isCanceled;
+    private boolean isStopped;
     private LocationManager locationManager;
     private SingleLocationRequestListener locationListener;
     private LocationCallback callback;
@@ -19,43 +19,48 @@ public class LocationRequester {
     public LocationRequester(Context context) {
         locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
         locationListener = new SingleLocationRequestListener();
+        isStopped = true;
     }
 
     public void requestSingle(final LocationCallback callback) {
         this.callback = callback;
         if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-            isCanceled = false;
+            isStopped = false;
             locationManager.requestSingleUpdate(LocationManager.GPS_PROVIDER, locationListener, null);
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    if (!isCanceled) {
+                    if (!isStopped) {
                         stopRequestingLocation();
                         callback.onLocationRequestTimeout();
                     }
                 }
             }, TIMEOUT);
         } else if (locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
-            isCanceled = false;
+            isStopped = false;
             locationManager.requestSingleUpdate(LocationManager.NETWORK_PROVIDER, locationListener, null);
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    if (!isCanceled) {
+                    if (!isStopped) {
                         stopRequestingLocation();
                         callback.onLocationRequestTimeout();
                     }
                 }
             }, TIMEOUT);
         } else {
-            isCanceled = true;
+            isStopped = true;
             callback.onLocationProvidersDisabled();
         }
     }
 
     public void stopRequestingLocation() {
-        isCanceled = true;
+        isStopped = true;
         locationManager.removeUpdates(locationListener);
+    }
+
+    public boolean isStopped() {
+        return isStopped;
     }
 
     private class SingleLocationRequestListener implements LocationListener {

@@ -19,6 +19,8 @@ public abstract class GetSelfUserAsyncTask extends RoboAsyncTask<User> {
     @Inject private UsersApi usersApi;
     @Inject private UserDao userDao;
 
+    private boolean isActive;
+
     @Inject
     protected GetSelfUserAsyncTask(Context context) {
         super(context);
@@ -36,9 +38,34 @@ public abstract class GetSelfUserAsyncTask extends RoboAsyncTask<User> {
         return userDao.fetchCurrent();
     }
 
+    @Override
+    public void execute() {
+        isActive = true;
+        super.execute();
+    }
+
+    @Override
+    protected void onSuccess(User user) throws Exception {
+        isActive = false;
+    }
+
+    @Override
+    protected void onException(Exception e) throws RuntimeException {
+        isActive = false;
+    }
+
+    @Override
+    protected void onFinally() throws RuntimeException {
+        isActive = false;
+    }
+
     private boolean isConnected() {
         ConnectivityManager connectivityManager = (ConnectivityManager) getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo netInfo = connectivityManager.getActiveNetworkInfo();
         return netInfo != null && netInfo.isConnectedOrConnecting();
+    }
+
+    public boolean isActive() {
+        return isActive;
     }
 }

@@ -35,7 +35,14 @@ public abstract class BaseExploreFragment extends RoboFragment implements Locati
 
     private SwipeRouteDetailFragmentsAdapter swipeRouteDetailFragmentsAdapter;
     private LocationRequester locationRequester;
-    private Location currentLocation;
+    private Location lastLocation;
+    private Recommendation[] lastRecommendations;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setRetainInstance(true);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -45,10 +52,6 @@ public abstract class BaseExploreFragment extends RoboFragment implements Locati
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        viewPager.setVisibility(View.GONE);
-        pagerStrip.setVisibility(View.GONE);
-        searchButton.setVisibility(View.VISIBLE);
-        searchingLayout.setVisibility(View.GONE);
         swipeRouteDetailFragmentsAdapter = new SwipeRouteDetailFragmentsAdapter();
         viewPager.setAdapter(swipeRouteDetailFragmentsAdapter);
         pagerStrip.setViewPager(viewPager);
@@ -56,29 +59,44 @@ public abstract class BaseExploreFragment extends RoboFragment implements Locati
 
             @Override
             public void onClick(View view) {
+                onPreLocateUser();
                 onLocateUser();
             }
         });
+        if (savedInstanceState == null) {
+            viewPager.setVisibility(View.GONE);
+            pagerStrip.setVisibility(View.GONE);
+            searchButton.setVisibility(View.VISIBLE);
+            searchingLayout.setVisibility(View.GONE);
+        } else onRestoreInstanceState();
     }
+
+    private void onRestoreInstanceState() {
+        if (getLocationRequester() != null && !getLocationRequester().isStopped()) onPreLocateUser();
+        else onChildRestoreInstanceState();
+    }
+
+    protected abstract void onChildRestoreInstanceState();
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        locationRequester = new LocationRequester(getActivity().getApplicationContext());
+        if (savedInstanceState == null) {
+            locationRequester = new LocationRequester(getActivity().getApplicationContext());
+            onPreLocateUser();
+            onLocateUser();
+        }
     }
 
-    @Override
-    public void onPause() {
-        super.onPause();
-        locationRequester.stopRequestingLocation();
-    }
-
-    private void onLocateUser() {
+    protected void onPreLocateUser() {
         viewPager.setVisibility(View.GONE);
         pagerStrip.setVisibility(View.GONE);
         searchButton.setVisibility(View.GONE);
         searchingLayout.setVisibility(View.VISIBLE);
         searchingTextView.setText(R.string.waiting_location_update);
+    }
+
+    protected void onLocateUser() {
         locationRequester.requestSingle(this);
     }
 
@@ -87,7 +105,7 @@ public abstract class BaseExploreFragment extends RoboFragment implements Locati
         Location myLocation = new Location();
         myLocation.setLatitude(location.getLatitude());
         myLocation.setLongitude(location.getLongitude());
-        currentLocation = myLocation;
+        lastLocation = myLocation;
     }
 
     @Override
@@ -119,12 +137,13 @@ public abstract class BaseExploreFragment extends RoboFragment implements Locati
     }
 
     protected void onRecommendationsAcquired(Recommendation[] recommendations) {
+        this.lastRecommendations = recommendations;
         viewPager.setVisibility(View.VISIBLE);
         pagerStrip.setVisibility(View.VISIBLE);
         if (recommendations != null) {
             swipeRouteDetailFragmentsAdapter.clearFragments();
             for (Recommendation recommendation : recommendations) {
-                RouteDetailFragment fragment = RouteDetailFragment.newInstance(currentLocation, recommendation);
+                RouteDetailFragment fragment = RouteDetailFragment.newInstance(lastLocation, recommendation);
                 swipeRouteDetailFragmentsAdapter.addFragment(fragment);
             }
             viewPager.setCurrentItem(0);
@@ -136,8 +155,16 @@ public abstract class BaseExploreFragment extends RoboFragment implements Locati
         searchButton.setVisibility(View.VISIBLE);
     }
 
-    protected Location getCurrentLocation() {
-        return currentLocation;
+    protected Location getLastLocation() {
+        return lastLocation;
+    }
+
+    protected Recommendation[] getLastRecommendations() {
+        return lastRecommendations;
+    }
+
+    protected LocationRequester getLocationRequester() {
+        return locationRequester;
     }
 
     private class SwipeRouteDetailFragmentsAdapter extends FragmentPagerAdapter {

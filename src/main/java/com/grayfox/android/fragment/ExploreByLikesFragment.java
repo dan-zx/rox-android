@@ -14,9 +14,12 @@ public class ExploreByLikesFragment extends BaseExploreFragment {
     private SearchTask searchTask;
 
     @Override
-    public void onPause() {
-        super.onPause();
-        if (searchTask != null) searchTask.cancel(true);
+    protected void onChildRestoreInstanceState() {
+        if (searchTask != null && searchTask.isActive()) onPreSearchRecommendations();
+        else if (getLastRecommendations() != null) {
+            onRecommendationsAcquired(getLastRecommendations());
+            onSearchRecommendationsFinally();
+        }
     }
 
     @Override
@@ -25,7 +28,7 @@ public class ExploreByLikesFragment extends BaseExploreFragment {
         searchTask = new SearchTask(this);
         searchTask.transportation(RecommendationsApi.Transportation.DRIVING) // TODO: Hardcoded value
                 .radius(50_000) // TODO: Hardcoded value
-                .location(getCurrentLocation())
+                .location(getLastLocation())
                 .request();
     }
 
@@ -40,18 +43,21 @@ public class ExploreByLikesFragment extends BaseExploreFragment {
 
         @Override
         protected void onPreExecute() throws Exception {
+            super.onPreExecute();
             ExploreByLikesFragment fragment = reference.get();
             if (fragment != null) fragment.onPreSearchRecommendations();
         }
 
         @Override
         protected void onSuccess(Recommendation[] recommendations) throws Exception {
+            super.onSuccess(recommendations);
             ExploreByLikesFragment fragment = reference.get();
             if (fragment != null) fragment.onRecommendationsAcquired(recommendations);
         }
 
         @Override
         protected void onFinally() throws RuntimeException {
+            super.onFinally();
             ExploreByLikesFragment fragment = reference.get();
             if (fragment != null) fragment.onSearchRecommendationsFinally();
         }

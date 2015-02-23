@@ -143,18 +143,21 @@ public class SignInActivity extends RoboActionBarActivity {
 
         @Override
         protected void onPreExecute() throws Exception {
+            super.onPreExecute();
             SignInActivity activity = reference.get();
             if (activity != null) activity.onPreRegister();
         }
 
         @Override
         protected void onSuccess(Void nothing) throws Exception {
+            super.onSuccess(nothing);
             SignInActivity activity = reference.get();
             if (activity != null) activity.onRegisterSuccess();
         }
 
         @Override
         protected void onFinally() throws RuntimeException {
+            super.onFinally();
             SignInActivity activity = reference.get();
             if (activity != null) activity.onRegisterFinally();
         }

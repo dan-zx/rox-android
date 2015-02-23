@@ -149,10 +149,12 @@ public class MainActivity extends RoboActionBarActivity {
                 }
                 break;
             case 1:
+                supportInvalidateOptionsMenu();
                 setupFragment(new ExploreByLikesFragment());
                 setTitle(R.string.drawer_explore_by_your_likes_option);
                 break;
             case 2:
+                supportInvalidateOptionsMenu();
                 setupFragment(new ExploreByFriendsLikesFragment());
                 setTitle(R.string.drawer_explore_by_your_friends_likes_option);
                 break;
@@ -186,6 +188,7 @@ public class MainActivity extends RoboActionBarActivity {
 
         @Override
         protected void onSuccess(User user) throws Exception {
+            super.onSuccess(user);
             MainActivity activity = reference.get();
             if (activity != null) activity.onGetSelfUserSuccess(user);
         }
