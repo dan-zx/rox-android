@@ -19,7 +19,7 @@ public class ExploreByLikesFragment extends BaseExploreFragment {
         else if (getLastRecommendations() != null) {
             onRecommendationsAcquired(getLastRecommendations());
             onSearchRecommendationsFinally();
-        }
+        } else onPrepareForSearch();
     }
 
     @Override
@@ -30,6 +30,12 @@ public class ExploreByLikesFragment extends BaseExploreFragment {
                 .radius(50_000) // TODO: Hardcoded value
                 .location(getLastLocation())
                 .request();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (searchTask != null) searchTask.cancel(true);
     }
 
     private static class SearchTask extends RecommendationsByLikesAsyncTask {

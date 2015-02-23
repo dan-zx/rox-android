@@ -88,6 +88,12 @@ public abstract class BaseExploreFragment extends RoboFragment implements Locati
         }
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        locationRequester.stopRequestingLocation();
+    }
+
     protected void onPreLocateUser() {
         viewPager.setVisibility(View.GONE);
         pagerStrip.setVisibility(View.GONE);
@@ -151,6 +157,13 @@ public abstract class BaseExploreFragment extends RoboFragment implements Locati
     }
 
     protected void onSearchRecommendationsFinally() {
+        searchingLayout.setVisibility(View.GONE);
+        searchButton.setVisibility(View.VISIBLE);
+    }
+
+    protected void onPrepareForSearch() {
+        viewPager.setVisibility(View.GONE);
+        pagerStrip.setVisibility(View.GONE);
         searchingLayout.setVisibility(View.GONE);
         searchButton.setVisibility(View.VISIBLE);
     }
