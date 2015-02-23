@@ -2,4 +2,5 @@
 <resources>
     <color name="primary_color">#222222</color>
     <color name="primary_dark_color">#000000</color>
+    <color name="tab_text_color">#FFFFFF</color>
 </resources>

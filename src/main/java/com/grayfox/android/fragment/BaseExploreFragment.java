@@ -1,8 +1,7 @@
 package com.grayfox.android.fragment;
 
 import android.os.Bundle;
-import android.support.v4.app.FragmentStatePagerAdapter;
-import android.support.v4.view.PagerTabStrip;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,12 +10,14 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.astuetz.PagerSlidingTabStrip;
+
+import com.getbase.floatingactionbutton.FloatingActionButton;
+
 import com.grayfox.android.R;
 import com.grayfox.android.client.model.Location;
 import com.grayfox.android.client.model.Recommendation;
 import com.grayfox.android.location.LocationRequester;
-
-import com.shamanland.fab.FloatingActionButton;
 
 import roboguice.fragment.RoboFragment;
 import roboguice.inject.InjectView;
@@ -29,7 +30,7 @@ public abstract class BaseExploreFragment extends RoboFragment implements Locati
     @InjectView(R.id.searching_layout) private LinearLayout searchingLayout;
     @InjectView(R.id.searching_text)   private TextView searchingTextView;
     @InjectView(R.id.search_button)    private FloatingActionButton searchButton;
-    @InjectView(R.id.pager_strip)      private PagerTabStrip pagerStrip;
+    @InjectView(R.id.pager_strip)      private PagerSlidingTabStrip pagerStrip;
     @InjectView(R.id.view_pager)       private ViewPager viewPager;
 
     private SwipeRouteDetailFragmentsAdapter swipeRouteDetailFragmentsAdapter;
@@ -45,10 +46,12 @@ public abstract class BaseExploreFragment extends RoboFragment implements Locati
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         viewPager.setVisibility(View.GONE);
+        pagerStrip.setVisibility(View.GONE);
         searchButton.setVisibility(View.VISIBLE);
         searchingLayout.setVisibility(View.GONE);
         swipeRouteDetailFragmentsAdapter = new SwipeRouteDetailFragmentsAdapter();
         viewPager.setAdapter(swipeRouteDetailFragmentsAdapter);
+        pagerStrip.setViewPager(viewPager);
         searchButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -72,6 +75,7 @@ public abstract class BaseExploreFragment extends RoboFragment implements Locati
 
     private void onLocateUser() {
         viewPager.setVisibility(View.GONE);
+        pagerStrip.setVisibility(View.GONE);
         searchButton.setVisibility(View.GONE);
         searchingLayout.setVisibility(View.VISIBLE);
         searchingTextView.setText(R.string.waiting_location_update);
@@ -89,6 +93,7 @@ public abstract class BaseExploreFragment extends RoboFragment implements Locati
     @Override
     public void onLocationRequestTimeout() {
         viewPager.setVisibility(View.GONE);
+        pagerStrip.setVisibility(View.GONE);
         searchButton.setVisibility(View.VISIBLE);
         searchingLayout.setVisibility(View.GONE);
         Toast.makeText(getActivity().getApplicationContext(),
@@ -98,6 +103,7 @@ public abstract class BaseExploreFragment extends RoboFragment implements Locati
     @Override
     public void onLocationProvidersDisabled() {
         viewPager.setVisibility(View.GONE);
+        pagerStrip.setVisibility(View.GONE);
         searchButton.setVisibility(View.VISIBLE);
         searchingLayout.setVisibility(View.GONE);
         Toast.makeText(getActivity().getApplicationContext(),
@@ -106,6 +112,7 @@ public abstract class BaseExploreFragment extends RoboFragment implements Locati
 
     protected void onPreSearchRecommendations() {
         viewPager.setVisibility(View.GONE);
+        pagerStrip.setVisibility(View.GONE);
         searchButton.setVisibility(View.GONE);
         searchingLayout.setVisibility(View.VISIBLE);
         searchingTextView.setText(R.string.search_in_progress);
@@ -113,6 +120,7 @@ public abstract class BaseExploreFragment extends RoboFragment implements Locati
 
     protected void onRecommendationsAcquired(Recommendation[] recommendations) {
         viewPager.setVisibility(View.VISIBLE);
+        pagerStrip.setVisibility(View.VISIBLE);
         if (recommendations != null) {
             swipeRouteDetailFragmentsAdapter.clearFragments();
             for (Recommendation recommendation : recommendations) {
@@ -132,7 +140,7 @@ public abstract class BaseExploreFragment extends RoboFragment implements Locati
         return currentLocation;
     }
 
-    private class SwipeRouteDetailFragmentsAdapter extends FragmentStatePagerAdapter {
+    private class SwipeRouteDetailFragmentsAdapter extends FragmentPagerAdapter {
 
         private List<RouteDetailFragment> fragments;
 
