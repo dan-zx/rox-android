@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <string name="app_name" translatable="false">Gray Fox</string>
 
     <!-- SignInActivity -->
@@ -39,5 +38,4 @@
     <string name="network_unavailable">A stable connection is required to perform request</string>
     <string name="network_request_error">Request unsuccessful. Try again</string>
     <string name="grayfox_api_request_error">Wrong server response. Try again</string>
-
 </resources>

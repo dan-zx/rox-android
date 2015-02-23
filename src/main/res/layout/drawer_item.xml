@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
     <TextView
         android:id="@+id/item_text"
@@ -13,7 +13,7 @@
         android:layout_marginTop="15dp"
         android:drawablePadding="20dp"
         android:gravity="center_vertical"
-        android:textAppearance="?android:attr/textAppearanceMediumInverse" />
+        android:textAppearance="?android:attr/textAppearanceMediumInverse"/>
 
     <View
         android:id="@+id/divider"
@@ -22,5 +22,5 @@
         android:layout_alignLeft="@id/item_text"
         android:layout_alignRight="@id/item_text"
         android:layout_below="@id/item_text"
-        android:background="#3E3E3E" />
+        android:background="#3E3E3E"/>
 </RelativeLayout>

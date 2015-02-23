@@ -4,7 +4,6 @@ import android.location.Location;
 
 import com.grayfox.android.client.RecommendationsApi;
 import com.grayfox.android.client.model.Recommendation;
-import com.grayfox.android.client.task.RecommendationsByFriendsLikesAsyncTask;
 import com.grayfox.android.client.task.RecommendationsByLikesAsyncTask;
 
 import java.lang.ref.WeakReference;

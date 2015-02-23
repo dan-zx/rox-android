@@ -15,7 +15,7 @@
         android:id="@+id/view_pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/pager_strip" />
+        android:layout_below="@id/pager_strip"/>
 
     <com.getbase.floatingactionbutton.FloatingActionButton
         android:id="@+id/search_button"
@@ -26,7 +26,7 @@
         android:layout_margin="16dp"
         fab:fab_colorNormal="@color/primary_color"
         fab:fab_colorPressed="@color/primary_dark_color"
-        fab:fab_icon="@drawable/ic_search" />
+        fab:fab_icon="@drawable/ic_search"/>
 
     <LinearLayout
         android:id="@+id/searching_layout"

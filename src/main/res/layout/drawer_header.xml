@@ -14,7 +14,6 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="35dp"
-        android:src="@drawable/ic_contact_picture"
         circle_image_view:border_color="#FFFFFF"
         circle_image_view:border_width="1dp" />
 

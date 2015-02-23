@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <string name="foursquare_client_id" translatable="false">B4BRRJR2DUYMKFHJEYFUF24QXWSJKA4XGMHOELJEQOW2XTAG</string>
     <!--
-    Release <string name="google_maps_v2_api_key">AIzaSyC0M1fZjX-VLg7E0nquzpjICZUYbofgk1c</string>
-    Debug   <string name="google_maps_v2_api_key">AIzaSyAd-aJgCw96V97fR9ljOvUZhpdA0jZOvc8</string>
+    Release AIzaSyC0M1fZjX-VLg7E0nquzpjICZUYbofgk1c
+    Debug   AIzaSyAd-aJgCw96V97fR9ljOvUZhpdA0jZOvc8
     -->
     <string name="google_maps_v2_api_key" translatable="false">AIzaSyAd-aJgCw96V97fR9ljOvUZhpdA0jZOvc8</string>
-
 </resources>

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <!-- SignInActivity -->
     <string name="title_activity_sign_in">Conectarse a Foursquare</string>
     <string name="label_connect_to_foursquare">CONECTARSE A</string>
@@ -37,5 +36,4 @@
     <string name="network_unavailable">Una conexión estable es necesaria para hacer la petición</string>
     <string name="network_request_error">Petición no satisfactoria. Intente de nuevo</string>
     <string name="grayfox_api_request_error">Respuesta errona del servidor. Intente de nuevo</string>
-
 </resources>

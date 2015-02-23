@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <string name="gf_api_host_scheme" translatable="false">http</string>
     <!--
-    <string name="gf_api_host">gray-fox.herokuapp.com</string>
-    <string name="gf_api_host">192.168.1.123:8080/gray-fox-server</string>
-    <string name="gf_api_host">10.0.2.2:8080/gray-fox-server</string>
+    gray-fox.herokuapp.com
+    192.168.1.123:8080/gray-fox-server
+    10.0.2.2:8080/gray-fox-server
     -->
-    <string name="gf_api_host" translatable="false">gray-fox.herokuapp.com</string>
+    <string name="gf_api_host" translatable="false">192.168.1.123:8080/gray-fox-server</string>
     <string name="gf_api_path" translatable="false">api</string>
 
     <!-- App Users API -->
@@ -19,5 +18,4 @@
     <string name="gf_api_recommendations_path" translatable="false">recommendations</string>
     <string name="gf_api_recommendations_by_likes_path" translatable="false">bylikes</string>
     <string name="gf_api_recommendations_by_friends_likes_path" translatable="false">byfriendslikes</string>
-
 </resources>

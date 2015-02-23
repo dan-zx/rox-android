@@ -1,6 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <string name="access_token_key" translatable="false">ACCESS_TOKEN</string>
-
 </resources>
