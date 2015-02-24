@@ -12,6 +12,8 @@ import com.grayfox.android.client.model.Location;
 import com.grayfox.android.client.model.Recommendation;
 import com.grayfox.android.location.LocationGeocoder;
 
+import com.squareup.picasso.Picasso;
+
 public class RecommendationAdapter extends RecyclerView.Adapter<RecommendationAdapter.ViewHolder> {
 
     private final Location origin;
@@ -36,8 +38,10 @@ public class RecommendationAdapter extends RecyclerView.Adapter<RecommendationAd
             holder.categoryNameView.setText(LocationGeocoder.getAddress(holder.poiNameView.getContext(), origin));
             holder.poiNameView.setText(R.string.your_location);
         } else {
-            // TODO: Fetch category icon from web
-            holder.categoryImageView.setImageResource(R.drawable.ic_generic_category);
+            Picasso.with(holder.categoryImageView.getContext())
+                    .load(recommendation.getPoiSequence()[position-1].getCategories()[0].getIconUrl())
+                    .placeholder(R.drawable.ic_generic_category)
+                    .into(holder.categoryImageView);
             holder.categoryNameView.setText(recommendation.getPoiSequence()[position-1].getCategories()[0].getName());
             holder.poiNameView.setText(recommendation.getPoiSequence()[position-1].getName());
         }
