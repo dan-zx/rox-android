@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="?attr/colorPrimary"
-        android:textColorPrimary="@color/tab_text_color"/>
+        android:textColorPrimary="@android:color/white"/>
 
     <android.support.v4.view.ViewPager
         android:id="@+id/view_pager"
@@ -24,8 +24,8 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:layout_margin="16dp"
-        fab:fab_colorNormal="@color/primary_color"
-        fab:fab_colorPressed="@color/primary_dark_color"
+        fab:fab_colorNormal="@color/accent"
+        fab:fab_colorPressed="@color/accent_dark"
         fab:fab_icon="@drawable/ic_search"/>
 
     <LinearLayout

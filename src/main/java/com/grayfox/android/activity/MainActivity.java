@@ -100,7 +100,7 @@ public class MainActivity extends RoboActionBarActivity {
     private void setupNavigationDrawer() {
         drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.drawer_open, R.string.drawer_close);
         drawerLayout.setDrawerShadow(R.drawable.drawer_shadow, Gravity.START);
-        drawerLayout.setStatusBarBackground(R.color.primary_dark_color);
+        drawerLayout.setStatusBarBackground(R.color.primary_dark);
         drawerLayout.setDrawerListener(drawerToggle);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);

@@ -15,7 +15,7 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/primary_color"
+            android:background="@color/primary"
             android:minHeight="?attr/actionBarSize"/>
 
         <FrameLayout
@@ -36,7 +36,7 @@
             android:id="@+id/drawer_options"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/primary_color"
+            android:background="#212121"
             android:choiceMode="singleChoice"
             android:divider="@android:color/transparent"/>
     </com.grayfox.android.widget.ScrimInsetsFrameLayout>
