@@ -18,7 +18,7 @@
         android:layout_below="@id/pager_strip"/>
 
     <com.getbase.floatingactionbutton.FloatingActionButton
-        android:id="@+id/search_button"
+        android:id="@+id/refresh_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
@@ -26,7 +26,7 @@
         android:layout_margin="16dp"
         fab:fab_colorNormal="@color/accent"
         fab:fab_colorPressed="@color/accent_dark"
-        fab:fab_icon="@drawable/ic_search"/>
+        fab:fab_icon="@drawable/ic_refresh"/>
 
     <LinearLayout
         android:id="@+id/searching_layout"

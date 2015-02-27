@@ -29,7 +29,7 @@ public abstract class BaseExploreFragment extends RoboFragment implements Locati
 
     @InjectView(R.id.searching_layout) private LinearLayout searchingLayout;
     @InjectView(R.id.searching_text)   private TextView searchingTextView;
-    @InjectView(R.id.search_button)    private FloatingActionButton searchButton;
+    @InjectView(R.id.refresh_button)   private FloatingActionButton refreshButton;
     @InjectView(R.id.pager_strip)      private PagerSlidingTabStrip pagerStrip;
     @InjectView(R.id.view_pager)       private ViewPager viewPager;
 
@@ -55,7 +55,7 @@ public abstract class BaseExploreFragment extends RoboFragment implements Locati
         swipeRouteDetailFragmentsAdapter = new SwipeRouteDetailFragmentsAdapter();
         viewPager.setAdapter(swipeRouteDetailFragmentsAdapter);
         pagerStrip.setViewPager(viewPager);
-        searchButton.setOnClickListener(new View.OnClickListener() {
+        refreshButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View view) {
@@ -66,7 +66,7 @@ public abstract class BaseExploreFragment extends RoboFragment implements Locati
         if (savedInstanceState == null) {
             viewPager.setVisibility(View.GONE);
             pagerStrip.setVisibility(View.GONE);
-            searchButton.setVisibility(View.VISIBLE);
+            refreshButton.setVisibility(View.VISIBLE);
             searchingLayout.setVisibility(View.GONE);
         } else onRestoreInstanceState();
     }
@@ -97,7 +97,7 @@ public abstract class BaseExploreFragment extends RoboFragment implements Locati
     protected void onPreLocateUser() {
         viewPager.setVisibility(View.GONE);
         pagerStrip.setVisibility(View.GONE);
-        searchButton.setVisibility(View.GONE);
+        refreshButton.setVisibility(View.GONE);
         searchingLayout.setVisibility(View.VISIBLE);
         searchingTextView.setText(R.string.waiting_location_update);
     }
@@ -118,7 +118,7 @@ public abstract class BaseExploreFragment extends RoboFragment implements Locati
     public void onLocationRequestTimeout() {
         viewPager.setVisibility(View.GONE);
         pagerStrip.setVisibility(View.GONE);
-        searchButton.setVisibility(View.VISIBLE);
+        refreshButton.setVisibility(View.VISIBLE);
         searchingLayout.setVisibility(View.GONE);
         Toast.makeText(getActivity().getApplicationContext(),
                 R.string.location_update_timeout, Toast.LENGTH_SHORT).show();
@@ -128,7 +128,7 @@ public abstract class BaseExploreFragment extends RoboFragment implements Locati
     public void onLocationProvidersDisabled() {
         viewPager.setVisibility(View.GONE);
         pagerStrip.setVisibility(View.GONE);
-        searchButton.setVisibility(View.VISIBLE);
+        refreshButton.setVisibility(View.VISIBLE);
         searchingLayout.setVisibility(View.GONE);
         Toast.makeText(getActivity().getApplicationContext(),
                 R.string.enable_location_updates, Toast.LENGTH_SHORT).show();
@@ -137,7 +137,7 @@ public abstract class BaseExploreFragment extends RoboFragment implements Locati
     protected void onPreSearchRecommendations() {
         viewPager.setVisibility(View.GONE);
         pagerStrip.setVisibility(View.GONE);
-        searchButton.setVisibility(View.GONE);
+        refreshButton.setVisibility(View.GONE);
         searchingLayout.setVisibility(View.VISIBLE);
         searchingTextView.setText(R.string.search_in_progress);
     }
@@ -158,14 +158,14 @@ public abstract class BaseExploreFragment extends RoboFragment implements Locati
 
     protected void onSearchRecommendationsFinally() {
         searchingLayout.setVisibility(View.GONE);
-        searchButton.setVisibility(View.VISIBLE);
+        refreshButton.setVisibility(View.VISIBLE);
     }
 
     protected void onPrepareForSearch() {
         viewPager.setVisibility(View.GONE);
         pagerStrip.setVisibility(View.GONE);
         searchingLayout.setVisibility(View.GONE);
-        searchButton.setVisibility(View.VISIBLE);
+        refreshButton.setVisibility(View.VISIBLE);
     }
 
     protected Location getLastLocation() {
