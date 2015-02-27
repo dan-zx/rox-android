@@ -22,6 +22,7 @@
             android:layout_width="70dp"
             android:layout_height="70dp"
             android:layout_centerHorizontal="true"
+            android:layout_marginTop="15dp"
             circle_image_view:border_color="#FFFFFF"
             circle_image_view:border_width="1dp"/>
 
