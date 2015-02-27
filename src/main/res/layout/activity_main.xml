@@ -36,7 +36,6 @@
             android:id="@+id/drawer_options"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#212121"
             android:choiceMode="singleChoice"
             android:divider="@android:color/transparent"/>
     </com.grayfox.android.widget.ScrimInsetsFrameLayout>
