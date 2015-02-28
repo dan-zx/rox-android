@@ -1,13 +1,21 @@
 package com.grayfox.android.client;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.spy;
 
 import com.google.inject.Injector;
 
+import com.grayfox.android.R;
 import com.grayfox.android.client.model.Location;
 import com.grayfox.android.config.ConfigModule;
 
+import com.squareup.okhttp.mockwebserver.MockResponse;
+import com.squareup.okhttp.mockwebserver.MockWebServer;
+
+import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -27,14 +35,29 @@ import javax.inject.Inject;
 @RunWith(RobolectricTestRunner.class)
 public class RecommendationsApiTest {
 
+    private static MockWebServer mockWebServer;
+
     @Inject private RecommendationsApi recommendationsApi;
+
+    @BeforeClass
+    public static void setUpClass() throws Exception {
+        mockWebServer = new MockWebServer();
+        mockWebServer.play();
+    }
+
+    @AfterClass
+    public static void tearDownClass() throws Exception {
+        mockWebServer.shutdown();
+    }
 
     @Before
     public void setUp() throws Exception {
         Injector injector = RoboGuice.overrideApplicationInjector(Robolectric.application, new ConfigModule(Robolectric.application));
         injector.injectMembers(this);
         assertThat(recommendationsApi).isNotNull();
-        Robolectric.clearPendingHttpResponses();
+        recommendationsApi = spy(recommendationsApi);
+        String mockHost = mockWebServer.getUrl("/").toString().replaceAll("http://", "");
+        doReturn(mockHost).when(recommendationsApi).getString(R.string.gf_api_host);
     }
 
     @Test
@@ -43,7 +66,9 @@ public class RecommendationsApiTest {
         location.setLatitude(19.053528);
         location.setLongitude(-98.283187);
 
-        Robolectric.addPendingHttpResponse(200, getJsonFrom("responses/recommendations_bylikes.json"));
+        mockWebServer.enqueue(new MockResponse()
+                .setStatus("HTTP/1.1 200 OK")
+                .setBody(getJsonFrom("responses/recommendations_bylikes.json")));
         assertThat(recommendationsApi.awaitRecommendationsByLikes("fakeAccessToken", location, 3000, RecommendationsApi.Transportation.WALKING)).isNotNull().isNotEmpty().hasSize(1);
     }
 
@@ -53,7 +78,9 @@ public class RecommendationsApiTest {
         location.setLatitude(19.053528);
         location.setLongitude(-98.283187);
 
-        Robolectric.addPendingHttpResponse(401, getJsonFrom("responses/error.json"));
+        mockWebServer.enqueue(new MockResponse()
+                .setStatus("HTTP/1.1 401 Unauthorized")
+                .setBody(getJsonFrom("responses/error.json")));
         recommendationsApi.awaitRecommendationsByLikes("fakeAccessToken", location, 3000, RecommendationsApi.Transportation.WALKING);
     }
 
@@ -63,7 +90,9 @@ public class RecommendationsApiTest {
         location.setLatitude(19.053528);
         location.setLongitude(-98.283187);
 
-        Robolectric.addPendingHttpResponse(200, getJsonFrom("responses/recommendations_byfriendslikes.json"));
+        mockWebServer.enqueue(new MockResponse()
+                .setStatus("HTTP/1.1 200 OK")
+                .setBody(getJsonFrom("responses/recommendations_byfriendslikes.json")));
         assertThat(recommendationsApi.awaitRecommendationsByFriendsLikes("fakeAccessToken", location, 3000, RecommendationsApi.Transportation.WALKING)).isNotNull().isNotEmpty().hasSize(2);
     }
 
@@ -73,7 +102,9 @@ public class RecommendationsApiTest {
         location.setLatitude(19.053528);
         location.setLongitude(-98.283187);
 
-        Robolectric.addPendingHttpResponse(401, getJsonFrom("responses/error.json"));
+        mockWebServer.enqueue(new MockResponse()
+                .setStatus("HTTP/1.1 401 Unauthorized")
+                .setBody(getJsonFrom("responses/error.json")));
         recommendationsApi.awaitRecommendationsByFriendsLikes("fakeAccessToken", location, 3000, RecommendationsApi.Transportation.WALKING);
     }
 

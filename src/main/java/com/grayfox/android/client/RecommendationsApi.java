@@ -2,17 +2,10 @@ package com.grayfox.android.client;
 
 import android.content.Context;
 import android.net.Uri;
-import android.util.Log;
 
 import com.grayfox.android.R;
-import com.grayfox.android.client.model.ApiResponse;
 import com.grayfox.android.client.model.Location;
 import com.grayfox.android.client.model.Recommendation;
-import com.grayfox.android.http.Charset;
-import com.grayfox.android.http.ContentType;
-import com.grayfox.android.http.Header;
-import com.grayfox.android.http.Method;
-import com.grayfox.android.http.RequestBuilder;
 
 import javax.inject.Inject;
 
@@ -39,23 +32,7 @@ public class RecommendationsApi extends BaseApi {
                 .appendQueryParameter("transportation", transportation != null ? transportation.name() : null)
                 .build().toString();
 
-        String json = RequestBuilder.newInstance(url).setMethod(Method.GET)
-                .setHeader(Header.ACCEPT, ContentType.APPLICATION_JSON.getMimeType())
-                .setHeader(Header.ACCEPT_LANGUAGE, getClientAcceptLanguage())
-                .setHeader(Header.ACCEPT_CHARSET, Charset.UTF_8.getValue())
-                .makeForResult();
-
-        if (json != null) {
-            ApiResponse<Recommendation[]> apiResponse = parse(json, Recommendation[].class);
-            if (apiResponse.getError() == null) return apiResponse.getResponse();
-            else {
-                Log.e(TAG, "Response error ->" + apiResponse.getError());
-                throw new ApiException(apiResponse.getError().getErrorMessage());
-            }
-        } else {
-            Log.e(TAG, "Null response");
-            throw new ApiException(getString(R.string.grayfox_api_request_error));
-        }
+        return request(url, Recommendation[].class);
     }
 
     public Recommendation[] awaitRecommendationsByFriendsLikes(String accessToken, Location location, Integer radius, Transportation transportation) {
@@ -70,22 +47,6 @@ public class RecommendationsApi extends BaseApi {
                 .appendQueryParameter("transportation", transportation != null ? transportation.name() : null)
                 .build().toString();
 
-        String json = RequestBuilder.newInstance(url).setMethod(Method.GET)
-                .setHeader(Header.ACCEPT, ContentType.APPLICATION_JSON.getMimeType())
-                .setHeader(Header.ACCEPT_LANGUAGE, getClientAcceptLanguage())
-                .setHeader(Header.ACCEPT_CHARSET, Charset.UTF_8.getValue())
-                .makeForResult();
-
-        if (json != null) {
-            ApiResponse<Recommendation[]> apiResponse = parse(json, Recommendation[].class);
-            if (apiResponse.getError() == null) return apiResponse.getResponse();
-            else {
-                Log.e(TAG, "Response error ->" + apiResponse.getError());
-                throw new ApiException(apiResponse.getError().getErrorMessage());
-            }
-        } else {
-            Log.e(TAG, "Null response");
-            throw new ApiException(getString(R.string.grayfox_api_request_error));
-        }
+        return request(url, Recommendation[].class);
     }
 }

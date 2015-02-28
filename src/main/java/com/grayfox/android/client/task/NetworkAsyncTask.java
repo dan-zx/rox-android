@@ -6,7 +6,6 @@ import android.net.NetworkInfo;
 import android.widget.Toast;
 
 import com.grayfox.android.R;
-import com.grayfox.android.http.RequestBuilder;
 
 abstract class NetworkAsyncTask<T> extends BaseAsyncTask<T> {
 
@@ -26,15 +25,5 @@ abstract class NetworkAsyncTask<T> extends BaseAsyncTask<T> {
             setActive(false);
             Toast.makeText(getContext(), R.string.network_unavailable, Toast.LENGTH_LONG).show();
         }
-    }
-
-    @Override
-    protected void onException(Exception e) throws RuntimeException {
-        super.onException(e);
-        if (e instanceof RequestBuilder.RequestException) onRequestException(e.getCause());
-    }
-
-    protected void onRequestException(Throwable e) {
-        Toast.makeText(getContext(), R.string.network_request_error, Toast.LENGTH_LONG).show();
     }
 }

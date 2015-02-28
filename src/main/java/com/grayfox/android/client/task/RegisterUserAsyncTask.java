@@ -31,8 +31,8 @@ public abstract class RegisterUserAsyncTask extends NetworkAsyncTask<Void> {
     }
 
     @Override
-    protected void onRequestException(Throwable e) {
-        super.onRequestException(e);
+    protected void onException(Exception e) throws RuntimeException {
+        super.onException(e);
         accessTokenDao.deleteAccessToken();
     }
 }
