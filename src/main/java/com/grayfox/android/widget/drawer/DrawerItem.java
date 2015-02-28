@@ -6,22 +6,11 @@ public class DrawerItem {
 
     private final Type type;
 
-    private boolean isSelected;
-
     public DrawerItem(Type type) {
         this.type = type;
     }
 
     public Type getType() {
         return type;
-    }
-
-    public boolean isSelected() {
-        return isSelected;
-    }
-
-    public DrawerItem setSelected(boolean isSelected) {
-        this.isSelected = isSelected;
-        return this;
     }
 }

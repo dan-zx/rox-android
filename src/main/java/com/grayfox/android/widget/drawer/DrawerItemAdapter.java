@@ -1,5 +1,7 @@
 package com.grayfox.android.widget.drawer;
 
+import android.content.Context;
+import android.graphics.PorterDuff;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +20,7 @@ public class DrawerItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     private final List<DrawerItem> drawerItems;
 
     private OnItemClickListener listener;
+    private Integer selectedPosition;
 
     public DrawerItemAdapter(List<DrawerItem> drawerItems) {
         this.drawerItems = drawerItems;
@@ -48,6 +51,7 @@ public class DrawerItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
+        Context context = holder.itemView.getContext();
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -62,7 +66,7 @@ public class DrawerItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                     HeaderViewHolder headerViewHolder = (HeaderViewHolder) holder;
                     String userFullName = drawerHeader.getUser().getLastName() == null || drawerHeader.getUser().getLastName().trim().isEmpty() ? drawerHeader.getUser() .getName() : new StringBuilder().append(drawerHeader.getUser().getName()).append(" ").append(drawerHeader.getUser().getLastName()).toString();
                     headerViewHolder.userNameTextView.setText(userFullName);
-                    Picasso.with(headerViewHolder.profileImageView.getContext())
+                    Picasso.with(context)
                             .load(drawerHeader.getUser().getPhotoUrl())
                             .placeholder(R.drawable.ic_contact_picture)
                             .into(headerViewHolder.profileImageView);
@@ -71,8 +75,15 @@ public class DrawerItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             case OPTION:
                 DrawerOption drawerOption = (DrawerOption) drawerItem;
                 OptionViewHolder optionViewHolder = (OptionViewHolder) holder;
-                optionViewHolder.iconImageView.setImageResource(drawerOption.getIconRes());
                 optionViewHolder.nameTextView.setText(drawerOption.getNameRes());
+                optionViewHolder.iconImageView.setImageResource(drawerOption.getIconRes());
+                if (selectedPosition != null && selectedPosition == position) {
+                    optionViewHolder.itemView.setBackgroundColor(context.getResources().getColor(R.color.selected_background));
+                    optionViewHolder.nameTextView.setTextColor(context.getResources().getColor(R.color.primary_selected_text));
+                } else {
+                    optionViewHolder.itemView.setBackgroundColor(context.getResources().getColor(R.color.unselected_background));
+                    optionViewHolder.nameTextView.setTextColor(context.getResources().getColor(R.color.primary_text));
+                }
                 break;
             case OPTION_HEADER:
                 DrawerOptionHeader drawerOptionHeader = (DrawerOptionHeader) drawerItem;
@@ -90,6 +101,15 @@ public class DrawerItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     @Override
     public int getItemViewType(int position) {
         return drawerItems.get(position).getType().ordinal();
+    }
+
+    public Integer getSelectedPosition() {
+        return selectedPosition;
+    }
+
+    public void setSelectedPosition(Integer position) {
+        selectedPosition = position;
+        notifyDataSetChanged();
     }
 
     public static interface OnItemClickListener {

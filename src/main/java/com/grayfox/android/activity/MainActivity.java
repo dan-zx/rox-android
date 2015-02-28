@@ -38,7 +38,7 @@ public class MainActivity extends RoboActionBarActivity {
 
     private static final String FRAGMENT_TAG = "CURRENT_FRAGMENT";
     private static final String CURRENT_TITLE_KEY = "CURRENT_TITLE";
-    private static final String CURRENT_OPTION_SELECTED_KEY = "CURRENT_OPTION_SELECTED";
+    private static final String CURRENT_SELECTED_OPTION_KEY = "CURRENT_OPTION_SELECTED";
     private static final String USER_KEY = "USER";
 
     @InjectView(R.id.drawer_options) private RecyclerView drawerOptions;
@@ -58,11 +58,11 @@ public class MainActivity extends RoboActionBarActivity {
         if (savedInstanceState == null) {
             setupFragment(new ExploreByLikesFragment());
             setTitle(R.string.drawer_explore_by_your_likes_option);
-            setSelectedDrawerOption(3);
+            drawerItemAdapter.setSelectedPosition(3);
             new GetSelfUserTask(this).execute();
         } else {
             setTitle(savedInstanceState.getInt(CURRENT_TITLE_KEY));
-            setSelectedDrawerOption(savedInstanceState.getInt(CURRENT_OPTION_SELECTED_KEY));
+            drawerItemAdapter.setSelectedPosition(savedInstanceState.getInt(CURRENT_SELECTED_OPTION_KEY));
             user = (User) savedInstanceState.getSerializable(USER_KEY);
             if (user == null) new GetSelfUserTask(this).execute();
             else onGetSelfUserSuccess(user);
@@ -74,9 +74,7 @@ public class MainActivity extends RoboActionBarActivity {
         super.onSaveInstanceState(outState);
         outState.putInt(CURRENT_TITLE_KEY, currentTitleId);
         outState.putSerializable(USER_KEY, user);
-        for (int i = 0; i < drawerItems.size(); i++) {
-            if (drawerItems.get(i).isSelected()) outState.putInt(CURRENT_OPTION_SELECTED_KEY, i);
-        }
+        outState.putInt(CURRENT_SELECTED_OPTION_KEY, drawerItemAdapter.getSelectedPosition());
     }
 
     @Override
@@ -159,20 +157,20 @@ public class MainActivity extends RoboActionBarActivity {
                 supportInvalidateOptionsMenu();
                 setupFragment(new ExploreByLikesFragment());
                 setTitle(R.string.drawer_explore_by_your_likes_option);
-                setSelectedDrawerOption(position);
+                drawerItemAdapter.setSelectedPosition(position);
                 drawerLayout.closeDrawers();
                 break;
             case 4:
                 supportInvalidateOptionsMenu();
                 setupFragment(new ExploreByFriendsLikesFragment());
                 setTitle(R.string.drawer_explore_by_your_friends_likes_option);
-                setSelectedDrawerOption(position);
+                drawerItemAdapter.setSelectedPosition(position);
                 drawerLayout.closeDrawers();
                 break;
             case 6:
                 //setupFragment(new SettingsFragment());
                 //setTitle(R.string.drawer_settings_option);
-                setSelectedDrawerOption(position);
+                //drawerItemAdapter.setSelectedPosition(position);
                 drawerLayout.closeDrawers();
                 break;
         }
@@ -181,12 +179,6 @@ public class MainActivity extends RoboActionBarActivity {
     private void onGetSelfUserSuccess(User user) {
         this.user = user;
         ((DrawerHeader)drawerItems.get(0)).setUser(user);
-        drawerItemAdapter.notifyDataSetChanged();
-    }
-
-    private void setSelectedDrawerOption(int position) {
-        for (DrawerItem drawerItem : drawerItems) drawerItem.setSelected(false);
-        drawerItems.get(position).setSelected(true);
         drawerItemAdapter.notifyDataSetChanged();
     }
 

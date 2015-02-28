@@ -6,5 +6,8 @@
     <color name="accent_dark">#181523</color>
     <color name="primary_text">#212121</color>
     <color name="secondary_text">#727272</color>
+    <color name="primary_selected_text">#EF164B</color>
     <color name="divider">#B6B6B6</color>
+    <color name="unselected_background">#00000000</color>
+    <color name="selected_background">#DADADA</color>
 </resources>
