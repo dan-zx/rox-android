@@ -42,6 +42,10 @@
             android:name=".activity.RouteDisplayingActivity"
             android:label="@string/title_activity_route_displaying"
             android:theme="@style/AppTheme.WithDefaultActionBar" />
+        <activity
+            android:name=".activity.SettingsActivity"
+            android:label="@string/title_activity_settings"
+            android:theme="@style/AppTheme.WithDefaultActionBar" />
     </application>
 
 </manifest>

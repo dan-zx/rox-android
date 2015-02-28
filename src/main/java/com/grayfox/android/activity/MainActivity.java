@@ -147,10 +147,7 @@ public class MainActivity extends RoboActionBarActivity {
     private void onDrawerMenuSelected(int position) {
         switch (position) {
             case 0:
-                if (user != null) {
-                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.foursquare_user_url, user.getFoursquareId())));
-                    startActivity(intent);
-                }
+                if (user != null) startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.foursquare_user_url, user.getFoursquareId()))));
                 drawerLayout.closeDrawers();
                 break;
             case 3:
@@ -168,9 +165,7 @@ public class MainActivity extends RoboActionBarActivity {
                 drawerLayout.closeDrawers();
                 break;
             case 6:
-                //setupFragment(new SettingsFragment());
-                //setTitle(R.string.drawer_settings_option);
-                //drawerItemAdapter.setSelectedPosition(position);
+                startActivity(new Intent(this, SettingsActivity.class));
                 drawerLayout.closeDrawers();
                 break;
         }

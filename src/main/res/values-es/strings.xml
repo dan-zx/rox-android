@@ -13,6 +13,9 @@
     <!-- RouteDisplayingActivity -->
     <string name="title_activity_route_displaying">Ruta</string>
 
+    <!-- SettingsActivity -->
+    <string name="title_activity_settings">Ajustes</string>
+
     <!-- ExploreFragment -->
     <string name="search_in_progress">Buscando&#8230;</string>
     <string name="route_format">Ruta %d</string>
