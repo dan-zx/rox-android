@@ -32,12 +32,10 @@
         android:fitsSystemWindows="true"
         sifl:insetForeground="#4000">
 
-        <ListView
+        <android.support.v7.widget.RecyclerView
             android:id="@+id/drawer_options"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:choiceMode="singleChoice"
-            android:divider="@android:color/transparent"/>
+            android:layout_height="match_parent"/>
     </com.grayfox.android.widget.ScrimInsetsFrameLayout>
 
 </android.support.v4.widget.DrawerLayout>

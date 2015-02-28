@@ -28,9 +28,10 @@
     <!-- Drawer -->
     <string name="drawer_open">Menú abierto</string>
     <string name="drawer_close">Menú cerrado</string>
+    <string name="drawer_explore_header">Explorar por</string>
     <string name="drawer_explore_by_your_likes_option">Tus gustos</string>
     <string name="drawer_explore_by_your_friends_likes_option">Los gustos de tus amigos</string>
-    <string name="drawer_settings_option">Configuración</string>
+    <string name="drawer_settings_option">Ajustes</string>
 
     <!-- Errors -->
     <string name="network_unavailable">Una conexión estable es necesaria para hacer la petición</string>

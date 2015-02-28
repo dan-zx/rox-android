@@ -8,31 +8,29 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ImageView;
-import android.widget.ListView;
-import android.widget.TextView;
 
 import com.grayfox.android.R;
 import com.grayfox.android.client.model.User;
 import com.grayfox.android.client.task.GetSelfUserAsyncTask;
 import com.grayfox.android.fragment.ExploreByFriendsLikesFragment;
 import com.grayfox.android.fragment.ExploreByLikesFragment;
-import com.grayfox.android.widget.DrawerItem;
-import com.grayfox.android.widget.DrawerItemAdapter;
-
-import com.squareup.picasso.Picasso;
+import com.grayfox.android.widget.drawer.DrawerHeader;
+import com.grayfox.android.widget.drawer.DrawerItem;
+import com.grayfox.android.widget.drawer.DrawerItemAdapter;
+import com.grayfox.android.widget.drawer.DrawerOption;
+import com.grayfox.android.widget.drawer.DrawerOptionHeader;
 
 import roboguice.activity.RoboActionBarActivity;
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
 
 import java.lang.ref.WeakReference;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @ContentView(R.layout.activity_main)
@@ -40,16 +38,18 @@ public class MainActivity extends RoboActionBarActivity {
 
     private static final String FRAGMENT_TAG = "CURRENT_FRAGMENT";
     private static final String CURRENT_TITLE_KEY = "CURRENT_TITLE";
+    private static final String CURRENT_OPTION_SELECTED_KEY = "CURRENT_OPTION_SELECTED";
+    private static final String USER_KEY = "USER";
 
-    @InjectView(R.id.drawer_options) private ListView drawerOptions;
+    @InjectView(R.id.drawer_options) private RecyclerView drawerOptions;
     @InjectView(R.id.drawer_layout)  private DrawerLayout drawerLayout;
     @InjectView(R.id.toolbar)        private Toolbar toolbar;
 
     private int currentTitleId;
     private ActionBarDrawerToggle drawerToggle;
+    private DrawerItemAdapter drawerItemAdapter;
     private User user;
-    private TextView userNameText;
-    private ImageView userPicture;
+    private List<DrawerItem> drawerItems;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +58,14 @@ public class MainActivity extends RoboActionBarActivity {
         if (savedInstanceState == null) {
             setupFragment(new ExploreByLikesFragment());
             setTitle(R.string.drawer_explore_by_your_likes_option);
+            setSelectedDrawerOption(3);
+            new GetSelfUserTask(this).execute();
+        } else {
+            setTitle(savedInstanceState.getInt(CURRENT_TITLE_KEY));
+            setSelectedDrawerOption(savedInstanceState.getInt(CURRENT_OPTION_SELECTED_KEY));
+            user = (User) savedInstanceState.getSerializable(USER_KEY);
+            if (user == null) new GetSelfUserTask(this).execute();
+            else onGetSelfUserSuccess(user);
         }
     }
 
@@ -65,12 +73,10 @@ public class MainActivity extends RoboActionBarActivity {
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt(CURRENT_TITLE_KEY, currentTitleId);
-    }
-
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        setTitle(savedInstanceState.getInt(CURRENT_TITLE_KEY));
+        outState.putSerializable(USER_KEY, user);
+        for (int i = 0; i < drawerItems.size(); i++) {
+            if (drawerItems.get(i).isSelected()) outState.putInt(CURRENT_OPTION_SELECTED_KEY, i);
+        }
     }
 
     @Override
@@ -105,30 +111,29 @@ public class MainActivity extends RoboActionBarActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
-        setupDrawerHeader();
         setupDrawerMenu();
     }
 
-    private void setupDrawerHeader() {
-        View headerView = getLayoutInflater().inflate(R.layout.drawer_header, null);
-        userNameText = (TextView) headerView.findViewById(R.id.user_name_text);
-        userPicture = (ImageView) headerView.findViewById(R.id.profile_image);
-        drawerOptions.addHeaderView(headerView);
-        new GetSelfUserTask(this).execute();
-    }
-
     private void setupDrawerMenu() {
-        List<DrawerItem> drawerItems = new ArrayList<>(2);
-        drawerItems.add(new DrawerItem(R.drawable.ic_person, R.string.drawer_explore_by_your_likes_option));
-        drawerItems.add(new DrawerItem(R.drawable.ic_group, R.string.drawer_explore_by_your_friends_likes_option));
-        drawerItems.add(new DrawerItem(R.drawable.ic_settings, R.string.drawer_settings_option));
-        drawerOptions.setAdapter(new DrawerItemAdapter(drawerItems));
-        drawerOptions.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        drawerItems = Arrays.asList(
+                new DrawerHeader(),
+                new DrawerItem(DrawerItem.Type.DIVIDER),
+                new DrawerOptionHeader().setNameRes(R.string.drawer_explore_header),
+                new DrawerOption().setIconRes(R.drawable.ic_person).setNameRes(R.string.drawer_explore_by_your_likes_option),
+                new DrawerOption().setIconRes(R.drawable.ic_group).setNameRes(R.string.drawer_explore_by_your_friends_likes_option),
+                new DrawerItem(DrawerItem.Type.DIVIDER),
+                new DrawerOption().setIconRes(R.drawable.ic_settings).setNameRes(R.string.drawer_settings_option)
+        );
+        drawerItemAdapter = new DrawerItemAdapter(drawerItems);
+        drawerItemAdapter.setOnItemClickListener(new DrawerItemAdapter.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            public void onClick(int position) {
                 onDrawerMenuSelected(position);
             }
         });
+        drawerOptions.setHasFixedSize(true);
+        drawerOptions.setLayoutManager(new LinearLayoutManager(this));
+        drawerOptions.setAdapter(drawerItemAdapter);
     }
 
     private void setupFragment(Fragment fragment) {
@@ -145,38 +150,44 @@ public class MainActivity extends RoboActionBarActivity {
         switch (position) {
             case 0:
                 if (user != null) {
-                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://foursquare.com/users/" + user.getFoursquareId()));
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.foursquare_user_url, user.getFoursquareId())));
                     startActivity(intent);
                 }
+                drawerLayout.closeDrawers();
                 break;
-            case 1:
+            case 3:
                 supportInvalidateOptionsMenu();
                 setupFragment(new ExploreByLikesFragment());
                 setTitle(R.string.drawer_explore_by_your_likes_option);
+                setSelectedDrawerOption(position);
+                drawerLayout.closeDrawers();
                 break;
-            case 2:
+            case 4:
                 supportInvalidateOptionsMenu();
                 setupFragment(new ExploreByFriendsLikesFragment());
                 setTitle(R.string.drawer_explore_by_your_friends_likes_option);
+                setSelectedDrawerOption(position);
+                drawerLayout.closeDrawers();
                 break;
-            case 3:
+            case 6:
                 //setupFragment(new SettingsFragment());
                 //setTitle(R.string.drawer_settings_option);
+                setSelectedDrawerOption(position);
+                drawerLayout.closeDrawers();
                 break;
         }
-        drawerLayout.closeDrawers();
     }
 
     private void onGetSelfUserSuccess(User user) {
         this.user = user;
-        if (user != null) {
-            String userFullName = user.getLastName() == null || user.getLastName().trim().isEmpty() ? user.getName() : new StringBuilder().append(user.getName()).append(" ").append(user.getLastName()).toString();
-            userNameText.setText(userFullName);
-            Picasso.with(this)
-                    .load(user.getPhotoUrl())
-                    .placeholder(R.drawable.ic_contact_picture)
-                    .into(userPicture);
-        }
+        ((DrawerHeader)drawerItems.get(0)).setUser(user);
+        drawerItemAdapter.notifyDataSetChanged();
+    }
+
+    private void setSelectedDrawerOption(int position) {
+        for (DrawerItem drawerItem : drawerItems) drawerItem.setSelected(false);
+        drawerItems.get(position).setSelected(true);
+        drawerItemAdapter.notifyDataSetChanged();
     }
 
     private static class GetSelfUserTask extends GetSelfUserAsyncTask {

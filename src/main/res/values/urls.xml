@@ -18,4 +18,7 @@
     <string name="gf_api_recommendations_path" translatable="false">recommendations</string>
     <string name="gf_api_recommendations_by_likes_path" translatable="false">bylikes</string>
     <string name="gf_api_recommendations_by_friends_likes_path" translatable="false">byfriendslikes</string>
+
+    <!-- Foursqure -->
+    <string name="foursquare_user_url" translatable="false">https://foursquare.com/users/%s</string>
 </resources>
