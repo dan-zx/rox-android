@@ -3,7 +3,8 @@ package com.grayfox.android.widget.drawer;
 public class DrawerOption extends DrawerItem  {
 
     private int nameRes;
-    private int iconRes;
+    private int unselectedIconRes;
+    private int selectedIconRes;
 
     public DrawerOption() {
         super(Type.OPTION);
@@ -18,12 +19,21 @@ public class DrawerOption extends DrawerItem  {
         return this;
     }
 
-    public int getIconRes() {
-        return iconRes;
+    public int getUnselectedIconRes() {
+        return unselectedIconRes;
     }
 
-    public DrawerOption setIconRes(int iconRes) {
-        this.iconRes = iconRes;
+    public DrawerOption setUnselectedIconRes(int unselectedIconRes) {
+        this.unselectedIconRes = unselectedIconRes;
+        return this;
+    }
+
+    public int getSelectedIconRes() {
+        return selectedIconRes;
+    }
+
+    public DrawerOption setSelectedIconRes(int selectedIconRes) {
+        this.selectedIconRes = selectedIconRes;
         return this;
     }
 }

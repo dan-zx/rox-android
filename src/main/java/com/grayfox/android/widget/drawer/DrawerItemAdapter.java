@@ -2,6 +2,7 @@ package com.grayfox.android.widget.drawer;
 
 import android.content.Context;
 import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -76,13 +77,16 @@ public class DrawerItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 DrawerOption drawerOption = (DrawerOption) drawerItem;
                 OptionViewHolder optionViewHolder = (OptionViewHolder) holder;
                 optionViewHolder.nameTextView.setText(drawerOption.getNameRes());
-                optionViewHolder.iconImageView.setImageResource(drawerOption.getIconRes());
                 if (selectedPosition != null && selectedPosition == position) {
                     optionViewHolder.itemView.setBackgroundColor(context.getResources().getColor(R.color.selected_background));
                     optionViewHolder.nameTextView.setTextColor(context.getResources().getColor(R.color.primary_selected_text));
+                    Drawable selectedIcon = context.getDrawable(drawerOption.getSelectedIconRes());
+                    selectedIcon.mutate().setColorFilter(context.getResources().getColor(R.color.selected_icon), PorterDuff.Mode.SRC_IN);
+                    optionViewHolder.iconImageView.setImageDrawable(selectedIcon);
                 } else {
                     optionViewHolder.itemView.setBackgroundColor(context.getResources().getColor(R.color.unselected_background));
                     optionViewHolder.nameTextView.setTextColor(context.getResources().getColor(R.color.primary_text));
+                    optionViewHolder.iconImageView.setImageResource(drawerOption.getUnselectedIconRes());
                 }
                 break;
             case OPTION_HEADER:

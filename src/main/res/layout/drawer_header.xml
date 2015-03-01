@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
         android:adjustViewBounds="true"
         android:scaleType="fitCenter"
-        android:src="@drawable/header_background"/>
+        android:src="@drawable/background_drawer_header"/>
 
     <RelativeLayout
         android:layout_width="wrap_content"

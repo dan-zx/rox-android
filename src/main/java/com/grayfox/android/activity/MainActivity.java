@@ -117,10 +117,10 @@ public class MainActivity extends RoboActionBarActivity {
                 new DrawerHeader(),
                 new DrawerItem(DrawerItem.Type.DIVIDER),
                 new DrawerOptionHeader().setNameRes(R.string.drawer_explore_header),
-                new DrawerOption().setIconRes(R.drawable.ic_person).setNameRes(R.string.drawer_explore_by_your_likes_option),
-                new DrawerOption().setIconRes(R.drawable.ic_group).setNameRes(R.string.drawer_explore_by_your_friends_likes_option),
+                new DrawerOption().setUnselectedIconRes(R.drawable.ic_person_unselected).setSelectedIconRes(R.drawable.ic_person_selected).setNameRes(R.string.drawer_explore_by_your_likes_option),
+                new DrawerOption().setUnselectedIconRes(R.drawable.ic_group_unselected).setSelectedIconRes(R.drawable.ic_group_selected).setNameRes(R.string.drawer_explore_by_your_friends_likes_option),
                 new DrawerItem(DrawerItem.Type.DIVIDER),
-                new DrawerOption().setIconRes(R.drawable.ic_settings).setNameRes(R.string.drawer_settings_option)
+                new DrawerOption().setUnselectedIconRes(R.drawable.ic_settings).setNameRes(R.string.drawer_settings_option)
         );
         drawerItemAdapter = new DrawerItemAdapter(drawerItems);
         drawerItemAdapter.setOnItemClickListener(new DrawerItemAdapter.OnItemClickListener() {
