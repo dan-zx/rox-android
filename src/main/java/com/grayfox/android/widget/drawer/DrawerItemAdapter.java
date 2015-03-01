@@ -80,7 +80,7 @@ public class DrawerItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 if (selectedPosition != null && selectedPosition == position) {
                     optionViewHolder.itemView.setBackgroundColor(context.getResources().getColor(R.color.selected_background));
                     optionViewHolder.nameTextView.setTextColor(context.getResources().getColor(R.color.primary_selected_text));
-                    Drawable selectedIcon = context.getDrawable(drawerOption.getSelectedIconRes());
+                    Drawable selectedIcon = context.getResources().getDrawable(drawerOption.getSelectedIconRes());
                     selectedIcon.mutate().setColorFilter(context.getResources().getColor(R.color.selected_icon), PorterDuff.Mode.SRC_IN);
                     optionViewHolder.iconImageView.setImageDrawable(selectedIcon);
                 } else {

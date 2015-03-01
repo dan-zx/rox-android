@@ -151,14 +151,14 @@ public class MainActivity extends RoboActionBarActivity {
                 drawerLayout.closeDrawers();
                 break;
             case 3:
-                supportInvalidateOptionsMenu();
+                invalidateOptionsMenu();
                 setupFragment(new ExploreByLikesFragment());
                 setTitle(R.string.drawer_explore_by_your_likes_option);
                 drawerItemAdapter.setSelectedPosition(position);
                 drawerLayout.closeDrawers();
                 break;
             case 4:
-                supportInvalidateOptionsMenu();
+                invalidateOptionsMenu();
                 setupFragment(new ExploreByFriendsLikesFragment());
                 setTitle(R.string.drawer_explore_by_your_friends_likes_option);
                 drawerItemAdapter.setSelectedPosition(position);

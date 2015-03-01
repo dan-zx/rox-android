@@ -3,5 +3,5 @@
     <dimen name="drawer_item_padding">8dp</dimen>
     <dimen name="drawer_item_vertical_padding">16dp</dimen>
     <dimen name="drawer_item_text">14sp</dimen>
-    <dimen name="drawer_width">304dp</dimen>
+    <dimen name="drawer_width">260dp</dimen>
 </resources>
