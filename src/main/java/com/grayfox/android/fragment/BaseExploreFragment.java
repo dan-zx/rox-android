@@ -1,5 +1,8 @@
 package com.grayfox.android.fragment;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -17,6 +20,7 @@ import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.grayfox.android.R;
 import com.grayfox.android.client.model.Location;
 import com.grayfox.android.client.model.Recommendation;
+import com.grayfox.android.location.LocationGeocoder;
 import com.grayfox.android.location.LocationRequester;
 
 import roboguice.fragment.RoboFragment;
@@ -36,6 +40,7 @@ public abstract class BaseExploreFragment extends RoboFragment implements Locati
     private SwipeRouteDetailFragmentsAdapter swipeRouteDetailFragmentsAdapter;
     private LocationRequester locationRequester;
     private Location lastLocation;
+    private String lastAddress;
     private Recommendation[] lastRecommendations;
 
     @Override
@@ -103,7 +108,8 @@ public abstract class BaseExploreFragment extends RoboFragment implements Locati
     }
 
     protected void onLocateUser() {
-        locationRequester.requestSingle(this);
+        if (isConnected()) locationRequester.requestSingle(this);
+        else onNetworkDisabled();
     }
 
     @Override
@@ -112,6 +118,7 @@ public abstract class BaseExploreFragment extends RoboFragment implements Locati
         myLocation.setLatitude(location.getLatitude());
         myLocation.setLongitude(location.getLongitude());
         lastLocation = myLocation;
+        lastAddress = LocationGeocoder.getAddress(getActivity().getApplicationContext(), location);
     }
 
     @Override
@@ -134,6 +141,15 @@ public abstract class BaseExploreFragment extends RoboFragment implements Locati
                 R.string.enable_location_updates, Toast.LENGTH_SHORT).show();
     }
 
+    private void onNetworkDisabled() {
+        viewPager.setVisibility(View.GONE);
+        pagerStrip.setVisibility(View.GONE);
+        refreshButton.setVisibility(View.VISIBLE);
+        searchingLayout.setVisibility(View.GONE);
+        Toast.makeText(getActivity().getApplicationContext(),
+                R.string.network_unavailable, Toast.LENGTH_LONG).show();
+    }
+
     protected void onPreSearchRecommendations() {
         viewPager.setVisibility(View.GONE);
         pagerStrip.setVisibility(View.GONE);
@@ -149,7 +165,7 @@ public abstract class BaseExploreFragment extends RoboFragment implements Locati
         if (recommendations != null) {
             swipeRouteDetailFragmentsAdapter.clearFragments();
             for (Recommendation recommendation : recommendations) {
-                RouteDetailFragment fragment = RouteDetailFragment.newInstance(lastLocation, recommendation);
+                RouteDetailFragment fragment = RouteDetailFragment.newInstance(lastLocation, lastAddress, recommendation);
                 swipeRouteDetailFragmentsAdapter.addFragment(fragment);
             }
             viewPager.setCurrentItem(0);
@@ -168,8 +184,18 @@ public abstract class BaseExploreFragment extends RoboFragment implements Locati
         refreshButton.setVisibility(View.VISIBLE);
     }
 
+    private boolean isConnected() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) getActivity().getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = connectivityManager.getActiveNetworkInfo();
+        return netInfo != null && netInfo.isConnectedOrConnecting();
+    }
+
     protected Location getLastLocation() {
         return lastLocation;
+    }
+
+    protected String getLastAddress() {
+        return lastAddress;
     }
 
     protected Recommendation[] getLastRecommendations() {

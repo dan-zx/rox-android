@@ -8,19 +8,17 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.grayfox.android.R;
-import com.grayfox.android.client.model.Location;
 import com.grayfox.android.client.model.Recommendation;
-import com.grayfox.android.location.LocationGeocoder;
 
 import com.squareup.picasso.Picasso;
 
 public class RecommendationAdapter extends RecyclerView.Adapter<RecommendationAdapter.ViewHolder> {
 
-    private final Location origin;
+    private final String originAddress;
     private final Recommendation recommendation;
 
-    public RecommendationAdapter(Location origin, Recommendation recommendation) {
-        this.origin = origin;
+    public RecommendationAdapter(String originAddress, Recommendation recommendation) {
+        this.originAddress = originAddress;
         this.recommendation = recommendation;
     }
 
@@ -35,8 +33,8 @@ public class RecommendationAdapter extends RecyclerView.Adapter<RecommendationAd
     public void onBindViewHolder(ViewHolder holder, int position) {
         if (position == 0) {
             holder.categoryImageView.setImageResource(R.drawable.ic_generic_category);
-            holder.categoryNameView.setText(LocationGeocoder.getAddress(holder.poiNameView.getContext(), origin));
-            holder.poiNameView.setText(R.string.your_location);
+            holder.categoryNameView.setText(originAddress);
+            holder.poiNameView.setText(R.string.current_location);
         } else {
             Picasso.with(holder.categoryImageView.getContext())
                     .load(recommendation.getPoiSequence()[position-1].getCategories()[0].getIconUrl())

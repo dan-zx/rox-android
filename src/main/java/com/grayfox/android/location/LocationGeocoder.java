@@ -3,9 +3,8 @@ package com.grayfox.android.location;
 import android.content.Context;
 import android.location.Address;
 import android.location.Geocoder;
+import android.location.Location;
 import android.util.Log;
-
-import com.grayfox.android.client.model.Location;
 
 import java.io.IOException;
 import java.util.List;

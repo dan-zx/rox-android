@@ -83,7 +83,7 @@ public class RouteDisplayingActivity extends RoboActionBarActivity implements On
         LatLng latLngOrigin = new LatLng(origin.getLatitude(), origin.getLongitude());
         googleMap.addMarker(new MarkerOptions()
                 .position(latLngOrigin)
-                .title(getString(R.string.your_location))
+                .title(getString(R.string.current_location))
                 .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN)));
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLngOrigin, 13f));
     }

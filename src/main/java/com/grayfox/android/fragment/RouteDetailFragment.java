@@ -24,14 +24,16 @@ public class RouteDetailFragment extends RoboFragment {
 
     private static final String RECOMMENDATION_ARG = "RECOMMENDATION";
     private static final String ORIGIN_LOCATION_ARG = "ORIGIN_LOCATION";
+    private static final String ORIGIN_ADDRESS_ARG = "ORIGIN_ADDRESS";
 
     @InjectView(R.id.recommendation_reason) private TextView recommendationReasonView;
     @InjectView(R.id.poi_list)              private RecyclerView poiListView;
 
-    public static RouteDetailFragment newInstance(Location origin, Recommendation recommendation) {
+    public static RouteDetailFragment newInstance(Location originLocation, String originAddress, Recommendation recommendation) {
         RouteDetailFragment fragment = new RouteDetailFragment();
         Bundle args = new Bundle();
-        args.putSerializable(ORIGIN_LOCATION_ARG, origin);
+        args.putSerializable(ORIGIN_LOCATION_ARG, originLocation);
+        args.putString(ORIGIN_ADDRESS_ARG, originAddress);
         args.putSerializable(RECOMMENDATION_ARG, recommendation);
         fragment.setArguments(args);
         return fragment;
@@ -57,10 +59,11 @@ public class RouteDetailFragment extends RoboFragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        recommendationReasonView.setText(getRecommendation().getReason());
+        //recommendationReasonView.setText(getRecommendation().getReason());
+        recommendationReasonView.setVisibility(View.GONE);
         poiListView.setHasFixedSize(true);
         poiListView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        poiListView.setAdapter(new RecommendationAdapter(getOriginLocation(), getRecommendation()));
+        poiListView.setAdapter(new RecommendationAdapter(getOriginAddress(), getRecommendation()));
     }
 
     @Override
@@ -75,6 +78,10 @@ public class RouteDetailFragment extends RoboFragment {
 
     private Location getOriginLocation() {
         return (Location) getArguments().getSerializable(ORIGIN_LOCATION_ARG);
+    }
+
+    private String getOriginAddress() {
+        return getArguments().getString(ORIGIN_ADDRESS_ARG);
     }
 
     private Recommendation getRecommendation() {

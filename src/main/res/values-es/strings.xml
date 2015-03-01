@@ -26,7 +26,7 @@
     <!-- RouteDetailFragment -->
     <string name="action_view_in_map">Ver en map</string>
 
-    <string name="your_location">Tu ubicación</string>
+    <string name="current_location">Ubicación actual</string>
 
     <!-- Drawer -->
     <string name="drawer_open">Menú abierto</string>
