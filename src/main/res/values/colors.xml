@@ -2,8 +2,8 @@
 <resources>
     <color name="primary">#EF164B</color>
     <color name="primary_dark">#D51443</color>
-    <color name="accent">#2D5BE3</color>
-    <color name="accent_dark">#142863</color>
+    <color name="accent">#477CE5</color>
+    <color name="accent_dark">#1F3765</color>
     <color name="primary_text">#212121</color>
     <color name="secondary_text">#727272</color>
     <color name="primary_selected_text">#EF164B</color>
