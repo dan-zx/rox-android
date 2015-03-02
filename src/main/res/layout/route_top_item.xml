@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/marker_image"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:src="@drawable/ic_generic_category"/>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_alignParentTop="true"
+        android:layout_alignBottom="@+id/location_description"
+        android:layout_toRightOf="@id/marker_image"
+        android:paddingTop="8dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/route_top_dot"/>
+
+    <TextView
+        android:id="@+id/current_location"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="4dp"
+        android:layout_marginTop="4dp"
+        android:layout_toRightOf="@id/marker_image"
+        android:text="@string/current_location"
+        android:textAppearance="?android:attr/textAppearanceLarge"/>
+
+    <TextView
+        android:id="@+id/location_description"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/current_location"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="4dp"
+        android:layout_toRightOf="@id/marker_image"
+        android:textAppearance="?android:attr/textAppearanceMedium"/>
+</RelativeLayout>
