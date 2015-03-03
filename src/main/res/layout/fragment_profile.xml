@@ -40,7 +40,7 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
         android:layout_marginRight="16dp"
-        android:layout_marginTop="57dp"
+        android:layout_marginTop="55dp"
         fab:fab_colorNormal="@color/accent"
         fab:fab_colorPressed="@color/accent_dark"
         fab:fab_icon="@drawable/ic_edit"/>
@@ -51,6 +51,7 @@
         android:layout_height="?attr/actionBarSize"
         android:layout_below="@id/header_layout"
         android:background="@android:color/transparent"
+        android:layout_marginTop="10dp"
         psts:pstsIndicatorColor="@color/primary"
         psts:pstsShouldExpand="true"/>
 
