@@ -39,4 +39,17 @@ public class UsersApi extends BaseApi {
 
         return request(url, User.class);
     }
+
+    public User awaitCompleteSelfUser(String accessToken) {
+        String url = new Uri.Builder().scheme(getString(R.string.gf_api_host_scheme))
+                .encodedAuthority(getString(R.string.gf_api_host))
+                .appendEncodedPath(getString(R.string.gf_api_path))
+                .appendEncodedPath(getString(R.string.gf_api_app_users_path))
+                .appendEncodedPath(getString(R.string.gf_api_app_users_self_path))
+                .appendEncodedPath(getString(R.string.gf_api_app_users_complete_path))
+                .appendQueryParameter("access-token", accessToken)
+                .build().toString();
+
+        return request(url, User.class);
+    }
 }

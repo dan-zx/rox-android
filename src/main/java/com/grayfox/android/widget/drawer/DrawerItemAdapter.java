@@ -21,10 +21,11 @@ public class DrawerItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     private final List<DrawerItem> drawerItems;
 
     private OnItemClickListener listener;
-    private Integer selectedPosition;
+    private int selectedPosition;
 
     public DrawerItemAdapter(List<DrawerItem> drawerItems) {
         this.drawerItems = drawerItems;
+        selectedPosition = -1;
     }
 
     public void setOnItemClickListener(OnItemClickListener listener) {
@@ -65,7 +66,7 @@ public class DrawerItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 DrawerHeader drawerHeader = (DrawerHeader) drawerItem;
                 if (drawerHeader.getUser() != null) {
                     HeaderViewHolder headerViewHolder = (HeaderViewHolder) holder;
-                    String userFullName = drawerHeader.getUser().getLastName() == null || drawerHeader.getUser().getLastName().trim().isEmpty() ? drawerHeader.getUser() .getName() : new StringBuilder().append(drawerHeader.getUser().getName()).append(" ").append(drawerHeader.getUser().getLastName()).toString();
+                    String userFullName = drawerHeader.getUser().getLastName() == null || drawerHeader.getUser().getLastName().trim().isEmpty() ? drawerHeader.getUser().getName() : new StringBuilder().append(drawerHeader.getUser().getName()).append(" ").append(drawerHeader.getUser().getLastName()).toString();
                     headerViewHolder.userNameTextView.setText(userFullName);
                     Picasso.with(context)
                             .load(drawerHeader.getUser().getPhotoUrl())
@@ -77,7 +78,7 @@ public class DrawerItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 DrawerOption drawerOption = (DrawerOption) drawerItem;
                 OptionViewHolder optionViewHolder = (OptionViewHolder) holder;
                 optionViewHolder.nameTextView.setText(drawerOption.getNameRes());
-                if (selectedPosition != null && selectedPosition == position) {
+                if (selectedPosition == position) {
                     optionViewHolder.itemView.setBackgroundColor(context.getResources().getColor(R.color.selected_background));
                     optionViewHolder.nameTextView.setTextColor(context.getResources().getColor(R.color.primary_selected_text));
                     Drawable selectedIcon = context.getResources().getDrawable(drawerOption.getSelectedIconRes());
@@ -107,11 +108,11 @@ public class DrawerItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         return drawerItems.get(position).getType().ordinal();
     }
 
-    public Integer getSelectedPosition() {
+    public int getSelectedPosition() {
         return selectedPosition;
     }
 
-    public void setSelectedPosition(Integer position) {
+    public void setSelectedPosition(int position) {
         selectedPosition = position;
         notifyDataSetChanged();
     }

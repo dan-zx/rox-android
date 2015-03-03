@@ -19,6 +19,7 @@ import com.grayfox.android.client.model.User;
 import com.grayfox.android.client.task.GetSelfUserAsyncTask;
 import com.grayfox.android.fragment.ExploreByFriendsLikesFragment;
 import com.grayfox.android.fragment.ExploreByLikesFragment;
+import com.grayfox.android.fragment.ProfileFragment;
 import com.grayfox.android.widget.drawer.DrawerHeader;
 import com.grayfox.android.widget.drawer.DrawerItem;
 import com.grayfox.android.widget.drawer.DrawerItemAdapter;
@@ -147,7 +148,12 @@ public class MainActivity extends RoboActionBarActivity {
     private void onDrawerMenuSelected(int position) {
         switch (position) {
             case 0:
-                if (user != null) startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.foursquare_user_url, user.getFoursquareId()))));
+                if (user != null) {
+                    invalidateOptionsMenu();
+                    setTitle(R.string.profile_title);
+                    setupFragment(new ProfileFragment());
+                    drawerItemAdapter.setSelectedPosition(-1);
+                }
                 drawerLayout.closeDrawers();
                 break;
             case 3:

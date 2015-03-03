@@ -1,11 +1,7 @@
 package com.grayfox.android.widget;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.Color;
-import android.graphics.Paint;
 import android.graphics.PorterDuff;
-import android.graphics.drawable.BitmapDrawable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,9 +11,8 @@ import android.widget.TextView;
 
 import com.grayfox.android.R;
 import com.grayfox.android.client.model.Recommendation;
-
+import com.grayfox.android.widget.util.ColorTransformation;
 import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Transformation;
 
 public class RecommendationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
@@ -69,7 +64,7 @@ public class RecommendationAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             case BOTTOM:
                 BottomViewHolder bottomViewHolder = (BottomViewHolder) holder;
                 Picasso.with(context)
-                        .load(recommendation.getPoiSequence()[position-1].getCategories()[0].getIconUrl())
+                        .load(recommendation.getPoiSequence()[position - 1].getCategories()[0].getIconUrl())
                         .transform(new ColorTransformation(context, R.color.secondary_text))
                         .placeholder(R.drawable.ic_generic_category)
                         .into(bottomViewHolder.categoryImageView);
@@ -128,35 +123,6 @@ public class RecommendationAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             categoryImageView = (ImageView) itemView.findViewById(R.id.category_image);
             poiNameView = (TextView) itemView.findViewById(R.id.poi_name);
             categoryNameView = (TextView) itemView.findViewById(R.id.category_name);
-        }
-    }
-
-    private static class ColorTransformation implements Transformation {
-
-        private final Context context;
-        private final int colorId;
-
-        private ColorTransformation(Context context, int colorId) {
-            this.context = context;
-            this.colorId = colorId;
-        }
-
-        @Override
-        public Bitmap transform(Bitmap source) {
-            int [] allpixels = new int [source.getHeight() * source.getWidth()];
-            source.getPixels(allpixels, 0, source.getWidth(), 0, 0, source.getWidth(), source.getHeight());
-            for(int i = 0; i < allpixels.length; i++) {
-                if( allpixels[i] != Color.TRANSPARENT) allpixels[i] = context.getResources().getColor(colorId);
-            }
-            Bitmap result = Bitmap.createBitmap(source.getWidth(), source.getHeight(), Bitmap.Config.ARGB_8888);
-            result.setPixels(allpixels, 0, source.getWidth(), 0, 0, source.getWidth(), source.getHeight());
-            source.recycle();
-            return result;
-        }
-
-        @Override
-        public String key() {
-            return "toColor()";
         }
     }
 }

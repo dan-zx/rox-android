@@ -28,6 +28,11 @@
     <!-- RouteDetailFragment -->
     <string name="action_view_in_map">View in map</string>
 
+    <!-- ProfileFragment -->
+    <string name="profile_title">Profile</string>
+    <string name="profile_user_friends_tab">Friends</string>
+    <string name="profile_user_likes_tab">Likes</string>
+
     <string name="current_location">Current location</string>
 
     <!-- Drawer -->
