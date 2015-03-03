@@ -16,7 +16,6 @@
             android:layout_width="70dp"
             android:layout_height="70dp"
             android:layout_alignParentTop="true"
-            android:layout_marginBottom="20dp"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"/>
 
@@ -31,6 +30,11 @@
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:textColor="@android:color/white"
             android:textStyle="bold"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:layout_below="@id/profile_image"/>
     </RelativeLayout>
 
     <com.getbase.floatingactionbutton.FloatingActionButton
@@ -50,8 +54,8 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:layout_below="@id/header_layout"
-        android:background="@android:color/transparent"
         android:layout_marginTop="10dp"
+        android:background="@android:color/transparent"
         psts:pstsIndicatorColor="@color/primary"
         psts:pstsShouldExpand="true"/>
 
