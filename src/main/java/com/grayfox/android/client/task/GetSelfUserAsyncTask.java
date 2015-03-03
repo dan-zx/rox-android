@@ -17,7 +17,6 @@ public abstract class GetSelfUserAsyncTask extends BaseAsyncTask<User> {
     @Inject private UsersApi usersApi;
     @Inject private UserDao userDao;
 
-    @Inject
     protected GetSelfUserAsyncTask(Context context) {
         super(context);
     }

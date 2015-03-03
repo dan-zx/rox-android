@@ -9,19 +9,23 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.astuetz.PagerSlidingTabStrip;
+
 import com.getbase.floatingactionbutton.FloatingActionButton;
+
 import com.grayfox.android.R;
 import com.grayfox.android.client.model.Category;
 import com.grayfox.android.client.model.User;
-import com.grayfox.android.client.task.GetCompletSelfUserAsyncTask;
+import com.grayfox.android.client.task.CompleteUserAsyncTask;
 import com.grayfox.android.widget.FriendAdapter;
 import com.grayfox.android.widget.LikeAdapter;
+
 import com.squareup.picasso.Picasso;
+
 import de.hdodenhof.circleimageview.CircleImageView;
+
 import roboguice.fragment.RoboFragment;
 import roboguice.inject.InjectView;
 
@@ -29,7 +33,8 @@ import java.lang.ref.WeakReference;
 
 public class ProfileFragment extends RoboFragment {
 
-    @InjectView(R.id.header_layout) private RelativeLayout headerLayout;
+    private static final String USER_ARG = "USER";
+
     @InjectView(R.id.profile_image) private CircleImageView profileImageView;
     @InjectView(R.id.user_name)     private TextView userNameTextView;
     @InjectView(R.id.edit_button)   private FloatingActionButton editButton;
@@ -37,8 +42,16 @@ public class ProfileFragment extends RoboFragment {
     @InjectView(R.id.view_pager)    private ViewPager viewPager;
     @InjectView(R.id.progress_bar)  private ProgressBar progressBar;
 
-    private GetSelfUserTask task;
+    private CompleteUserTask task;
     private User user;
+
+    public static ProfileFragment newInstance(User user) {
+        ProfileFragment fragment = new ProfileFragment();
+        Bundle args = new Bundle();
+        args.putSerializable(USER_ARG, user);
+        fragment.setArguments(args);
+        return fragment;
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -54,13 +67,15 @@ public class ProfileFragment extends RoboFragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        setUpUserArg();
         if (savedInstanceState == null) {
-            task = new GetSelfUserTask(this);
-            task.execute();
+            task = new CompleteUserTask(this);
+            task.currentUser(user);
+            task.request();
         } else {
             if (task != null && task.isActive()) onPreExecuteTask();
             else if (user != null) {
-                onUserAcquired(user);
+                onCompleteUser(user);
                 onTaskFinally();
             }
         }
@@ -72,26 +87,26 @@ public class ProfileFragment extends RoboFragment {
         if (task != null && task.isActive()) task.cancel(true);
     }
 
-    private void onPreExecuteTask() {
-        headerLayout.setVisibility(View.GONE);
-        editButton.setVisibility(View.GONE);
-        pagerStrip.setVisibility(View.GONE);
-        viewPager.setVisibility(View.GONE);
-        progressBar.setVisibility(View.VISIBLE);
-    }
-
-    private void onUserAcquired(User user) {
-        this.user = user;
-        headerLayout.setVisibility(View.VISIBLE);
-        editButton.setVisibility(View.VISIBLE);
-        pagerStrip.setVisibility(View.VISIBLE);
-        viewPager.setVisibility(View.VISIBLE);
+    private void setUpUserArg() {
+        user = getUserArg();
         String userFullName = user.getLastName() == null || user.getLastName().trim().isEmpty() ? user.getName() : new StringBuilder().append(user.getName()).append(" ").append(user.getLastName()).toString();
         userNameTextView.setText(userFullName);
         Picasso.with(getActivity())
                 .load(user.getPhotoUrl())
                 .placeholder(R.drawable.ic_contact_picture)
                 .into(profileImageView);
+    }
+
+    private void onPreExecuteTask() {
+        pagerStrip.setVisibility(View.GONE);
+        viewPager.setVisibility(View.GONE);
+        progressBar.setVisibility(View.VISIBLE);
+    }
+
+    private void onCompleteUser(User user) {
+        this.user = user;
+        pagerStrip.setVisibility(View.VISIBLE);
+        viewPager.setVisibility(View.VISIBLE);
         viewPager.setAdapter(new SwipeFragmentsAdapter()
                 .setFriendsFragment(FriendsFragment.newInstance(user.getFriends()))
                 .setLikesFragment(LikesFragment.newInstance(user.getLikes())));
@@ -102,11 +117,15 @@ public class ProfileFragment extends RoboFragment {
         progressBar.setVisibility(View.GONE);
     }
 
-    private static class GetSelfUserTask extends GetCompletSelfUserAsyncTask {
+    private User getUserArg() {
+        return (User) getArguments().getSerializable(USER_ARG);
+    }
+
+    private static class CompleteUserTask extends CompleteUserAsyncTask {
 
         private WeakReference<ProfileFragment> reference;
 
-        private GetSelfUserTask(ProfileFragment fragment) {
+        private CompleteUserTask(ProfileFragment fragment) {
             super(fragment.getActivity().getApplicationContext());
             reference = new WeakReference<>(fragment);
         }
@@ -122,7 +141,7 @@ public class ProfileFragment extends RoboFragment {
         protected void onSuccess(User user) throws Exception {
             super.onSuccess(user);
             ProfileFragment fragment = reference.get();
-            if (fragment != null) fragment.onUserAcquired(user);
+            if (fragment != null) fragment.onCompleteUser(user);
         }
 
         @Override

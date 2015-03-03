@@ -2,7 +2,6 @@ package com.grayfox.android.activity;
 
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -151,7 +150,7 @@ public class MainActivity extends RoboActionBarActivity {
                 if (user != null) {
                     invalidateOptionsMenu();
                     setTitle(R.string.profile_title);
-                    setupFragment(new ProfileFragment());
+                    setupFragment(ProfileFragment.newInstance(user));
                     drawerItemAdapter.setSelectedPosition(-1);
                 }
                 drawerLayout.closeDrawers();
