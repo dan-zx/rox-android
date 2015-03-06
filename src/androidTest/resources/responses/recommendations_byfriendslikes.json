@@ -2,7 +2,7 @@
    "response":[
       {
          "type":"SOCIAL",
-         "reason":"A tu amigo Alberto Morales le gusta Restaurante mexicano",
+         "reason":"A tu amigo John Doe le gusta Restaurante mexicano",
          "poiSequence":[
             {
                "name":"Antojitos Vicky",
@@ -19,7 +19,7 @@
                ]
             },
             {
-               "name":"Centro Comercial AngelÃ³polis",
+               "name":"Centro Comercial Angelópolis",
                "location":{
                   "latitude":19.031720155946587,
                   "longitude":-98.23283101009555
@@ -46,10 +46,10 @@
       },
       {
          "type":"SOCIAL",
-         "reason":"A tu amigo Miguel Nieva le gusta Restaurante mexicano",
+         "reason":"A tu amigo Jane Doe le gusta Restaurante mexicano",
          "poiSequence":[
             {
-               "name":"Cocina EconÃ³mica La Casita",
+               "name":"Cocina Económica La Casita",
                "location":{
                   "latitude":19.006396510172955,
                   "longitude":-98.20425510406494

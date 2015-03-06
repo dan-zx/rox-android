@@ -13,7 +13,7 @@ import android.widget.TextView;
 import com.grayfox.android.R;
 import com.grayfox.android.client.model.Category;
 import com.grayfox.android.client.model.User;
-import com.grayfox.android.client.task.GetFriendLikesAsyncTask;
+import com.grayfox.android.client.task.GetUserLikesAsyncTask;
 import com.grayfox.android.widget.LikeAdapter;
 
 import com.squareup.picasso.Picasso;
@@ -36,7 +36,7 @@ public class FriendProfileFragment extends RoboFragment {
     @InjectView(R.id.likes_list)     private RecyclerView likesList;
     @InjectView(R.id.no_likes_found) private TextView noLikesFoundText;
 
-    private GetFriendLikesAsyncTask task;
+    private GetUserLikesAsyncTask task;
     private User friend;
 
     public static FriendProfileFragment newInstance(User friend) {
@@ -124,7 +124,7 @@ public class FriendProfileFragment extends RoboFragment {
         return (User) getArguments().getSerializable(FRIEND_ARG);
     }
 
-    private static class GetFriendLikesTask extends GetFriendLikesAsyncTask {
+    private static class GetFriendLikesTask extends GetUserLikesAsyncTask {
 
         private WeakReference<FriendProfileFragment> reference;
 

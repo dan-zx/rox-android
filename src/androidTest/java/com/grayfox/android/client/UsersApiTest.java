@@ -7,6 +7,7 @@ import static org.mockito.Mockito.spy;
 import com.google.inject.Injector;
 
 import com.grayfox.android.R;
+import com.grayfox.android.client.model.Category;
 import com.grayfox.android.client.model.User;
 import com.grayfox.android.config.ConfigModule;
 
@@ -79,10 +80,10 @@ public class UsersApiTest {
     @Test
     public void testGetSelfUser() throws Exception {
         User user = new User();
-        user.setName("Daniel");
-        user.setLastName("Pedraza");
-        user.setPhotoUrl("https://irs3.4sqi.net/img/user/300x300/88260846-Q1M41BHXTDOTJJA3.jpg");
-        user.setFoursquareId("88260846");
+        user.setName("John");
+        user.setLastName("Doe");
+        user.setPhotoUrl("https://irs0.4sqi.net/img/user/923847.jpg");
+        user.setFoursquareId("923847");
 
         mockWebServer.enqueue(new MockResponse()
                 .setStatus("HTTP/1.1 200 OK")
@@ -96,6 +97,95 @@ public class UsersApiTest {
                 .setStatus("HTTP/1.1 401 Unauthorized")
                 .setBody(getJsonFrom("responses/error.json")));
         usersApi.awaitSelfUser("fakeAccessToken");
+    }
+
+    @Test
+    public void testGetSelfUserFriends() throws Exception {
+        User friend1 = new User();
+        friend1.setName("Jane");
+        friend1.setLastName("Doe");
+        friend1.setPhotoUrl("https://irs0.4sqi.net/img/user/234237.jpg");
+        friend1.setFoursquareId("234237");
+
+        User friend2 = new User();
+        friend2.setName("John");
+        friend2.setLastName("Doe");
+        friend2.setPhotoUrl("https://irs0.4sqi.net/img/user/543863.jpg");
+        friend2.setFoursquareId("543863");
+
+        User[] friends = {friend1, friend2};
+
+        mockWebServer.enqueue(new MockResponse()
+                .setStatus("HTTP/1.1 200 OK")
+                .setBody(getJsonFrom("responses/friends.json")));
+
+        assertThat(usersApi.awaitSelfUserFriends("fakeAccessToken")).isNotNull().isNotEmpty().hasSize(friends.length).isEqualTo(friends);
+    }
+
+    @Test(expected = ApiException.class)
+    public void testGetSelfUserFriendsError() throws Exception {
+        mockWebServer.enqueue(new MockResponse()
+                .setStatus("HTTP/1.1 401 Unauthorized")
+                .setBody(getJsonFrom("responses/error.json")));
+        usersApi.awaitSelfUserFriends("fakeAccessToken");
+    }
+
+    @Test
+    public void testGetSelfUserLikes() throws Exception {
+        Category like1 = new Category();
+        like1.setName("Restaurante italiano");
+        like1.setIconUrl("https://ss3.4sqi.net/img/categories_v2/food/default_88.png");
+        like1.setFoursquareId("4bf58dd8d48988d110941735");
+
+        Category like2 = new Category();
+        like2.setName("Bowling");
+        like2.setIconUrl("https://ss3.4sqi.net/img/categories_v2/arts_entertainment/default_88.png");
+        like2.setFoursquareId("4bf58dd8d48988d1e4931735");
+
+        Category[] likes = {like1, like2};
+
+        mockWebServer.enqueue(new MockResponse()
+                .setStatus("HTTP/1.1 200 OK")
+                .setBody(getJsonFrom("responses/likes.json")));
+
+        assertThat(usersApi.awaitSelfUserLikes("fakeAccessToken")).isNotNull().isNotEmpty().hasSize(likes.length).isEqualTo(likes);
+    }
+
+    @Test(expected = ApiException.class)
+    public void testGetSelfUserLikesError() throws Exception {
+        mockWebServer.enqueue(new MockResponse()
+                .setStatus("HTTP/1.1 401 Unauthorized")
+                .setBody(getJsonFrom("responses/error.json")));
+        usersApi.awaitSelfUserLikes("fakeAccessToken");
+    }
+
+    @Test
+    public void testGetUserLikes() throws Exception {
+        Category like1 = new Category();
+        like1.setName("Restaurante italiano");
+        like1.setIconUrl("https://ss3.4sqi.net/img/categories_v2/food/default_88.png");
+        like1.setFoursquareId("4bf58dd8d48988d110941735");
+
+        Category like2 = new Category();
+        like2.setName("Bowling");
+        like2.setIconUrl("https://ss3.4sqi.net/img/categories_v2/arts_entertainment/default_88.png");
+        like2.setFoursquareId("4bf58dd8d48988d1e4931735");
+
+        Category[] likes = {like1, like2};
+
+        mockWebServer.enqueue(new MockResponse()
+                .setStatus("HTTP/1.1 200 OK")
+                .setBody(getJsonFrom("responses/likes.json")));
+
+        assertThat(usersApi.awaitUserLikes("fakeAccessToken", "fakeFoursquareId")).isNotNull().isNotEmpty().hasSize(likes.length).isEqualTo(likes);
+    }
+
+    @Test(expected = ApiException.class)
+    public void testGetUserLikesError() throws Exception {
+        mockWebServer.enqueue(new MockResponse()
+                .setStatus("HTTP/1.1 401 Unauthorized")
+                .setBody(getJsonFrom("responses/error.json")));
+        usersApi.awaitUserLikes("fakeAccessToken", "fakeFoursquareId");
     }
 
     private String getJsonFrom(String file) throws Exception {

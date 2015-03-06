@@ -67,13 +67,11 @@ public class UsersApi extends BaseApi {
         return request(url, Category[].class);
     }
 
-    public Category[] awaitFriendLikes(String accessToken, String foursquareId) {
+    public Category[] awaitUserLikes(String accessToken, String foursquareId) {
         String url = new Uri.Builder().scheme(getString(R.string.gf_api_host_scheme))
                 .encodedAuthority(getString(R.string.gf_api_host))
                 .appendEncodedPath(getString(R.string.gf_api_path))
                 .appendEncodedPath(getString(R.string.gf_api_users_path))
-                .appendEncodedPath(getString(R.string.gf_api_users_self_path))
-                .appendEncodedPath(getString(R.string.gf_api_users_friend_path))
                 .appendEncodedPath(foursquareId)
                 .appendEncodedPath(getString(R.string.gf_api_users_likes_path))
                 .appendQueryParameter("access-token", accessToken)

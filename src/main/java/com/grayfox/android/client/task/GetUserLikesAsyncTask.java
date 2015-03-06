@@ -8,24 +8,24 @@ import com.grayfox.android.dao.AccessTokenDao;
 
 import javax.inject.Inject;
 
-public abstract class GetFriendLikesAsyncTask extends NetworkAsyncTask<Category[]> {
+public abstract class GetUserLikesAsyncTask extends NetworkAsyncTask<Category[]> {
 
     @Inject private AccessTokenDao accessTokenDao;
     @Inject private UsersApi usersApi;
 
     private String foursquareId;
 
-    protected GetFriendLikesAsyncTask(Context context) {
+    protected GetUserLikesAsyncTask(Context context) {
         super(context);
     }
 
-    public GetFriendLikesAsyncTask foursquareId(String foursquareId) {
+    public GetUserLikesAsyncTask foursquareId(String foursquareId) {
         this.foursquareId = foursquareId;
         return this;
     }
 
     @Override
     public Category[] call() throws Exception {
-        return usersApi.awaitFriendLikes(accessTokenDao.fetchAccessToken(), foursquareId);
+        return usersApi.awaitUserLikes(accessTokenDao.fetchAccessToken(), foursquareId);
     }
 }

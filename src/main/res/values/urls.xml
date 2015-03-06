@@ -14,7 +14,6 @@
     <string name="gf_api_users_self_path" translatable="false">self</string>
     <string name="gf_api_users_friends_path" translatable="false">friends</string>
     <string name="gf_api_users_likes_path" translatable="false">likes</string>
-    <string name="gf_api_users_friend_path" translatable="false">friend</string>
     <string name="gf_api_users_register_with_foursquare_path" translatable="false">register/foursquare</string>
 
     <!-- Recommendations API -->
