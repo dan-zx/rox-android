@@ -16,6 +16,7 @@ import com.astuetz.PagerSlidingTabStrip;
 import com.getbase.floatingactionbutton.FloatingActionButton;
 
 import com.grayfox.android.R;
+import com.grayfox.android.activity.FriendProfileActivity;
 import com.grayfox.android.client.model.Category;
 import com.grayfox.android.client.model.User;
 import com.grayfox.android.client.task.CompleteUserAsyncTask;
@@ -31,7 +32,7 @@ import roboguice.inject.InjectView;
 
 import java.lang.ref.WeakReference;
 
-public class ProfileFragment extends RoboFragment {
+public class UserProfileFragment extends RoboFragment {
 
     private static final String USER_ARG = "USER";
 
@@ -45,8 +46,8 @@ public class ProfileFragment extends RoboFragment {
     private CompleteUserTask task;
     private User user;
 
-    public static ProfileFragment newInstance(User user) {
-        ProfileFragment fragment = new ProfileFragment();
+    public static UserProfileFragment newInstance(User user) {
+        UserProfileFragment fragment = new UserProfileFragment();
         Bundle args = new Bundle();
         args.putSerializable(USER_ARG, user);
         fragment.setArguments(args);
@@ -61,7 +62,7 @@ public class ProfileFragment extends RoboFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_profile, container, false);
+        return inflater.inflate(R.layout.fragment_user_profile, container, false);
     }
 
     @Override
@@ -123,9 +124,9 @@ public class ProfileFragment extends RoboFragment {
 
     private static class CompleteUserTask extends CompleteUserAsyncTask {
 
-        private WeakReference<ProfileFragment> reference;
+        private WeakReference<UserProfileFragment> reference;
 
-        private CompleteUserTask(ProfileFragment fragment) {
+        private CompleteUserTask(UserProfileFragment fragment) {
             super(fragment.getActivity().getApplicationContext());
             reference = new WeakReference<>(fragment);
         }
@@ -133,21 +134,21 @@ public class ProfileFragment extends RoboFragment {
         @Override
         protected void onPreExecute() throws Exception {
             super.onPreExecute();
-            ProfileFragment fragment = reference.get();
+            UserProfileFragment fragment = reference.get();
             if (fragment != null) fragment.onPreExecuteTask();
         }
 
         @Override
         protected void onSuccess(User user) throws Exception {
             super.onSuccess(user);
-            ProfileFragment fragment = reference.get();
+            UserProfileFragment fragment = reference.get();
             if (fragment != null) fragment.onCompleteUser(user);
         }
 
         @Override
         protected void onFinally() throws RuntimeException {
             super.onFinally();
-            ProfileFragment fragment = reference.get();
+            UserProfileFragment fragment = reference.get();
             if (fragment != null) fragment.onTaskFinally();
         }
     }
@@ -214,7 +215,15 @@ public class ProfileFragment extends RoboFragment {
             super.onViewCreated(view, savedInstanceState);
             getRecyclerView().setHasFixedSize(true);
             getRecyclerView().setLayoutManager(new LinearLayoutManager(getActivity()));
-            getRecyclerView().setAdapter(new FriendAdapter(getFriendsArg()));
+            final User[] friends = getFriendsArg();
+            FriendAdapter adapter = new FriendAdapter(friends);
+            adapter.setOnItemClickListener(new FriendAdapter.OnItemClickListener() {
+                @Override
+                public void onClick(int position) {
+                    startActivity(FriendProfileActivity.getIntent(getActivity(), friends[position]));
+                }
+            });
+            getRecyclerView().setAdapter(adapter);
         }
 
         private User[] getFriendsArg() {

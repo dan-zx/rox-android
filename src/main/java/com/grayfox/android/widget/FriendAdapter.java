@@ -14,6 +14,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class FriendAdapter extends RecyclerView.Adapter<FriendAdapter.ViewHolder> {
 
+    private OnItemClickListener listener;
     private final User[] friends;
 
     public FriendAdapter(User[] friends) {
@@ -27,8 +28,14 @@ public class FriendAdapter extends RecyclerView.Adapter<FriendAdapter.ViewHolder
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(ViewHolder holder, final int position) {
         Context context = holder.itemView.getContext();
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (listener != null) listener.onClick(position);
+            }
+        });
         String userFullName = friends[position].getLastName() == null || friends[position].getLastName().trim().isEmpty() ? friends[position].getName() : new StringBuilder().append(friends[position].getName()).append(" ").append(friends[position].getLastName()).toString();
         holder.userNameTextView.setText(userFullName);
         Picasso.with(context)
@@ -42,6 +49,10 @@ public class FriendAdapter extends RecyclerView.Adapter<FriendAdapter.ViewHolder
         return friends.length;
     }
 
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        this.listener = listener;
+    }
+
     protected static class ViewHolder extends RecyclerView.ViewHolder {
 
         private CircleImageView profileImageView;
@@ -52,5 +63,9 @@ public class FriendAdapter extends RecyclerView.Adapter<FriendAdapter.ViewHolder
             profileImageView = (CircleImageView) itemView.findViewById(R.id.profile_image);
             userNameTextView = (TextView) itemView.findViewById(R.id.user_name);
         }
+    }
+
+    public static interface OnItemClickListener {
+        void onClick(int position);
     }
 }

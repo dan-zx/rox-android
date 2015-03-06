@@ -18,7 +18,7 @@ import com.grayfox.android.client.model.User;
 import com.grayfox.android.client.task.GetSelfUserAsyncTask;
 import com.grayfox.android.fragment.ExploreByFriendsLikesFragment;
 import com.grayfox.android.fragment.ExploreByLikesFragment;
-import com.grayfox.android.fragment.ProfileFragment;
+import com.grayfox.android.fragment.UserProfileFragment;
 import com.grayfox.android.widget.drawer.DrawerHeader;
 import com.grayfox.android.widget.drawer.DrawerItem;
 import com.grayfox.android.widget.drawer.DrawerItemAdapter;
@@ -150,7 +150,7 @@ public class MainActivity extends RoboActionBarActivity {
                 if (user != null) {
                     invalidateOptionsMenu();
                     setTitle(R.string.profile_title);
-                    setupFragment(ProfileFragment.newInstance(user));
+                    setupFragment(UserProfileFragment.newInstance(user));
                     drawerItemAdapter.setSelectedPosition(-1);
                 }
                 drawerLayout.closeDrawers();

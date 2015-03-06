@@ -31,7 +31,7 @@ public class SettingsActivity extends RoboActionBarActivity {
         }
     }
 
-    private static class SettingsFragment extends RoboPreferenceFragment {
+    public static class SettingsFragment extends RoboPreferenceFragment {
 
         @Override
         public void onCreate(Bundle savedInstanceState) {
