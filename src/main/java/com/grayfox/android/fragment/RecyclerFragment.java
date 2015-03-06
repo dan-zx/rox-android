@@ -5,6 +5,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.grayfox.android.R;
 import roboguice.fragment.RoboFragment;
@@ -12,7 +13,8 @@ import roboguice.inject.InjectView;
 
 public class RecyclerFragment extends RoboFragment {
 
-    @InjectView(R.id.list) private RecyclerView recyclerView;
+    @InjectView(R.id.no_items) private TextView noItemsTextView;
+    @InjectView(R.id.list)     private RecyclerView recyclerView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -21,5 +23,9 @@ public class RecyclerFragment extends RoboFragment {
 
     protected RecyclerView getRecyclerView() {
         return recyclerView;
+    }
+
+    protected TextView getNoItemsTextView() {
+        return noItemsTextView;
     }
 }

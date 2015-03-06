@@ -1,6 +1,7 @@
 package com.grayfox.android.client.task;
 
 import android.content.Context;
+import android.widget.Toast;
 
 import roboguice.util.RoboAsyncTask;
 
@@ -26,6 +27,8 @@ public abstract class BaseAsyncTask<T> extends RoboAsyncTask<T> {
     @Override
     protected void onException(Exception e) throws RuntimeException {
         isActive = false;
+        Toast.makeText(getContext().getApplicationContext(),
+                e.getMessage(), Toast.LENGTH_LONG).show();
     }
 
     @Override

@@ -216,14 +216,20 @@ public class UserProfileFragment extends RoboFragment {
             getRecyclerView().setHasFixedSize(true);
             getRecyclerView().setLayoutManager(new LinearLayoutManager(getActivity()));
             final User[] friends = getFriendsArg();
-            FriendAdapter adapter = new FriendAdapter(friends);
-            adapter.setOnItemClickListener(new FriendAdapter.OnItemClickListener() {
-                @Override
-                public void onClick(int position) {
-                    startActivity(FriendProfileActivity.getIntent(getActivity(), friends[position]));
-                }
-            });
-            getRecyclerView().setAdapter(adapter);
+            if (friends.length == 0) {
+                getNoItemsTextView().setText(R.string.no_friends_found);
+                getRecyclerView().setVisibility(View.GONE);
+            } else {
+                getNoItemsTextView().setVisibility(View.GONE);
+                FriendAdapter adapter = new FriendAdapter(friends);
+                adapter.setOnItemClickListener(new FriendAdapter.OnItemClickListener() {
+                    @Override
+                    public void onClick(int position) {
+                        startActivity(FriendProfileActivity.getIntent(getActivity(), friends[position]));
+                    }
+                });
+                getRecyclerView().setAdapter(adapter);
+            }
         }
 
         private User[] getFriendsArg() {
@@ -252,7 +258,14 @@ public class UserProfileFragment extends RoboFragment {
             super.onViewCreated(view, savedInstanceState);
             getRecyclerView().setHasFixedSize(true);
             getRecyclerView().setLayoutManager(new LinearLayoutManager(getActivity()));
-            getRecyclerView().setAdapter(new LikeAdapter(getLikesArg()));
+            Category[] likes = getLikesArg();
+            if (likes.length == 0) {
+                getNoItemsTextView().setText(R.string.no_likes_found);
+                getRecyclerView().setVisibility(View.GONE);
+            } else {
+                getNoItemsTextView().setVisibility(View.GONE);
+                getRecyclerView().setAdapter(new LikeAdapter(likes));
+            }
         }
 
         private Category[] getLikesArg() {

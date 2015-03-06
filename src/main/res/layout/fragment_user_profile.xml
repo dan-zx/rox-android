@@ -57,7 +57,7 @@
         android:layout_marginTop="10dp"
         android:background="@android:color/transparent"
         psts:pstsIndicatorColor="@color/primary"
-        psts:pstsShouldExpand="true"/>
+        psts:pstsPaddingMiddle="true"/>
 
     <android.support.v4.view.ViewPager
         android:id="@+id/view_pager"
