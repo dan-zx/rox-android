@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string-array name="create_db_schema">
+    <string-array name="create_db_schema" translatable="false">
         <item>
             CREATE TABLE user (
                 _id INTEGER PRIMARY KEY,
