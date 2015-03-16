@@ -1,6 +1,6 @@
 {
-   "error":{
-      "errorCode":"user.invalid.error",
-      "errorMessage":"Usuario no registrado. Primero registrese en https://gray-fox.herokuapp.com/api/users/register/foursquare."
-   }
+    "error":{
+        "errorCode":"user.invalid.error",
+        "errorMessage":"Usuario no registrado. Primero registrese en https://gray-fox.herokuapp.com/api/users/register/foursquare."
+    }
 }

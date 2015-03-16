@@ -1,48 +1,48 @@
 {
-   "response":[
-      {
-         "type":"SELF",
-         "reason":"A tí te gusta Local de tacos",
-         "poiSequence":[
-            {
-               "name":"MaxiTablitas",
-               "location":{
-                  "latitude":19.007836941111353,
-                  "longitude":-98.2044267654419
-               },
-               "foursquareId":"4bc25072f8219c74f1b2b410",
-               "categories":[
-                  {
-                     "name":"Local de tacos",
-                     "foursquareId":"4bf58dd8d48988d151941735"
-                  }
-               ]
-            },
-            {
-               "name":"Plaza Dorada",
-               "location":{
-                  "latitude":19.02819625041115,
-                  "longitude":-98.20248936294101
-               },
-               "foursquareId":"4c50ae19375c0f473d46b292",
-               "categories":[
-                  {
-                     "name":"Centro comercial",
-                     "foursquareId":"4bf58dd8d48988d1fd941735"
-                  }
-               ]
-            }
-         ],
-         "routePoints":[
-            {
-               "latitude":18.9901,
-               "longitude":-98.20636
-            },
-            {
-               "latitude":18.98993,
-               "longitude":-98.20563000000001
-            }
-         ]
-      }
-   ]
+    "response":[
+        {
+            "type":"SELF",
+            "reason":"A tí te gusta Local de tacos",
+            "poiSequence":[
+                {
+                    "name":"MaxiTablitas",
+                    "location":{
+                        "latitude":19.007836941111353,
+                        "longitude":-98.2044267654419
+                    },
+                    "foursquareId":"4bc25072f8219c74f1b2b410",
+                    "categories":[
+                        {
+                            "name":"Local de tacos",
+                            "foursquareId":"4bf58dd8d48988d151941735"
+                        }
+                    ]
+                },
+                {
+                    "name":"Plaza Dorada",
+                    "location":{
+                        "latitude":19.02819625041115,
+                        "longitude":-98.20248936294101
+                    },
+                    "foursquareId":"4c50ae19375c0f473d46b292",
+                    "categories":[
+                        {
+                            "name":"Centro comercial",
+                            "foursquareId":"4bf58dd8d48988d1fd941735"
+                        }
+                    ]
+                }
+            ],
+            "routePoints":[
+                {
+                    "latitude":18.9901,
+                    "longitude":-98.20636
+                },
+                {
+                    "latitude":18.98993,
+                    "longitude":-98.20563000000001
+                }
+            ]
+        }
+    ]
 }
