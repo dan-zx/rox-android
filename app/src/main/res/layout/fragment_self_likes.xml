@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+    <AutoCompleteTextView
+        android:id="@+id/like_search"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="4dp"
+        android:layout_marginRight="8dp"
+        android:drawableLeft="@drawable/ic_search"
+        android:drawablePadding="5dp"
+        android:hint="@string/add_more_likes"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/like_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/like_search"/>
+
+    <TextView
+        android:id="@+id/no_likes"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textStyle="italic"/>
+</RelativeLayout>

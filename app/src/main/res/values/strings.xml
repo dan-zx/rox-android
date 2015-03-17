@@ -34,8 +34,10 @@
     <string name="profile_user_likes_tab">Likes</string>
     <string name="no_friends_found">No friends yet :(</string>
     <string name="no_likes_found">No likes yet :(</string>
+    <string name="add_more_likes">Add more likes</string>
 
     <string name="current_location">Current location</string>
+    <string name="remove_item">Remove</string>
 
     <!-- Drawer -->
     <string name="drawer_open">Menu opened</string>

@@ -5,9 +5,12 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AutoCompleteTextView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -17,12 +20,15 @@ import com.getbase.floatingactionbutton.FloatingActionButton;
 
 import com.grayfox.android.app.R;
 import com.grayfox.android.app.activity.FriendProfileActivity;
+import com.grayfox.android.app.widget.CategoryFilterableAdapter;
 import com.grayfox.android.app.widget.FriendAdapter;
 import com.grayfox.android.app.widget.LikeAdapter;
 import com.grayfox.android.client.model.Category;
 import com.grayfox.android.client.model.User;
 import com.grayfox.android.client.task.CompleteUserAsyncTask;
+import com.grayfox.android.client.task.PostAddLikeAsyncTask;
 
+import com.grayfox.android.client.task.PostRemoveLikeAsyncTask;
 import com.squareup.picasso.Picasso;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -196,10 +202,13 @@ public class UserProfileFragment extends RoboFragment {
         }
     }
 
-    public static class FriendsFragment extends RecyclerFragment {
+    public static class FriendsFragment extends RoboFragment {
 
         private static final String FRIENDS_LENGTH_ARG = "FRIENDS_LENGTH";
         private static final String FRIENDS_FORMAT_ARG = "FRIEND_%d";
+
+        @InjectView(R.id.no_friends)  private TextView noFriendsTextView;
+        @InjectView(R.id.friend_list) private RecyclerView friendsListView;
 
         private static FriendsFragment newInstance(User[] friends) {
             FriendsFragment fragment = new FriendsFragment();
@@ -211,16 +220,21 @@ public class UserProfileFragment extends RoboFragment {
         }
 
         @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+            return inflater.inflate(R.layout.fragment_self_friends, container, false);
+        }
+
+        @Override
         public void onViewCreated(View view, Bundle savedInstanceState) {
             super.onViewCreated(view, savedInstanceState);
-            getRecyclerView().setHasFixedSize(true);
-            getRecyclerView().setLayoutManager(new LinearLayoutManager(getActivity()));
+            friendsListView.setHasFixedSize(true);
+            friendsListView.setLayoutManager(new LinearLayoutManager(getActivity()));
             final User[] friends = getFriendsArg();
             if (friends.length == 0) {
-                getNoItemsTextView().setText(R.string.no_friends_found);
-                getRecyclerView().setVisibility(View.GONE);
+                noFriendsTextView.setText(R.string.no_friends_found);
+                friendsListView.setVisibility(View.GONE);
             } else {
-                getNoItemsTextView().setVisibility(View.GONE);
+                noFriendsTextView.setVisibility(View.GONE);
                 FriendAdapter adapter = new FriendAdapter(friends);
                 adapter.setOnItemClickListener(new FriendAdapter.OnItemClickListener() {
                     @Override
@@ -228,7 +242,7 @@ public class UserProfileFragment extends RoboFragment {
                         startActivity(FriendProfileActivity.getIntent(getActivity(), friends[position]));
                     }
                 });
-                getRecyclerView().setAdapter(adapter);
+                friendsListView.setAdapter(adapter);
             }
         }
 
@@ -239,10 +253,17 @@ public class UserProfileFragment extends RoboFragment {
         }
     }
 
-    public static class LikesFragment extends RecyclerFragment {
+    public static class LikesFragment extends RoboFragment {
 
         private static final String LIKES_LENGTH_ARG = "LIKES_LENGTH";
         private static final String LIKES_FORMAT_ARG = "LIKE_%d";
+
+        @InjectView(R.id.like_search) private AutoCompleteTextView likeSearchView;
+        @InjectView(R.id.like_list)   private RecyclerView likeList;
+        @InjectView(R.id.no_likes)    private TextView noLikesTextView;
+
+        private CategoryFilterableAdapter categoryAdapter;
+        private LikeAdapter likeAdapter;
 
         private static LikesFragment newInstance(Category[] likes) {
             LikesFragment fragment = new LikesFragment();
@@ -254,18 +275,55 @@ public class UserProfileFragment extends RoboFragment {
         }
 
         @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+            return inflater.inflate(R.layout.fragment_self_likes, container, false);
+        }
+
+        @Override
         public void onViewCreated(View view, Bundle savedInstanceState) {
             super.onViewCreated(view, savedInstanceState);
-            getRecyclerView().setHasFixedSize(true);
-            getRecyclerView().setLayoutManager(new LinearLayoutManager(getActivity()));
+            categoryAdapter = new CategoryFilterableAdapter(getActivity());
+            likeSearchView.setAdapter(categoryAdapter);
+            likeSearchView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+                    onSuggestionClicked(position);
+                }
+            });
+            likeList.setLayoutManager(new LinearLayoutManager(getActivity()));
             Category[] likes = getLikesArg();
             if (likes.length == 0) {
-                getNoItemsTextView().setText(R.string.no_likes_found);
-                getRecyclerView().setVisibility(View.GONE);
+                noLikesTextView.setText(R.string.no_likes_found);
+                likeList.setVisibility(View.GONE);
             } else {
-                getNoItemsTextView().setVisibility(View.GONE);
-                getRecyclerView().setAdapter(new LikeAdapter(likes));
+                noLikesTextView.setVisibility(View.GONE);
+                likeAdapter = new LikeAdapter(likes);
+                likeAdapter.setEditable(true);
+                likeAdapter.setOnRemoveLikeListener(new LikeAdapter.OnRemoveLikeListener() {
+                    @Override
+                    public void onRemove(Category like) {
+                        onRemoveLike(like);
+                    }
+                });
+                likeList.setAdapter(likeAdapter);
             }
+        }
+
+        private void onSuggestionClicked(int position) {
+            Category category = categoryAdapter.getItem(position);
+            likeSearchView.setText(category.getName());
+            if (likeAdapter.add(category)) {
+                likeAdapter.notifyDataSetChanged();
+                new PostAddLikeAsyncTask(getActivity().getApplicationContext())
+                        .like(category)
+                        .request();
+            }
+        }
+
+        private void onRemoveLike(Category like) {
+            new PostRemoveLikeAsyncTask(getActivity().getApplicationContext())
+                    .like(like)
+                    .request();
         }
 
         private Category[] getLikesArg() {
