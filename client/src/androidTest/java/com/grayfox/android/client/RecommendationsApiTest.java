@@ -69,7 +69,7 @@ public class RecommendationsApiTest {
         location.setLongitude(-98.283187);
 
         mockWebServer.enqueue(new MockResponse()
-                .setStatus("HTTP/1.1 401 Unauthorized")
+                .setStatus("HTTP/1.1 500 Internal Server Error")
                 .setBody(getJsonFrom("responses/error.json")));
         recommendationsApi.awaitRecommendationsByLikes("fakeAccessToken", location, 3000, RecommendationsApi.Transportation.WALKING);
     }
@@ -93,7 +93,7 @@ public class RecommendationsApiTest {
         location.setLongitude(-98.283187);
 
         mockWebServer.enqueue(new MockResponse()
-                .setStatus("HTTP/1.1 401 Unauthorized")
+                .setStatus("HTTP/1.1 500 Internal Server Error")
                 .setBody(getJsonFrom("responses/error.json")));
         recommendationsApi.awaitRecommendationsByFriendsLikes("fakeAccessToken", location, 3000, RecommendationsApi.Transportation.WALKING);
     }

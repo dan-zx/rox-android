@@ -5,6 +5,7 @@ import android.net.Uri;
 
 import com.grayfox.android.client.model.AccessToken;
 import com.grayfox.android.client.model.Category;
+import com.grayfox.android.client.model.UpdateResult;
 import com.grayfox.android.client.model.User;
 
 public class UsersApi extends BaseApi {
@@ -68,11 +69,39 @@ public class UsersApi extends BaseApi {
                 .encodedAuthority(getString(R.string.gf_api_host))
                 .appendEncodedPath(getString(R.string.gf_api_path))
                 .appendEncodedPath(getString(R.string.gf_api_users_path))
-                .appendEncodedPath(foursquareId)
+                .appendPath(foursquareId)
                 .appendEncodedPath(getString(R.string.gf_api_users_likes_path))
                 .appendQueryParameter("access-token", accessToken)
                 .build().toString();
 
         return request(url, Category[].class);
+    }
+
+    public UpdateResult postAddLike(String accessToken, Category like) {
+        String url = new Uri.Builder().scheme(getString(R.string.gf_api_host_scheme))
+                .encodedAuthority(getString(R.string.gf_api_host))
+                .appendEncodedPath(getString(R.string.gf_api_path))
+                .appendEncodedPath(getString(R.string.gf_api_users_path))
+                .appendEncodedPath(getString(R.string.gf_api_users_self_path))
+                .appendEncodedPath(getString(R.string.gf_api_users_update_path))
+                .appendEncodedPath(getString(R.string.gf_api_users_addlike_path))
+                .appendQueryParameter("access-token", accessToken)
+                .build().toString();
+
+        return postUpdate(url, like);
+    }
+
+    public UpdateResult postRemoveLike(String accessToken, Category like) {
+        String url = new Uri.Builder().scheme(getString(R.string.gf_api_host_scheme))
+                .encodedAuthority(getString(R.string.gf_api_host))
+                .appendEncodedPath(getString(R.string.gf_api_path))
+                .appendEncodedPath(getString(R.string.gf_api_users_path))
+                .appendEncodedPath(getString(R.string.gf_api_users_self_path))
+                .appendEncodedPath(getString(R.string.gf_api_users_update_path))
+                .appendEncodedPath(getString(R.string.gf_api_users_removelike_path))
+                .appendQueryParameter("access-token", accessToken)
+                .build().toString();
+
+        return postUpdate(url, like);
     }
 }

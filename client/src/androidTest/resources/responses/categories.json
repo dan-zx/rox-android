@@ -1,0 +1,14 @@
+{
+    "response":[
+        {
+            "name":"Argentinian Restaurant",
+            "iconUrl":"https://ss3.4sqi.net/img/categories_v2/food/default_88.png",
+            "foursquareId":"4bf58dd8d48988d107941735"
+        },
+        {
+            "name":"Mexican Restaurant",
+            "iconUrl":"https://ss3.4sqi.net/img/categories_v2/food/default_88.png",
+            "foursquareId":"4bf58dd8d48988d1c1941735"
+        }
+    ]
+}

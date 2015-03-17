@@ -12,8 +12,11 @@ import com.grayfox.android.client.http.Charset;
 import com.grayfox.android.client.http.ContentType;
 import com.grayfox.android.client.http.Header;
 
+import com.grayfox.android.client.model.UpdateResult;
+import com.squareup.okhttp.MediaType;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
+import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.Response;
 
 import java.io.IOException;
@@ -22,6 +25,7 @@ import java.util.Locale;
 abstract class BaseApi {
 
     private static final String TAG = BaseApi.class.getSimpleName();
+    private static final MediaType JSON_MEDIA_TYPE = MediaType.parse("application/json; charset=utf-8");
 
     private final Context context;
 
@@ -55,6 +59,42 @@ abstract class BaseApi {
                 ApiResponse<T> apiResponse = new ApiResponse<>();
                 apiResponse.setError(error);
                 apiResponse.setResponse(responseObject);
+                if (apiResponse.getError() == null) return apiResponse.getResponse();
+                else {
+                    Log.e(TAG, "Response error -> " + apiResponse.getError());
+                    throw new ApiException(apiResponse.getError().getErrorMessage());
+                }
+            } else {
+                Log.e(TAG, "Null response");
+                throw new ApiException(getString(R.string.grayfox_api_request_error));
+            }
+        } catch (IOException ex) {
+            Log.e(TAG, "Error while making request", ex);
+            throw new ApiException(getString(R.string.network_request_error), ex);
+        }
+    }
+
+    protected UpdateResult postUpdate(String url, Object payload) {
+        Log.d(TAG, url);
+        Request request = new Request.Builder()
+                .url(url)
+                .post(RequestBody.create(JSON_MEDIA_TYPE, new Gson().toJson(payload)))
+                .header(Header.ACCEPT.getValue(), ContentType.APPLICATION_JSON.getMimeType())
+                .header(Header.ACCEPT_LANGUAGE.getValue(), Locale.getDefault().getLanguage())
+                .header(Header.ACCEPT_CHARSET.getValue(), Charset.UTF_8.getValue())
+                .header(Header.CONTENT_TYPE.getValue(), ContentType.APPLICATION_JSON.getMimeType())
+                .build();
+        try {
+            Response response = client.newCall(request).execute();
+            Log.d(TAG, "Response code -> " + response.code());
+            String json = response.body().string();
+            if (json != null) {
+                JsonObject obj = new JsonParser().parse(json).getAsJsonObject();
+                ApiResponse.ErrorResponse error = new Gson().fromJson(obj.get("error"), ApiResponse.ErrorResponse.class);
+                UpdateResult updateResponse = new Gson().fromJson(obj.get("response"), UpdateResult.class);
+                ApiResponse<UpdateResult> apiResponse = new ApiResponse<>();
+                apiResponse.setError(error);
+                apiResponse.setResponse(updateResponse);
                 if (apiResponse.getError() == null) return apiResponse.getResponse();
                 else {
                     Log.e(TAG, "Response error -> " + apiResponse.getError());

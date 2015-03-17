@@ -6,6 +6,7 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
 
 import com.grayfox.android.client.model.Category;
+import com.grayfox.android.client.model.UpdateResult;
 import com.grayfox.android.client.model.User;
 
 import com.squareup.okhttp.mockwebserver.MockResponse;
@@ -62,7 +63,7 @@ public class UsersApiTest {
     @Test(expected = ApiException.class)
     public void testRegisterError() throws Exception {
         mockWebServer.enqueue(new MockResponse()
-                .setStatus("HTTP/1.1 401 Unauthorized")
+                .setStatus("HTTP/1.1 500 Internal Server Error")
                 .setBody(getJsonFrom("responses/error.json")));
         usersApi.awaitAccessToken("fakeCode");
     }
@@ -84,7 +85,7 @@ public class UsersApiTest {
     @Test(expected = ApiException.class)
     public void testGetSelfUserError() throws Exception {
         mockWebServer.enqueue(new MockResponse()
-                .setStatus("HTTP/1.1 401 Unauthorized")
+                .setStatus("HTTP/1.1 500 Internal Server Error")
                 .setBody(getJsonFrom("responses/error.json")));
         usersApi.awaitSelfUser("fakeAccessToken");
     }
@@ -107,7 +108,7 @@ public class UsersApiTest {
 
         mockWebServer.enqueue(new MockResponse()
                 .setStatus("HTTP/1.1 200 OK")
-                .setBody(getJsonFrom("responses/friends.json")));
+                .setBody(getJsonFrom("responses/users.json")));
 
         assertThat(usersApi.awaitSelfUserFriends("fakeAccessToken")).isNotNull().isNotEmpty().hasSize(friends.length).isEqualTo(friends);
     }
@@ -115,7 +116,7 @@ public class UsersApiTest {
     @Test(expected = ApiException.class)
     public void testGetSelfUserFriendsError() throws Exception {
         mockWebServer.enqueue(new MockResponse()
-                .setStatus("HTTP/1.1 401 Unauthorized")
+                .setStatus("HTTP/1.1 500 Internal Server Error")
                 .setBody(getJsonFrom("responses/error.json")));
         usersApi.awaitSelfUserFriends("fakeAccessToken");
     }
@@ -123,20 +124,20 @@ public class UsersApiTest {
     @Test
     public void testGetSelfUserLikes() throws Exception {
         Category like1 = new Category();
-        like1.setName("Restaurante italiano");
+        like1.setName("Argentinian Restaurant");
         like1.setIconUrl("https://ss3.4sqi.net/img/categories_v2/food/default_88.png");
-        like1.setFoursquareId("4bf58dd8d48988d110941735");
+        like1.setFoursquareId("4bf58dd8d48988d107941735");
 
         Category like2 = new Category();
-        like2.setName("Bowling");
-        like2.setIconUrl("https://ss3.4sqi.net/img/categories_v2/arts_entertainment/default_88.png");
-        like2.setFoursquareId("4bf58dd8d48988d1e4931735");
+        like2.setName("Mexican Restaurant");
+        like2.setIconUrl("https://ss3.4sqi.net/img/categories_v2/food/default_88.png");
+        like2.setFoursquareId("4bf58dd8d48988d1c1941735");
 
         Category[] likes = {like1, like2};
 
         mockWebServer.enqueue(new MockResponse()
                 .setStatus("HTTP/1.1 200 OK")
-                .setBody(getJsonFrom("responses/likes.json")));
+                .setBody(getJsonFrom("responses/categories.json")));
 
         assertThat(usersApi.awaitSelfUserLikes("fakeAccessToken")).isNotNull().isNotEmpty().hasSize(likes.length).isEqualTo(likes);
     }
@@ -144,7 +145,7 @@ public class UsersApiTest {
     @Test(expected = ApiException.class)
     public void testGetSelfUserLikesError() throws Exception {
         mockWebServer.enqueue(new MockResponse()
-                .setStatus("HTTP/1.1 401 Unauthorized")
+                .setStatus("HTTP/1.1 500 Internal Server Error")
                 .setBody(getJsonFrom("responses/error.json")));
         usersApi.awaitSelfUserLikes("fakeAccessToken");
     }
@@ -152,20 +153,20 @@ public class UsersApiTest {
     @Test
     public void testGetUserLikes() throws Exception {
         Category like1 = new Category();
-        like1.setName("Restaurante italiano");
+        like1.setName("Argentinian Restaurant");
         like1.setIconUrl("https://ss3.4sqi.net/img/categories_v2/food/default_88.png");
-        like1.setFoursquareId("4bf58dd8d48988d110941735");
+        like1.setFoursquareId("4bf58dd8d48988d107941735");
 
         Category like2 = new Category();
-        like2.setName("Bowling");
-        like2.setIconUrl("https://ss3.4sqi.net/img/categories_v2/arts_entertainment/default_88.png");
-        like2.setFoursquareId("4bf58dd8d48988d1e4931735");
+        like2.setName("Mexican Restaurant");
+        like2.setIconUrl("https://ss3.4sqi.net/img/categories_v2/food/default_88.png");
+        like2.setFoursquareId("4bf58dd8d48988d1c1941735");
 
         Category[] likes = {like1, like2};
 
         mockWebServer.enqueue(new MockResponse()
                 .setStatus("HTTP/1.1 200 OK")
-                .setBody(getJsonFrom("responses/likes.json")));
+                .setBody(getJsonFrom("responses/categories.json")));
 
         assertThat(usersApi.awaitUserLikes("fakeAccessToken", "fakeFoursquareId")).isNotNull().isNotEmpty().hasSize(likes.length).isEqualTo(likes);
     }
@@ -173,9 +174,65 @@ public class UsersApiTest {
     @Test(expected = ApiException.class)
     public void testGetUserLikesError() throws Exception {
         mockWebServer.enqueue(new MockResponse()
-                .setStatus("HTTP/1.1 401 Unauthorized")
+                .setStatus("HTTP/1.1 500 Internal Server Error")
                 .setBody(getJsonFrom("responses/error.json")));
         usersApi.awaitUserLikes("fakeAccessToken", "fakeFoursquareId");
+    }
+
+    @Test
+    public void testPostAddLike() throws Exception {
+        Category like = new Category();
+        like.setName("Fake Category");
+        like.setIconUrl("https://ss3.4sqi.net/img/categories_v2/fake/default_88.png");
+        like.setFoursquareId("234jsafknmk34k");
+
+        mockWebServer.enqueue(new MockResponse()
+                .setStatus("HTTP/1.1 200 OK")
+                .setBody(getJsonFrom("responses/update_ok.json")));
+
+        assertThat(usersApi.postAddLike("fakeAccessToken", like)).isNotNull().isEqualTo(updateOk());
+    }
+
+    @Test(expected = ApiException.class)
+    public void testPostAddLikeError() throws Exception {
+        Category like = new Category();
+        like.setName("Fake Category");
+        like.setIconUrl("https://ss3.4sqi.net/img/categories_v2/fake/default_88.png");
+        like.setFoursquareId("234jsafknmk34k");
+
+        mockWebServer.enqueue(new MockResponse()
+                .setStatus("HTTP/1.1 500 Internal Server Error")
+                .setBody(getJsonFrom("responses/error.json")));
+
+        usersApi.postAddLike("fakeAccessToken", like);
+    }
+
+    @Test
+    public void testPostRemoveLike() throws Exception {
+        Category like = new Category();
+        like.setName("Fake Category");
+        like.setIconUrl("https://ss3.4sqi.net/img/categories_v2/fake/default_88.png");
+        like.setFoursquareId("234jsafknmk34k");
+
+        mockWebServer.enqueue(new MockResponse()
+                .setStatus("HTTP/1.1 200 OK")
+                .setBody(getJsonFrom("responses/update_ok.json")));
+
+        assertThat(usersApi.postRemoveLike("fakeAccessToken", like)).isNotNull().isEqualTo(updateOk());
+    }
+
+    @Test(expected = ApiException.class)
+    public void testPostRemoveLikeError() throws Exception {
+        Category like = new Category();
+        like.setName("Fake Category");
+        like.setIconUrl("https://ss3.4sqi.net/img/categories_v2/fake/default_88.png");
+        like.setFoursquareId("234jsafknmk34k");
+
+        mockWebServer.enqueue(new MockResponse()
+                .setStatus("HTTP/1.1 500 Internal Server Error")
+                .setBody(getJsonFrom("responses/error.json")));
+
+        usersApi.postRemoveLike("fakeAccessToken", like);
     }
 
     private String getJsonFrom(String file) throws Exception {
@@ -186,5 +243,11 @@ public class UsersApiTest {
         while ((line = br.readLine()) != null) sb.append(line).append('\n');
         br.close();
         return sb.toString();
+    }
+
+    private UpdateResult updateOk() {
+        UpdateResult updateResult = new UpdateResult();
+        updateResult.setSuccess(true);
+        return updateResult;
     }
 }
