@@ -1,15 +1,18 @@
 package com.grayfox.android.app.fragment;
 
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.astuetz.PagerSlidingTabStrip;
 import com.grayfox.android.app.R;
 import com.grayfox.android.app.widget.LikeAdapter;
 import com.grayfox.android.client.model.Category;
@@ -31,8 +34,9 @@ public class FriendProfileFragment extends RoboFragment {
 
     @InjectView(R.id.profile_image)  private CircleImageView profileImageView;
     @InjectView(R.id.user_name)      private TextView userNameTextView;
+    @InjectView(R.id.pager_strip)    private PagerSlidingTabStrip pagerStrip;
+    @InjectView(R.id.view_pager)     private ViewPager viewPager;
     @InjectView(R.id.progress_bar)   private ProgressBar progressBar;
-    @InjectView(R.id.likes_header)   private LinearLayout likesHeaderLayout;
     @InjectView(R.id.likes_list)     private RecyclerView likesList;
     @InjectView(R.id.no_likes_found) private TextView noLikesFoundText;
 
@@ -61,6 +65,27 @@ public class FriendProfileFragment extends RoboFragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        viewPager.setAdapter(new FragmentPagerAdapter(getChildFragmentManager()) {
+
+            @Override
+            public Fragment getItem(int i) {
+                return new Fragment();
+            }
+
+            @Override
+            public int getCount() {
+                return 1;
+            }
+
+            @Override
+            public CharSequence getPageTitle(int position) {
+                switch (position) {
+                    case 0: return getString(R.string.profile_user_likes_tab);
+                    default: return null;
+                }
+            }
+        });
+        pagerStrip.setViewPager(viewPager);
         likesList.setHasFixedSize(true);
         likesList.setLayoutManager(new LinearLayoutManager(getActivity()));
     }
@@ -100,7 +125,6 @@ public class FriendProfileFragment extends RoboFragment {
 
     private void onPreExecuteFriendTask() {
         progressBar.setVisibility(View.VISIBLE);
-        likesHeaderLayout.setVisibility(View.GONE);
         likesList.setVisibility(View.GONE);
         noLikesFoundText.setVisibility(View.GONE);
     }
@@ -111,7 +135,6 @@ public class FriendProfileFragment extends RoboFragment {
         else {
             likesList.setAdapter(new LikeAdapter(likes));
             noLikesFoundText.setVisibility(View.GONE);
-            likesHeaderLayout.setVisibility(View.VISIBLE);
             likesList.setVisibility(View.VISIBLE);
         }
     }

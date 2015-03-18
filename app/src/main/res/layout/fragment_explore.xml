@@ -19,6 +19,12 @@
         android:layout_height="match_parent"
         android:layout_below="@id/pager_strip"/>
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="5dp"
+        android:layout_below="@id/pager_strip"
+        android:background="@drawable/drop_shadow"/>
+
     <com.getbase.floatingactionbutton.FloatingActionButton
         android:id="@+id/refresh_button"
         android:layout_width="wrap_content"
@@ -53,6 +59,4 @@
             android:layout_margin="4dp"
             android:textAppearance="?android:attr/textAppearanceMedium"/>
     </LinearLayout>
-
-
 </RelativeLayout>

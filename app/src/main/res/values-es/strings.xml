@@ -27,7 +27,7 @@
     <string name="action_view_in_map">Ver en map</string>
 
     <!-- ProfileFragments -->
-    <string name="profile_title">Perfil</string>
+    <string name="profile_title"></string>
     <string name="profile_user_friends_tab">Amigos</string>
     <string name="profile_user_likes_tab">Gustos</string>
     <string name="no_friends_found">No hay amigos aún :(</string>

@@ -9,14 +9,13 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.astuetz.PagerSlidingTabStrip;
-
-import com.getbase.floatingactionbutton.FloatingActionButton;
 
 import com.grayfox.android.app.R;
 import com.grayfox.android.app.activity.FriendProfileActivity;
@@ -38,13 +37,14 @@ import roboguice.inject.InjectView;
 
 import java.lang.ref.WeakReference;
 
+import javax.inject.Inject;
+
 public class UserProfileFragment extends RoboFragment {
 
     private static final String USER_ARG = "USER";
 
     @InjectView(R.id.profile_image) private CircleImageView profileImageView;
     @InjectView(R.id.user_name)     private TextView userNameTextView;
-    @InjectView(R.id.edit_button)   private FloatingActionButton editButton;
     @InjectView(R.id.pager_strip)   private PagerSlidingTabStrip pagerStrip;
     @InjectView(R.id.view_pager)    private ViewPager viewPager;
     @InjectView(R.id.progress_bar)  private ProgressBar progressBar;
@@ -105,15 +105,11 @@ public class UserProfileFragment extends RoboFragment {
     }
 
     private void onPreExecuteTask() {
-        pagerStrip.setVisibility(View.GONE);
-        viewPager.setVisibility(View.GONE);
         progressBar.setVisibility(View.VISIBLE);
     }
 
     private void onCompleteUser(User user) {
         this.user = user;
-        pagerStrip.setVisibility(View.VISIBLE);
-        viewPager.setVisibility(View.VISIBLE);
         viewPager.setAdapter(new SwipeFragmentsAdapter()
                 .setFriendsFragment(FriendsFragment.newInstance(user.getFriends()))
                 .setLikesFragment(LikesFragment.newInstance(user.getLikes())));
@@ -262,6 +258,8 @@ public class UserProfileFragment extends RoboFragment {
         @InjectView(R.id.like_list)   private RecyclerView likeList;
         @InjectView(R.id.no_likes)    private TextView noLikesTextView;
 
+        @Inject private InputMethodManager inputMethodManager;
+
         private CategoryFilterableAdapter categoryAdapter;
         private LikeAdapter likeAdapter;
 
@@ -311,7 +309,8 @@ public class UserProfileFragment extends RoboFragment {
 
         private void onSuggestionClicked(int position) {
             Category category = categoryAdapter.getItem(position);
-            likeSearchView.setText(category.getName());
+            likeSearchView.setText(null);
+            inputMethodManager.hideSoftInputFromWindow(likeSearchView.getWindowToken(), 0);
             if (likeAdapter.add(category)) {
                 likeAdapter.notifyDataSetChanged();
                 new PostAddLikeAsyncTask(getActivity().getApplicationContext())

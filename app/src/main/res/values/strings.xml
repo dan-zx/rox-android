@@ -29,7 +29,7 @@
     <string name="action_view_in_map">View in map</string>
 
     <!-- ProfileFragments -->
-    <string name="profile_title">Profile</string>
+    <string name="profile_title"></string>
     <string name="profile_user_friends_tab">Friends</string>
     <string name="profile_user_likes_tab">Likes</string>
     <string name="no_friends_found">No friends yet :(</string>

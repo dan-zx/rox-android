@@ -17,5 +17,4 @@
         android:textColor="@android:color/white"
         android:textSize="13sp"
         android:textStyle="bold"/>
-
 </RelativeLayout>
