@@ -19,7 +19,8 @@
     <string name="title_activity_settings">Settings</string>
 
     <!-- ExploreFragment -->
-    <string name="search_in_progress">Searching&#8230;</string>
+    <string name="explore_title">Explore</string>
+    <string name="searching_recommendations">Searching recommendations in the area&#8230;</string>
     <string name="route_format">Route %d</string>
     <string name="waiting_location_update">Waiting for location&#8230;</string>
     <string name="location_update_timeout">Location update timeout</string>
@@ -42,9 +43,7 @@
     <!-- Drawer -->
     <string name="drawer_open">Menu opened</string>
     <string name="drawer_close">Menu closed</string>
-    <string name="drawer_explore_header">Explore by</string>
-    <string name="drawer_explore_by_your_likes_option">Your likes</string>
-    <string name="drawer_explore_by_your_friends_likes_option">Your friends likes</string>
+    <string name="drawer_explore_option">Explore</string>
     <string name="drawer_settings_option">Settings</string>
 
     <!-- Errors -->

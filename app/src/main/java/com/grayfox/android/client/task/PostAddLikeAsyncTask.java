@@ -27,6 +27,6 @@ public class PostAddLikeAsyncTask extends NetworkAsyncTask<UpdateResult> {
 
     @Override
     public UpdateResult call() throws Exception {
-        return usersApi.postAddLike(accessTokenDao.fetchAccessToken(), like);
+        return usersApi.awaitAddLike(accessTokenDao.fetchAccessToken(), like);
     }
 }

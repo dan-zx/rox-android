@@ -81,7 +81,7 @@ public class CategoriesApiTest {
     }
 
     private String getJsonFrom(String file) throws Exception {
-        InputStream in = this.getClass().getClassLoader().getResourceAsStream(file);
+        InputStream in = getClass().getClassLoader().getResourceAsStream(file);
         BufferedReader br = new BufferedReader(new InputStreamReader(in));
         StringBuilder sb = new StringBuilder();
         String line;

@@ -1,7 +1,6 @@
 package com.grayfox.android.client.model;
 
 import java.io.Serializable;
-import java.util.Arrays;
 
 public class Recommendation implements Serializable {
 
@@ -11,8 +10,7 @@ public class Recommendation implements Serializable {
 
     private Type type;
     private String reason;
-    private Poi[] poiSequence;
-    private Location[] routePoints;
+    private Poi poi;
 
     public Type getType() {
         return type;
@@ -30,30 +28,21 @@ public class Recommendation implements Serializable {
         this.reason = reason;
     }
 
-    public Poi[] getPoiSequence() {
-        return poiSequence;
+    public Poi getPoi() {
+        return poi;
     }
 
-    public void setPoiSequence(Poi[] poiSequence) {
-        this.poiSequence = poiSequence;
-    }
-
-    public Location[] getRoutePoints() {
-        return routePoints;
-    }
-
-    public void setRoutePoints(Location[] routePoints) {
-        this.routePoints = routePoints;
+    public void setPoi(Poi poi) {
+        this.poi = poi;
     }
 
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((type == null) ? 0 : type.hashCode());
+        result = prime * result + ((poi == null) ? 0 : poi.hashCode());
         result = prime * result + ((reason == null) ? 0 : reason.hashCode());
-        result = prime * result + Arrays.hashCode(poiSequence);
-        result = prime * result + Arrays.hashCode(routePoints);
+        result = prime * result + ((type == null) ? 0 : type.hashCode());
         return result;
     }
 
@@ -63,15 +52,20 @@ public class Recommendation implements Serializable {
         if (obj == null) return false;
         if (getClass() != obj.getClass()) return false;
         Recommendation other = (Recommendation) obj;
-        if (!Arrays.equals(poiSequence, other.poiSequence)) return false;
-        if (!Arrays.equals(routePoints, other.routePoints)) return false;
+        if (poi == null) {
+            if (other.poi != null) return false;
+        } else if (!poi.equals(other.poi)) return false;
+        if (reason == null) {
+            if (other.reason != null) return false;
+        } else if (!reason.equals(other.reason)) return false;
+        if (type != other.type) return false;
         return true;
     }
 
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append("Recommendation [poiSequence=").append(Arrays.toString(poiSequence)).append(", routePoints=").append(Arrays.toString(routePoints)).append("]");
+        builder.append("Recommendation [type=").append(type).append(", reason=").append(reason).append(", poi=").append(poi).append("]");
         return builder.toString();
     }
 }

@@ -27,6 +27,6 @@ public class PostRemoveLikeAsyncTask extends NetworkAsyncTask<UpdateResult> {
 
     @Override
     public UpdateResult call() throws Exception {
-        return usersApi.postRemoveLike(accessTokenDao.fetchAccessToken(), like);
+        return usersApi.awaitRemoveLike(accessTokenDao.fetchAccessToken(), like);
     }
 }

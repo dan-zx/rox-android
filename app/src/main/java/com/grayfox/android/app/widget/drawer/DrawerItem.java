@@ -2,7 +2,7 @@ package com.grayfox.android.app.widget.drawer;
 
 public class DrawerItem {
 
-    public static enum Type {HEADER, DIVIDER, OPTION, OPTION_HEADER}
+    public static enum Type {HEADER, DIVIDER, OPTION}
 
     private final Type type;
 

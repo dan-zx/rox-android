@@ -46,9 +46,6 @@ public class DrawerItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             case OPTION:
                 View optionRootView = LayoutInflater.from(parent.getContext()).inflate(R.layout.drawer_option, parent, false);
                 return new OptionViewHolder(optionRootView);
-            case OPTION_HEADER:
-                View optionHeaderRootView = LayoutInflater.from(parent.getContext()).inflate(R.layout.drawer_option_header, parent, false);
-                return new OptionHeaderViewHolder(optionHeaderRootView);
             default: return null;
         }
     }
@@ -91,12 +88,6 @@ public class DrawerItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                     optionViewHolder.nameTextView.setTextColor(context.getResources().getColor(R.color.primary_text));
                     optionViewHolder.iconImageView.setImageResource(drawerOption.getUnselectedIconRes());
                 }
-                break;
-            case OPTION_HEADER:
-                DrawerOptionHeader drawerOptionHeader = (DrawerOptionHeader) drawerItem;
-                OptionHeaderViewHolder optionHeaderViewHolder = (OptionHeaderViewHolder) holder;
-                optionHeaderViewHolder.nameTextView.setText(drawerOptionHeader.getNameRes());
-                break;
         }
     }
 
@@ -150,16 +141,6 @@ public class DrawerItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         public OptionViewHolder(View rootView) {
             super(rootView);
             iconImageView = (ImageView) rootView.findViewById(R.id.icon);
-            nameTextView = (TextView) rootView.findViewById(R.id.name);
-        }
-    }
-
-    private static class OptionHeaderViewHolder extends RecyclerView.ViewHolder {
-
-        private TextView nameTextView;
-
-        public OptionHeaderViewHolder(View rootView) {
-            super(rootView);
             nameTextView = (TextView) rootView.findViewById(R.id.name);
         }
     }

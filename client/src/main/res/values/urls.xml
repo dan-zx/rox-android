@@ -6,7 +6,7 @@
     192.168.1.123:8080/gray-fox-server
     10.0.2.2:8080/gray-fox-server
     -->
-    <string name="gf_api_host" translatable="false">gray-fox.herokuapp.com</string>
+    <string name="gf_api_host" translatable="false">192.168.1.123:8080/gray-fox-server</string>
     <string name="gf_api_path" translatable="false">api</string>
 
     <!-- App Users API -->
@@ -21,8 +21,10 @@
 
     <!-- Recommendations API -->
     <string name="gf_api_recommendations_path" translatable="false">recommendations</string>
+    <string name="gf_api_recommendations_by_all_path" translatable="false">byall</string>
     <string name="gf_api_recommendations_by_likes_path" translatable="false">bylikes</string>
     <string name="gf_api_recommendations_by_friends_likes_path" translatable="false">byfriendslikes</string>
+    <string name="gf_api_recommendations_next_pois_path" translatable="false">nextpois</string>
 
     <!-- Categories API -->
     <string name="gf_api_categories_path" translatable="false">categories</string>

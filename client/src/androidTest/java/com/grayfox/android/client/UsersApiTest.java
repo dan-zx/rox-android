@@ -180,7 +180,7 @@ public class UsersApiTest {
     }
 
     @Test
-    public void testPostAddLike() throws Exception {
+    public void testAddLike() throws Exception {
         Category like = new Category();
         like.setName("Fake Category");
         like.setIconUrl("https://ss3.4sqi.net/img/categories_v2/fake/default_88.png");
@@ -190,11 +190,11 @@ public class UsersApiTest {
                 .setStatus("HTTP/1.1 200 OK")
                 .setBody(getJsonFrom("responses/update_ok.json")));
 
-        assertThat(usersApi.postAddLike("fakeAccessToken", like)).isNotNull().isEqualTo(updateOk());
+        assertThat(usersApi.awaitAddLike("fakeAccessToken", like)).isNotNull().isEqualTo(updateOk());
     }
 
     @Test(expected = ApiException.class)
-    public void testPostAddLikeError() throws Exception {
+    public void testAddLikeError() throws Exception {
         Category like = new Category();
         like.setName("Fake Category");
         like.setIconUrl("https://ss3.4sqi.net/img/categories_v2/fake/default_88.png");
@@ -204,11 +204,11 @@ public class UsersApiTest {
                 .setStatus("HTTP/1.1 500 Internal Server Error")
                 .setBody(getJsonFrom("responses/error.json")));
 
-        usersApi.postAddLike("fakeAccessToken", like);
+        usersApi.awaitAddLike("fakeAccessToken", like);
     }
 
     @Test
-    public void testPostRemoveLike() throws Exception {
+    public void testRemoveLike() throws Exception {
         Category like = new Category();
         like.setName("Fake Category");
         like.setIconUrl("https://ss3.4sqi.net/img/categories_v2/fake/default_88.png");
@@ -218,11 +218,11 @@ public class UsersApiTest {
                 .setStatus("HTTP/1.1 200 OK")
                 .setBody(getJsonFrom("responses/update_ok.json")));
 
-        assertThat(usersApi.postRemoveLike("fakeAccessToken", like)).isNotNull().isEqualTo(updateOk());
+        assertThat(usersApi.awaitRemoveLike("fakeAccessToken", like)).isNotNull().isEqualTo(updateOk());
     }
 
     @Test(expected = ApiException.class)
-    public void testPostRemoveLikeError() throws Exception {
+    public void testRemoveLikeError() throws Exception {
         Category like = new Category();
         like.setName("Fake Category");
         like.setIconUrl("https://ss3.4sqi.net/img/categories_v2/fake/default_88.png");
@@ -232,11 +232,11 @@ public class UsersApiTest {
                 .setStatus("HTTP/1.1 500 Internal Server Error")
                 .setBody(getJsonFrom("responses/error.json")));
 
-        usersApi.postRemoveLike("fakeAccessToken", like);
+        usersApi.awaitRemoveLike("fakeAccessToken", like);
     }
 
     private String getJsonFrom(String file) throws Exception {
-        InputStream in = this.getClass().getClassLoader().getResourceAsStream(file);
+        InputStream in = getClass().getClassLoader().getResourceAsStream(file);
         BufferedReader br = new BufferedReader(new InputStreamReader(in));
         StringBuilder sb = new StringBuilder();
         String line;

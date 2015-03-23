@@ -14,14 +14,12 @@ import android.view.Gravity;
 import android.view.MenuItem;
 
 import com.grayfox.android.app.R;
-import com.grayfox.android.app.fragment.ExploreByFriendsLikesFragment;
-import com.grayfox.android.app.fragment.ExploreByLikesFragment;
+import com.grayfox.android.app.fragment.ExploreFragment;
 import com.grayfox.android.app.fragment.UserProfileFragment;
 import com.grayfox.android.app.widget.drawer.DrawerHeader;
 import com.grayfox.android.app.widget.drawer.DrawerItem;
 import com.grayfox.android.app.widget.drawer.DrawerItemAdapter;
 import com.grayfox.android.app.widget.drawer.DrawerOption;
-import com.grayfox.android.app.widget.drawer.DrawerOptionHeader;
 import com.grayfox.android.client.model.User;
 import com.grayfox.android.client.task.GetSelfUserAsyncTask;
 
@@ -56,9 +54,9 @@ public class MainActivity extends RoboActionBarActivity {
         super.onCreate(savedInstanceState);
         setupNavigationDrawer();
         if (savedInstanceState == null) {
-            setupFragment(new ExploreByLikesFragment());
-            setTitle(R.string.drawer_explore_by_your_likes_option);
-            drawerItemAdapter.setSelectedPosition(3);
+            setupFragment(new ExploreFragment());
+            setTitle(R.string.explore_title);
+            drawerItemAdapter.setSelectedPosition(2);
             new GetSelfUserTask(this).execute();
         } else {
             setTitle(savedInstanceState.getInt(CURRENT_TITLE_KEY));
@@ -116,9 +114,7 @@ public class MainActivity extends RoboActionBarActivity {
         drawerItems = Arrays.asList(
                 new DrawerHeader(),
                 new DrawerItem(DrawerItem.Type.DIVIDER),
-                new DrawerOptionHeader().setNameRes(R.string.drawer_explore_header),
-                new DrawerOption().setUnselectedIconRes(R.drawable.ic_person_unselected).setSelectedIconRes(R.drawable.ic_person_selected).setNameRes(R.string.drawer_explore_by_your_likes_option),
-                new DrawerOption().setUnselectedIconRes(R.drawable.ic_group_unselected).setSelectedIconRes(R.drawable.ic_group_selected).setNameRes(R.string.drawer_explore_by_your_friends_likes_option),
+                new DrawerOption().setUnselectedIconRes(R.drawable.ic_search_black_24dp).setSelectedIconRes(R.drawable.ic_search_white_24dp).setNameRes(R.string.drawer_explore_option),
                 new DrawerItem(DrawerItem.Type.DIVIDER),
                 new DrawerOption().setUnselectedIconRes(R.drawable.ic_settings).setNameRes(R.string.drawer_settings_option)
         );
@@ -155,21 +151,14 @@ public class MainActivity extends RoboActionBarActivity {
                 }
                 drawerLayout.closeDrawers();
                 break;
-            case 3:
+            case 2:
                 invalidateOptionsMenu();
-                setupFragment(new ExploreByLikesFragment());
-                setTitle(R.string.drawer_explore_by_your_likes_option);
+                setupFragment(new ExploreFragment());
+                setTitle(R.string.explore_title);
                 drawerItemAdapter.setSelectedPosition(position);
                 drawerLayout.closeDrawers();
                 break;
             case 4:
-                invalidateOptionsMenu();
-                setupFragment(new ExploreByFriendsLikesFragment());
-                setTitle(R.string.drawer_explore_by_your_friends_likes_option);
-                drawerItemAdapter.setSelectedPosition(position);
-                drawerLayout.closeDrawers();
-                break;
-            case 6:
                 startActivity(new Intent(this, SettingsActivity.class));
                 drawerLayout.closeDrawers();
                 break;

@@ -9,7 +9,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="4dp"
         android:layout_marginRight="8dp"
-        android:drawableLeft="@drawable/ic_search"
+        android:drawableLeft="@drawable/ic_search_grey_18dp"
         android:drawablePadding="5dp"
         android:hint="@string/add_more_likes"/>
 

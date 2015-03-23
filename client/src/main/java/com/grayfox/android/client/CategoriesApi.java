@@ -20,6 +20,6 @@ public class CategoriesApi extends BaseApi {
                 .appendPath(partialName)
                 .build().toString();
 
-        return request(url, Category[].class);
+        return get(url, Category[].class);
     }
 }

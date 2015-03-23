@@ -1,0 +1,34 @@
+{
+    "response":[
+        {
+            "name":"Cinépolis",
+            "location":{
+                "latitude":19.032099226143384,
+                "longitude":-98.23300838470459
+            },
+            "foursquareId":"4bad0850f964a52082263be3",
+            "categories":[
+                {
+                    "name":"Multiplex",
+                    "iconUrl":"https://ss3.4sqi.net/img/categories_v2/arts_entertainment/movietheater_88.png",
+                    "foursquareId":"4bf58dd8d48988d180941735"
+                }
+            ]
+        },
+        {
+            "name":"Chili's",
+            "location":{
+                "latitude":19.032072262618215,
+                "longitude":-98.23318352096007
+            },
+            "foursquareId":"4be47d022457a593414daa15",
+            "categories":[
+                {
+                    "name":"American Restaurant",
+                    "iconUrl":"https://ss3.4sqi.net/img/categories_v2/food/default_88.png",
+                    "foursquareId":"4bf58dd8d48988d14e941735"
+                }
+            ]
+        }
+    ]
+}

@@ -1,7 +1,5 @@
 package com.grayfox.android.app.widget;
 
-import android.content.Context;
-import android.graphics.PorterDuff;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,120 +8,61 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.grayfox.android.app.R;
-import com.grayfox.android.app.widget.util.ColorTransformation;
 import com.grayfox.android.client.model.Recommendation;
-
 import com.squareup.picasso.Picasso;
 
-public class RecommendationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
-    private static enum ViewType {TOP, MIDDLE, BOTTOM}
+public class RecommendationAdapter extends RecyclerView.Adapter<RecommendationAdapter.ViewHolder> {
 
-    private final String originAddress;
-    private final Recommendation recommendation;
+    private final List<Recommendation> recommendations;
 
-    public RecommendationAdapter(String originAddress, Recommendation recommendation) {
-        this.originAddress = originAddress;
-        this.recommendation = recommendation;
+    public RecommendationAdapter() {
+        recommendations = new ArrayList<>();
+    }
+
+    public void add(Recommendation... recommendations) {
+        this.recommendations.addAll(Arrays.asList(recommendations));
+    }
+
+    public void clear() {
+        recommendations.clear();
     }
 
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        switch (ViewType.values()[viewType]) {
-            case TOP:
-                View topView = LayoutInflater.from(parent.getContext()).inflate(R.layout.route_top_item, parent, false);
-                return new TopViewHolder(topView);
-            case MIDDLE:
-                View middleView = LayoutInflater.from(parent.getContext()).inflate(R.layout.route_middle_item, parent, false);
-                return new MiddleViewHolder(middleView);
-            case BOTTOM:
-                View bottomView = LayoutInflater.from(parent.getContext()).inflate(R.layout.route_bottom_item, parent, false);
-                return new BottomViewHolder(bottomView);
-            default: return null;
-        }
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.recommendation_item, parent, false));
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        Context context = holder.itemView.getContext();
-        switch (ViewType.values()[getItemViewType(position)]) {
-            case TOP:
-                TopViewHolder topViewHolder = (TopViewHolder) holder;
-                topViewHolder.markerImage.getDrawable().mutate().setColorFilter(context.getResources().getColor(R.color.secondary_text), PorterDuff.Mode.SRC_IN);
-                topViewHolder.locationDescriptionTextView.setText(originAddress);
-                break;
-            case MIDDLE:
-                MiddleViewHolder middleViewHolder = (MiddleViewHolder) holder;
-                Picasso.with(context)
-                        .load(recommendation.getPoiSequence()[position-1].getCategories()[0].getIconUrl())
-                        .transform(new ColorTransformation(context.getResources().getColor(R.color.secondary_text)))
-                        .placeholder(R.drawable.ic_generic_category)
-                        .into(middleViewHolder.categoryImageView);
-                middleViewHolder.categoryNameView.setText(recommendation.getPoiSequence()[position-1].getCategories()[0].getName());
-                middleViewHolder.poiNameView.setText(recommendation.getPoiSequence()[position-1].getName());
-                break;
-            case BOTTOM:
-                BottomViewHolder bottomViewHolder = (BottomViewHolder) holder;
-                Picasso.with(context)
-                        .load(recommendation.getPoiSequence()[position - 1].getCategories()[0].getIconUrl())
-                        .transform(new ColorTransformation(context.getResources().getColor(R.color.secondary_text)))
-                        .placeholder(R.drawable.ic_generic_category)
-                        .into(bottomViewHolder.categoryImageView);
-                bottomViewHolder.categoryNameView.setText(recommendation.getPoiSequence()[position-1].getCategories()[0].getName());
-                bottomViewHolder.poiNameView.setText(recommendation.getPoiSequence()[position-1].getName());
-                break;
-        }
-    }
-
-    @Override
-    public int getItemViewType(int position) {
-        if (position == 0) return ViewType.TOP.ordinal();
-        if (position == getItemCount()-1) return ViewType.BOTTOM.ordinal();
-        return ViewType.MIDDLE.ordinal();
+    public void onBindViewHolder(ViewHolder holder, int position) {
+        Recommendation recommendation = recommendations.get(position);
+        Picasso.with(holder.itemView.getContext())
+                .load(recommendation.getPoi().getCategories()[0].getIconUrl())
+                .placeholder(R.drawable.ic_generic_category)
+                .into(holder.categoryImageView);
+        holder.poiNameTextView.setText(recommendation.getPoi().getName());
+        holder.reasonTextView.setText(recommendation.getReason());
     }
 
     @Override
     public int getItemCount() {
-        return recommendation.getPoiSequence().length+1;
+        return recommendations.size();
     }
 
-    private static class TopViewHolder extends RecyclerView.ViewHolder {
-
-        private ImageView markerImage;
-        private TextView locationDescriptionTextView;
-
-        public TopViewHolder(View itemView) {
-            super(itemView);
-            markerImage = (ImageView) itemView.findViewById(R.id.marker_image);
-            locationDescriptionTextView = (TextView) itemView.findViewById(R.id.location_description);
-        }
-    }
-
-    private static class MiddleViewHolder extends RecyclerView.ViewHolder {
+    protected static class ViewHolder extends RecyclerView.ViewHolder {
 
         private ImageView categoryImageView;
-        private TextView poiNameView;
-        private TextView categoryNameView;
+        private TextView poiNameTextView;
+        private TextView reasonTextView;
 
-        public MiddleViewHolder(View itemView) {
+        public ViewHolder(View itemView) {
             super(itemView);
             categoryImageView = (ImageView) itemView.findViewById(R.id.category_image);
-            poiNameView = (TextView) itemView.findViewById(R.id.poi_name);
-            categoryNameView = (TextView) itemView.findViewById(R.id.category_name);
-        }
-    }
-
-    private static class BottomViewHolder extends RecyclerView.ViewHolder {
-
-        private ImageView categoryImageView;
-        private TextView poiNameView;
-        private TextView categoryNameView;
-
-        public BottomViewHolder(View itemView) {
-            super(itemView);
-            categoryImageView = (ImageView) itemView.findViewById(R.id.category_image);
-            poiNameView = (TextView) itemView.findViewById(R.id.poi_name);
-            categoryNameView = (TextView) itemView.findViewById(R.id.category_name);
+            poiNameTextView = (TextView) itemView.findViewById(R.id.poi_name);
+            reasonTextView = (TextView) itemView.findViewById(R.id.reason);
         }
     }
 }

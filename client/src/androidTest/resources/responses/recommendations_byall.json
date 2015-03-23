@@ -1,6 +1,25 @@
 {
     "response":[
-       {
+        {
+            "type":"SELF",
+            "reason":"You liked Bowling Alley",
+            "poi":{
+                "name":"Buzzyland",
+                "location":{
+                    "latitude":19.03482813065687,
+                    "longitude":-98.22346338561037
+                },
+                "foursquareId":"5005ecb4e4b0cd5210320f38",
+                "categories":[
+                    {
+                        "name":"Bowling Alley",
+                        "iconUrl":"https://ss3.4sqi.net/img/categories_v2/arts_entertainment/default_88.png",
+                        "foursquareId":"4bf58dd8d48988d1e4931735"
+                    }
+                ]
+            }
+        },
+        {
             "type":"SOCIAL",
             "reason":"Your friend Jane Doe liked Seafood Restaurant",
             "poi":{

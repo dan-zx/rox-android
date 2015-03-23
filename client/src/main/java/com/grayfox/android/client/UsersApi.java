@@ -23,7 +23,7 @@ public class UsersApi extends BaseApi {
                 .appendQueryParameter("authorization-code", foursquareAuthorizationCode)
                 .build().toString();
 
-        return request(url, AccessToken.class).getToken();
+        return get(url, AccessToken.class).getToken();
     }
 
     public User awaitSelfUser(String accessToken) {
@@ -35,7 +35,7 @@ public class UsersApi extends BaseApi {
                 .appendQueryParameter("access-token", accessToken)
                 .build().toString();
 
-        return request(url, User.class);
+        return get(url, User.class);
     }
 
     public User[] awaitSelfUserFriends(String accessToken) {
@@ -48,7 +48,7 @@ public class UsersApi extends BaseApi {
                 .appendQueryParameter("access-token", accessToken)
                 .build().toString();
 
-        return request(url, User[].class);
+        return get(url, User[].class);
     }
 
     public Category[] awaitSelfUserLikes(String accessToken) {
@@ -61,7 +61,7 @@ public class UsersApi extends BaseApi {
                 .appendQueryParameter("access-token", accessToken)
                 .build().toString();
 
-        return request(url, Category[].class);
+        return get(url, Category[].class);
     }
 
     public Category[] awaitUserLikes(String accessToken, String foursquareId) {
@@ -74,10 +74,10 @@ public class UsersApi extends BaseApi {
                 .appendQueryParameter("access-token", accessToken)
                 .build().toString();
 
-        return request(url, Category[].class);
+        return get(url, Category[].class);
     }
 
-    public UpdateResult postAddLike(String accessToken, Category like) {
+    public UpdateResult awaitAddLike(String accessToken, Category like) {
         String url = new Uri.Builder().scheme(getString(R.string.gf_api_host_scheme))
                 .encodedAuthority(getString(R.string.gf_api_host))
                 .appendEncodedPath(getString(R.string.gf_api_path))
@@ -88,10 +88,10 @@ public class UsersApi extends BaseApi {
                 .appendQueryParameter("access-token", accessToken)
                 .build().toString();
 
-        return postUpdate(url, like);
+        return put(url, like, UpdateResult.class);
     }
 
-    public UpdateResult postRemoveLike(String accessToken, Category like) {
+    public UpdateResult awaitRemoveLike(String accessToken, Category like) {
         String url = new Uri.Builder().scheme(getString(R.string.gf_api_host_scheme))
                 .encodedAuthority(getString(R.string.gf_api_host))
                 .appendEncodedPath(getString(R.string.gf_api_path))
@@ -102,6 +102,6 @@ public class UsersApi extends BaseApi {
                 .appendQueryParameter("access-token", accessToken)
                 .build().toString();
 
-        return postUpdate(url, like);
+        return delete(url, like, UpdateResult.class);
     }
 }
