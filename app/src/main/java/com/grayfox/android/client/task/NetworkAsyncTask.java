@@ -7,7 +7,7 @@ import android.widget.Toast;
 
 import com.grayfox.android.app.R;
 
-abstract class NetworkAsyncTask<T> extends BaseAsyncTask<T> {
+public abstract class NetworkAsyncTask<T> extends BaseAsyncTask<T> {
 
     protected NetworkAsyncTask(Context context) {
         super(context);

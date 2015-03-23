@@ -10,22 +10,22 @@
     <string name="foursquare_unknown_error_message_format">Error desconocido: %s</string>
     <string name="register_in_progress">Registrando&#8230;</string>
 
-    <!-- RouteDisplayingActivity -->
-    <string name="title_activity_route_displaying">Ruta</string>
-
     <!-- SettingsActivity -->
     <string name="title_activity_settings">Ajustes</string>
 
     <!-- ExploreFragment -->
     <string name="explore_title">Explorar</string>
     <string name="searching_recommendations">Buscando recomendaciones en el área&#8230;</string>
-    <string name="route_format">Ruta %d</string>
     <string name="waiting_location_update">Esperando ubicación&#8230;</string>
     <string name="location_update_timeout">Tiempo de espera de ubicación agotado</string>
     <string name="enable_location_updates">Activa los servicios de ubicación primero</string>
 
-    <!-- RouteDetailFragment -->
-    <string name="action_view_in_map">Ver en map</string>
+    <!-- RecommendedRouteFragment -->
+    <string name="building_route">Construyendo ruta&#8230;</string>
+    <string name="walking_directions_button_label">Caminando</string>
+    <string name="bike_directions_button_label">Bicicleta</string>
+    <string name="transit_directions_button_label">Transporte públicp</string>
+    <string name="driving_directions_button_label">Auto</string>
 
     <!-- ProfileFragments -->
     <string name="profile_title"></string>

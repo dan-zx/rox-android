@@ -19,6 +19,8 @@ public class RecommendationAdapter extends RecyclerView.Adapter<RecommendationAd
 
     private final List<Recommendation> recommendations;
 
+    private OnClickListener onClickListener;
+
     public RecommendationAdapter() {
         recommendations = new ArrayList<>();
     }
@@ -31,6 +33,10 @@ public class RecommendationAdapter extends RecyclerView.Adapter<RecommendationAd
         recommendations.clear();
     }
 
+    public void setOnClickListener(OnClickListener onClickListener) {
+        this.onClickListener = onClickListener;
+    }
+
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.recommendation_item, parent, false));
@@ -38,7 +44,13 @@ public class RecommendationAdapter extends RecyclerView.Adapter<RecommendationAd
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        Recommendation recommendation = recommendations.get(position);
+        final Recommendation recommendation = recommendations.get(position);
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (onClickListener != null) onClickListener.onClick(recommendation);
+            }
+        });
         Picasso.with(holder.itemView.getContext())
                 .load(recommendation.getPoi().getCategories()[0].getIconUrl())
                 .placeholder(R.drawable.ic_generic_category)
@@ -50,6 +62,10 @@ public class RecommendationAdapter extends RecyclerView.Adapter<RecommendationAd
     @Override
     public int getItemCount() {
         return recommendations.size();
+    }
+
+    public static interface OnClickListener {
+        void onClick(Recommendation recommendation);
     }
 
     protected static class ViewHolder extends RecyclerView.ViewHolder {

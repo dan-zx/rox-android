@@ -42,12 +42,12 @@
                 android:layout_height="match_parent">
 
                 <android.support.v7.widget.RecyclerView
-                    android:id="@+id/poi_list"
+                    android:id="@+id/route_list"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"/>
 
                 <LinearLayout
-                    android:id="@+id/searching_layout"
+                    android:id="@+id/building_route_layout"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
@@ -61,11 +61,11 @@
                         android:layout_gravity="center"/>
 
                     <TextView
-                        android:id="@+id/searching_text"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_margin="4dp"
+                        android:text="@string/building_route"
                         android:textAppearance="?android:attr/textAppearanceMedium"/>
                 </LinearLayout>
             </RelativeLayout>
@@ -78,14 +78,51 @@
         android:layout_alignParentTop="true"
         android:background="@drawable/drop_shadow"/>
 
-    <com.getbase.floatingactionbutton.FloatingActionButton
-        android:id="@+id/my_location_button"
+    <com.getbase.floatingactionbutton.CustomFloatingActionsMenu
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:layout_margin="16dp"
-        fab:fab_colorNormal="@color/accent"
-        fab:fab_colorPressed="@color/accent_dark"
-        fab:fab_icon="@drawable/ic_my_location"/>
+        fab:fab_addButtonColorNormal="@color/accent"
+        fab:fab_addButtonColorPressed="@color/accent_dark"
+        fab:fab_collapsedIcon="@drawable/ic_directions"
+        fab:fab_labelStyle="@style/fam_labels">
+
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            android:id="@+id/walking_directions_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            fab:fab_colorNormal="@color/accent"
+            fab:fab_colorPressed="@color/accent_dark"
+            fab:fab_icon="@drawable/ic_directions_walk"
+            fab:fab_title="@string/walking_directions_button_label"/>
+
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            android:id="@+id/bike_directions_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            fab:fab_colorNormal="@color/accent"
+            fab:fab_colorPressed="@color/accent_dark"
+            fab:fab_icon="@drawable/ic_directions_bike"
+            fab:fab_title="@string/bike_directions_button_label"/>
+
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            android:id="@+id/transit_directions_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            fab:fab_colorNormal="@color/accent"
+            fab:fab_colorPressed="@color/accent_dark"
+            fab:fab_icon="@drawable/ic_directions_bus"
+            fab:fab_title="@string/transit_directions_button_label"/>
+
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            android:id="@+id/driving_directions_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            fab:fab_colorNormal="@color/accent"
+            fab:fab_colorPressed="@color/accent_dark"
+            fab:fab_icon="@drawable/ic_directions_car"
+            fab:fab_title="@string/driving_directions_button_label"/>
+    </com.getbase.floatingactionbutton.CustomFloatingActionsMenu>
 </RelativeLayout>

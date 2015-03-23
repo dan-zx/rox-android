@@ -39,10 +39,6 @@
             android:name=".activity.MainActivity"
             android:theme="@style/AppTheme.WithToolbar" />
         <activity
-            android:name=".activity.RouteDisplayingActivity"
-            android:label="@string/title_activity_route_displaying"
-            android:theme="@style/AppTheme.WithDefaultActionBar" />
-        <activity
             android:name=".activity.FriendProfileActivity"
             android:label="@string/profile_title"
             android:theme="@style/AppTheme.WithToolbar" />

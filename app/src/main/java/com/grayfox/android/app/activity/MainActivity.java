@@ -5,6 +5,7 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -54,7 +55,7 @@ public class MainActivity extends RoboActionBarActivity {
         super.onCreate(savedInstanceState);
         setupNavigationDrawer();
         if (savedInstanceState == null) {
-            setupFragment(new ExploreFragment());
+            setupFragment(new ExploreFragment(), false);
             setTitle(R.string.explore_title);
             drawerItemAdapter.setSelectedPosition(2);
             new GetSelfUserTask(this).execute();
@@ -99,6 +100,11 @@ public class MainActivity extends RoboActionBarActivity {
         super.setTitle(titleId);
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+    }
+
     private void setupNavigationDrawer() {
         drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.drawer_open, R.string.drawer_close);
         drawerLayout.setDrawerShadow(R.drawable.drawer_shadow, Gravity.START);
@@ -130,13 +136,15 @@ public class MainActivity extends RoboActionBarActivity {
         drawerOptions.setAdapter(drawerItemAdapter);
     }
 
-    private void setupFragment(Fragment fragment) {
+    public void setupFragment(Fragment fragment, boolean addToBackStack) {
         FragmentManager fragmentManager = getSupportFragmentManager();
         Fragment currentFragment = fragmentManager.findFragmentByTag(FRAGMENT_TAG);
         if (currentFragment == null || !currentFragment.getClass().equals(fragment.getClass())) {
-            fragmentManager.beginTransaction()
-                    .replace(R.id.content_frame, fragment, FRAGMENT_TAG)
-                    .commit();
+            FragmentTransaction transaction = fragmentManager.beginTransaction()
+                    .replace(R.id.content_frame, fragment, FRAGMENT_TAG);
+            if (addToBackStack) transaction.addToBackStack(null);
+            else while (fragmentManager.getBackStackEntryCount() > 0) fragmentManager.popBackStackImmediate();
+            transaction.commit();
         }
     }
 
@@ -145,15 +153,15 @@ public class MainActivity extends RoboActionBarActivity {
             case 0:
                 if (user != null) {
                     invalidateOptionsMenu();
+                    setupFragment(UserProfileFragment.newInstance(user), true);
                     setTitle(R.string.profile_title);
-                    setupFragment(UserProfileFragment.newInstance(user));
                     drawerItemAdapter.setSelectedPosition(-1);
                 }
                 drawerLayout.closeDrawers();
                 break;
             case 2:
                 invalidateOptionsMenu();
-                setupFragment(new ExploreFragment());
+                setupFragment(new ExploreFragment(), false);
                 setTitle(R.string.explore_title);
                 drawerItemAdapter.setSelectedPosition(position);
                 drawerLayout.closeDrawers();
