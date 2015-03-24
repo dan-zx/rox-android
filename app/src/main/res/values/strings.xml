@@ -24,6 +24,7 @@
 
     <!-- RecommendedRouteFragment -->
     <string name="building_route">Building route&#8230;</string>
+    <string name="unavailable_route">Unavailable route. Choose a different travel mode.</string>
     <string name="walking_directions_button_label">Walking</string>
     <string name="bike_directions_button_label">Biking</string>
     <string name="transit_directions_button_label">Transit</string>
