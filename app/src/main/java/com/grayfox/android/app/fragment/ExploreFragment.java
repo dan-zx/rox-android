@@ -1,7 +1,6 @@
 package com.grayfox.android.app.fragment;
 
 import android.content.IntentSender;
-import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -28,7 +27,6 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -60,11 +58,21 @@ public class ExploreFragment extends RoboFragment implements OnMapReadyCallback,
 
     @Inject private LocationManager locationManager;
 
+    private boolean shouldRequestLocationUpdatesOnConnect;
+    private boolean shouldRestoreCurrentLocationInMap;
+    private boolean shouldRestoreRecommendationsInMap;
     private GoogleMap googleMap;
     private GoogleApiClient googleApiClient;
     private Location currentLocation;
+    private Recommendation[] recommendations;
     private RecommendationAsyncTask recommendationsTask;
     private RecommendationAdapter recommendationAdapter;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setRetainInstance(true);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -107,6 +115,38 @@ public class ExploreFragment extends RoboFragment implements OnMapReadyCallback,
     }
 
     @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        shouldRequestLocationUpdatesOnConnect = false;
+        shouldRestoreCurrentLocationInMap = false;
+        shouldRestoreRecommendationsInMap = false;
+        if (savedInstanceState == null) {
+            shouldRequestLocationUpdatesOnConnect = true;
+            shouldRestoreCurrentLocationInMap = false;
+            shouldRestoreRecommendationsInMap = false;
+        } else {
+            if (currentLocation == null) {
+                shouldRequestLocationUpdatesOnConnect = true;
+            } else if (currentLocation != null && recommendations == null) {
+                shouldRequestLocationUpdatesOnConnect = false;
+                if (recommendationsTask == null || !recommendationsTask.isActive()) {
+                    onLocationChanged(currentLocation);
+                    shouldRestoreCurrentLocationInMap = true;
+                } else if (recommendationsTask != null && recommendationsTask.isActive()) {
+                    onPreExecuteRecommendationsTask();
+                    shouldRestoreCurrentLocationInMap = true;
+                }
+            } else if (currentLocation != null && recommendations != null) {
+                shouldRequestLocationUpdatesOnConnect = false;
+                onRecommendationsAcquired(recommendations);
+                onCompleteRecommendationsTask();
+                shouldRestoreCurrentLocationInMap = true;
+                shouldRestoreRecommendationsInMap = true;
+            }
+        }
+    }
+
+    @Override
     public void onStart() {
         super.onStart();
         googleApiClient.connect();
@@ -126,9 +166,33 @@ public class ExploreFragment extends RoboFragment implements OnMapReadyCallback,
         this.googleMap = googleMap;
         googleMap.getUiSettings().setMapToolbarEnabled(false);
         googleMap.getUiSettings().setMyLocationButtonEnabled(false);
+        if (shouldRestoreCurrentLocationInMap) restoreCurrentLocationInMap();
+        if (shouldRestoreRecommendationsInMap) restoreRecommendationsInMap();
+    }
+
+    private void restoreCurrentLocationInMap() {
+        LatLng latLng = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
+        googleMap.addMarker(new MarkerOptions()
+                .position(latLng)
+                .title(getString(R.string.current_location))
+                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN)));
+        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 13f));
+    }
+
+    private void restoreRecommendationsInMap() {
+        for (Recommendation recommendation : recommendations) {
+            Marker marker = googleMap.addMarker(new MarkerOptions()
+                    .position(new LatLng(recommendation.getPoi().getLocation().getLatitude(), recommendation.getPoi().getLocation().getLongitude()))
+                    .title(recommendation.getPoi().getName()));
+            Picasso.with(getActivity())
+                    .load(recommendation.getPoi().getCategories()[0].getIconUrl())
+                    .placeholder(R.drawable.ic_generic_category)
+                    .into(new PicassoMarker(marker, getActivity()));
+        }
     }
 
     private void onPreLocationUpdate() {
+        currentLocation = null;
         poiList.setVisibility(View.GONE);
         searchingLayout.setVisibility(View.VISIBLE);
         searchingTextView.setText(R.string.waiting_location_update);
@@ -168,10 +232,10 @@ public class ExploreFragment extends RoboFragment implements OnMapReadyCallback,
                 .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN)));
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 13f));
         int radius = getRadiusFromMapProjection();
-        googleMap.addCircle(new CircleOptions()
-                .center(latLng)
-                .radius(radius)
-                .strokeColor(Color.BLUE));
+//        googleMap.addCircle(new CircleOptions()
+//                .center(latLng)
+//                .radius(radius)
+//                .strokeColor(Color.BLUE));
         com.grayfox.android.client.model.Location myLocation = new com.grayfox.android.client.model.Location();
         myLocation.setLatitude(location.getLatitude());
         myLocation.setLongitude(location.getLongitude());
@@ -194,7 +258,7 @@ public class ExploreFragment extends RoboFragment implements OnMapReadyCallback,
     }
 
     private void stopLocationUpdates() {
-        LocationServices.FusedLocationApi.removeLocationUpdates(googleApiClient, this);
+        if (googleApiClient.isConnected()) LocationServices.FusedLocationApi.removeLocationUpdates(googleApiClient, this);
     }
 
     private void onCompleteLocationUpdate() {
@@ -209,9 +273,11 @@ public class ExploreFragment extends RoboFragment implements OnMapReadyCallback,
     }
 
     private void onRecommendationsAcquired(Recommendation[] recommendations) {
+        this.recommendations = recommendations;
         recommendationAdapter.clear();
         recommendationAdapter.add(recommendations);
         recommendationAdapter.notifyDataSetChanged();
+        googleMap.clear();
         googleMap.addMarker(new MarkerOptions()
                 .position(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()))
                 .title(getString(R.string.current_location))
@@ -240,7 +306,7 @@ public class ExploreFragment extends RoboFragment implements OnMapReadyCallback,
     @Override
     public void onConnected(Bundle bundle) {
         Log.d(TAG, "Location services connected.");
-        onRequestLocationUpdates();
+        if (shouldRequestLocationUpdatesOnConnect) onRequestLocationUpdates();
     }
 
     @Override
