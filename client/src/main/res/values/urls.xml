@@ -6,7 +6,7 @@
     192.168.1.123:8080/gray-fox-server
     10.0.2.2:8080/gray-fox-server
     -->
-    <string name="gf_api_host" translatable="false">192.168.1.123:8080/gray-fox-server</string>
+    <string name="gf_api_host" translatable="false">gray-fox.herokuapp.com</string>
     <string name="gf_api_path" translatable="false">api</string>
 
     <!-- App Users API -->

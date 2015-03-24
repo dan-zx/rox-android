@@ -15,8 +15,9 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.getbase.floatingactionbutton.CustomFloatingActionsMenu;
-import com.getbase.floatingactionbutton.FloatingActionButton;
+
+import com.github.clans.fab.FloatingActionButton;
+import com.github.clans.fab.FloatingActionMenu;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -60,7 +61,7 @@ public class RecommendedRouteFragment extends RoboFragment implements OnMapReady
     @InjectView(R.id.driving_directions_button)        private FloatingActionButton drivingDirectionsButton;
     @InjectView(R.id.bike_directions_button)           private FloatingActionButton bikeDirectionsButton;
     @InjectView(R.id.building_route_layout)            private LinearLayout buildingRouteLayout;
-    @InjectView(R.id.directions_menu)                  private CustomFloatingActionsMenu directionsMenu;
+    @InjectView(R.id.directions_menu)                  private FloatingActionMenu directionsMenu;
     @InjectView(R.id.route_list)                       private RecyclerView routeList;
     @InjectView(R.id.card_view)                        private CardView cardView;
 
@@ -106,28 +107,28 @@ public class RecommendedRouteFragment extends RoboFragment implements OnMapReady
         walkingDirectionsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                directionsMenu.collapse();
+                directionsMenu.close(true);
                 if (routeBuilderTask != null && !routeBuilderTask.isActive()) recalculateRoute(TravelMode.WALKING);
             }
         });
         transitDirectionsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                directionsMenu.collapse();
+                directionsMenu.close(true);
                 if (routeBuilderTask != null && !routeBuilderTask.isActive()) recalculateRoute(TravelMode.TRANSIT);
             }
         });
         drivingDirectionsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                directionsMenu.collapse();
+                directionsMenu.close(true);
                 if (routeBuilderTask != null && !routeBuilderTask.isActive()) recalculateRoute(TravelMode.DRIVING);
             }
         });
         bikeDirectionsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                directionsMenu.collapse();
+                directionsMenu.close(true);
                 if (routeBuilderTask != null && !routeBuilderTask.isActive()) recalculateRoute(TravelMode.BICYCLING);
             }
         });

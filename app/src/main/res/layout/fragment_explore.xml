@@ -78,14 +78,15 @@
         android:layout_alignParentTop="true"
         android:background="@drawable/drop_shadow"/>
 
-    <com.getbase.floatingactionbutton.FloatingActionButton
+    <com.github.clans.fab.FloatingActionButton
         android:id="@+id/my_location_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:layout_margin="16dp"
+        android:src="@drawable/ic_my_location"
         fab:fab_colorNormal="@color/accent"
         fab:fab_colorPressed="@color/accent_dark"
-        fab:fab_icon="@drawable/ic_my_location"/>
+        fab:fab_colorRipple="@color/accent"/>
 </RelativeLayout>

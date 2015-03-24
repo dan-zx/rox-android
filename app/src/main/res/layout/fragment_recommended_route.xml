@@ -86,52 +86,60 @@
         android:layout_alignParentTop="true"
         android:background="@drawable/drop_shadow"/>
 
-    <com.getbase.floatingactionbutton.CustomFloatingActionsMenu
+    <com.github.clans.fab.FloatingActionMenu
         android:id="@+id/directions_menu"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:layout_margin="16dp"
-        fab:fab_addButtonColorNormal="@color/accent"
-        fab:fab_addButtonColorPressed="@color/accent_dark"
-        fab:fab_collapsedIcon="@drawable/ic_directions"
-        fab:fab_labelStyle="@style/fam_labels">
+        fab:menu_colorNormal="@color/accent"
+        fab:menu_colorPressed="@color/accent_dark"
+        fab:menu_colorRipple="@color/accent"
+        fab:menu_icon="@drawable/ic_directions">
 
-        <com.getbase.floatingactionbutton.FloatingActionButton
+        <com.github.clans.fab.FloatingActionButton
             android:id="@+id/walking_directions_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:src="@drawable/ic_directions_walk"
             fab:fab_colorNormal="@color/accent"
             fab:fab_colorPressed="@color/accent_dark"
-            fab:fab_icon="@drawable/ic_directions_walk"
-            fab:fab_title="@string/walking_directions_button_label"/>
+            fab:fab_colorRipple="@color/accent"
+            fab:fab_size="mini"
+            fab:fab_label="@string/walking_directions_button_label"/>
 
-        <com.getbase.floatingactionbutton.FloatingActionButton
+        <com.github.clans.fab.FloatingActionButton
             android:id="@+id/bike_directions_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:src="@drawable/ic_directions_bike"
             fab:fab_colorNormal="@color/accent"
             fab:fab_colorPressed="@color/accent_dark"
-            fab:fab_icon="@drawable/ic_directions_bike"
-            fab:fab_title="@string/bike_directions_button_label"/>
+            fab:fab_colorRipple="@color/accent"
+            fab:fab_size="mini"
+            fab:fab_label="@string/bike_directions_button_label"/>
 
-        <com.getbase.floatingactionbutton.FloatingActionButton
+        <com.github.clans.fab.FloatingActionButton
             android:id="@+id/transit_directions_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:src="@drawable/ic_directions_bus"
             fab:fab_colorNormal="@color/accent"
             fab:fab_colorPressed="@color/accent_dark"
-            fab:fab_icon="@drawable/ic_directions_bus"
-            fab:fab_title="@string/transit_directions_button_label"/>
+            fab:fab_colorRipple="@color/accent"
+            fab:fab_size="mini"
+            fab:fab_label="@string/transit_directions_button_label"/>
 
-        <com.getbase.floatingactionbutton.FloatingActionButton
+        <com.github.clans.fab.FloatingActionButton
             android:id="@+id/driving_directions_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:src="@drawable/ic_directions_car"
             fab:fab_colorNormal="@color/accent"
             fab:fab_colorPressed="@color/accent_dark"
-            fab:fab_icon="@drawable/ic_directions_car"
-            fab:fab_title="@string/driving_directions_button_label"/>
-    </com.getbase.floatingactionbutton.CustomFloatingActionsMenu>
+            fab:fab_colorRipple="@color/accent"
+            fab:fab_size="mini"
+            fab:fab_label="@string/driving_directions_button_label"/>
+    </com.github.clans.fab.FloatingActionMenu>
 </RelativeLayout>
