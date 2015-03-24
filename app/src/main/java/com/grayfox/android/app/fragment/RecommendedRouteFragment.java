@@ -53,9 +53,12 @@ public class RecommendedRouteFragment extends RoboFragment implements OnMapReady
     @InjectView(R.id.route_list)            private RecyclerView routeList;
     @InjectView(R.id.card_view)             private CardView cardView;
 
+    private boolean shouldRestoreRoute;
     private GoogleMap googleMap;
     private RouteBuilderTask routeBuilderTask;
     private PoiRouteAdapter poiRouteAdapter;
+    private DirectionsRoute route;
+    private Poi[] nextPois;
 
     public static RecommendedRouteFragment newInstance(Location currentLocation, Poi seed) {
         RecommendedRouteFragment fragment = new RecommendedRouteFragment();
@@ -64,6 +67,12 @@ public class RecommendedRouteFragment extends RoboFragment implements OnMapReady
         args.putSerializable(SEED_ARG, seed);
         fragment.setArguments(args);
         return fragment;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setRetainInstance(true);
     }
 
     @Override
@@ -93,11 +102,17 @@ public class RecommendedRouteFragment extends RoboFragment implements OnMapReady
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        routeBuilderTask = new RouteBuilderTask(this)
-                .seed(getSeedArg())
-                .origin(getCurrentLocationArg())
-                .travelMode(TravelMode.DRIVING); // TODO: Hardcoded value
-        routeBuilderTask.request();
+        shouldRestoreRoute = false;
+        if (savedInstanceState == null) {
+            routeBuilderTask = new RouteBuilderTask(this)
+                    .seed(getSeedArg())
+                    .origin(getCurrentLocationArg())
+                    .travelMode(TravelMode.DRIVING); // TODO: Hardcoded value
+            routeBuilderTask.request();
+        } else {
+            if (routeBuilderTask != null && routeBuilderTask.isActive()) onPreExecuteRouteBuilderTask();
+            else shouldRestoreRoute = true;
+        }
     }
 
     @Override
@@ -113,6 +128,11 @@ public class RecommendedRouteFragment extends RoboFragment implements OnMapReady
                 .title(getString(R.string.current_location))
                 .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN)));
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 13f));
+        if (shouldRestoreRoute) {
+            onAcquireNextPois(nextPois);
+            onAcquireRoute(route);
+            onCompleteRouteBuilderTask();
+        }
     }
 
     private void onPreExecuteRouteBuilderTask() {
@@ -121,12 +141,14 @@ public class RecommendedRouteFragment extends RoboFragment implements OnMapReady
     }
 
     private void onAcquireNextPois(Poi[] nextPois) {
+        this.nextPois = nextPois;
         poiRouteAdapter.add(nextPois);
         poiRouteAdapter.notifyDataSetChanged();
         for (Poi poi : nextPois) addPoiMarker(poi);
     }
 
     private void onAcquireRoute(DirectionsRoute route) {
+        this.route = route;
         List<com.google.maps.model.LatLng> polyline = route.overviewPolyline.decodePath();
         PolylineOptions pathOptions = new PolylineOptions().color(Color.RED);
         for (com.google.maps.model.LatLng point : polyline) pathOptions.add(new LatLng(point.lat, point.lng));
