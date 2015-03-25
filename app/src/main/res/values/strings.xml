@@ -29,6 +29,10 @@
     <string name="bike_directions_button_label">Biking</string>
     <string name="transit_directions_button_label">Transit</string>
     <string name="driving_directions_button_label">Driving</string>
+    <string name="travel_distance">Distance: %.2f km</string>
+    <string name="travel_time">Time: %s</string>
+    <string name="long_time_format" translatable="false">H\' h \'m\' m\'</string>
+    <string name="short_time_format" translatable="false">m\' m\'</string>
 
     <!-- ProfileFragments -->
     <string name="profile_title"></string>

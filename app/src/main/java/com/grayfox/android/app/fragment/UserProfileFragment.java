@@ -82,8 +82,14 @@ public class UserProfileFragment extends RoboFragment {
         } else {
             if (task != null && task.isActive()) onPreExecuteTask();
             else if (user != null) {
-                onCompleteUser(user);
-                onTaskFinally();
+                if (user.getLikes() != null && user.getFriends() != null) {
+                    onCompleteUser(user);
+                    onTaskFinally();
+                } else {
+                    task = new CompleteUserTask(this);
+                    task.currentUser(user);
+                    task.request();
+                }
             }
         }
     }

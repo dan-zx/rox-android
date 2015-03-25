@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 
@@ -29,6 +30,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.maps.DirectionsApi;
 import com.google.maps.GeoApiContext;
+import com.google.maps.model.DirectionsLeg;
 import com.google.maps.model.DirectionsRoute;
 import com.google.maps.model.TravelMode;
 import com.grayfox.android.app.R;
@@ -43,8 +45,10 @@ import roboguice.fragment.RoboFragment;
 import roboguice.inject.InjectView;
 
 import java.lang.ref.WeakReference;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -59,13 +63,19 @@ public class RecommendedRouteFragment extends RoboFragment implements OnMapReady
     @InjectView(R.id.walking_directions_button)        private FloatingActionButton walkingDirectionsButton;
     @InjectView(R.id.transit_directions_button)        private FloatingActionButton transitDirectionsButton;
     @InjectView(R.id.driving_directions_button)        private FloatingActionButton drivingDirectionsButton;
+    @InjectView(R.id.travel_distance_container)        private CardView travelDistanceContainer;
     @InjectView(R.id.bike_directions_button)           private FloatingActionButton bikeDirectionsButton;
+    @InjectView(R.id.travel_time_container)            private CardView travelTimeContainer;
     @InjectView(R.id.building_route_layout)            private LinearLayout buildingRouteLayout;
+    @InjectView(R.id.travel_distance_text)             private TextView travelDistanceTextView;
+    @InjectView(R.id.travel_time_text)                 private TextView travelTimeTextView;
     @InjectView(R.id.directions_menu)                  private FloatingActionMenu directionsMenu;
     @InjectView(R.id.route_list)                       private RecyclerView routeList;
     @InjectView(R.id.card_view)                        private CardView cardView;
 
     private boolean shouldRestoreRoute;
+    private SimpleDateFormat longTimeFormatter;
+    private SimpleDateFormat shortTimeFormatter;
     private GoogleMap googleMap;
     private RecalculateRouteTask recalculateRouteTask;
     private RouteBuilderTask routeBuilderTask;
@@ -85,6 +95,8 @@ public class RecommendedRouteFragment extends RoboFragment implements OnMapReady
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        longTimeFormatter = new SimpleDateFormat(getString(R.string.long_time_format));
+        shortTimeFormatter = new SimpleDateFormat(getString(R.string.short_time_format));
         setRetainInstance(true);
     }
 
@@ -132,7 +144,7 @@ public class RecommendedRouteFragment extends RoboFragment implements OnMapReady
                 if (routeBuilderTask != null && !routeBuilderTask.isActive()) recalculateRoute(TravelMode.BICYCLING);
             }
         });
-        cardView.getLayoutParams().height += (int) getResources().getDimension(R.dimen.list_overlap);
+        cardView.getLayoutParams().height += (int) getResources().getDimension(R.dimen.card_overlap);
         routeList.setLayoutManager(new LinearLayoutManager(getActivity()));
         poiRouteAdapter = new PoiRouteAdapter(getCurrentLocationArg());
         poiRouteAdapter.add(getSeedArg());
@@ -155,6 +167,13 @@ public class RecommendedRouteFragment extends RoboFragment implements OnMapReady
             if (recalculateRouteTask != null && recalculateRouteTask.isActive()) onPreExcecuteRecalculateRouteTask();
             else shouldRestoreRoute = true;
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (recalculateRouteTask != null && recalculateRouteTask.isActive()) recalculateRouteTask.cancel(true);
+        if (routeBuilderTask != null && routeBuilderTask.isActive()) routeBuilderTask.cancel(true);
     }
 
     @Override
@@ -182,6 +201,8 @@ public class RecommendedRouteFragment extends RoboFragment implements OnMapReady
     }
 
     private void onPreExecuteRouteBuilderTask() {
+        travelDistanceContainer.setVisibility(View.GONE);
+        travelTimeContainer.setVisibility(View.GONE);
         buildingRouteLayout.setVisibility(View.VISIBLE);
         routeList.setVisibility(View.GONE);
     }
@@ -198,6 +219,16 @@ public class RecommendedRouteFragment extends RoboFragment implements OnMapReady
     private void onAcquireRoute(DirectionsRoute route) {
         this.route = route;
         if(route != null) {
+            double totalDistance = 0f;
+            int totalTime = 0;
+            for (DirectionsLeg leg : route.legs) {
+                totalDistance += leg.distance.inMeters;
+                totalTime += leg.duration.inSeconds;
+            }
+            travelDistanceTextView.setText(getString(R.string.travel_distance, totalDistance / 1_000f));
+            travelTimeTextView.setText(getString(R.string.travel_time, formatTime(totalTime)));
+            travelDistanceContainer.setVisibility(View.VISIBLE);
+            travelTimeContainer.setVisibility(View.VISIBLE);
             List<com.google.maps.model.LatLng> polyline = route.overviewPolyline.decodePath();
             PolylineOptions pathOptions = new PolylineOptions().color(Color.RED);
             for (com.google.maps.model.LatLng point : polyline) pathOptions.add(new LatLng(point.lat, point.lng));
@@ -214,6 +245,8 @@ public class RecommendedRouteFragment extends RoboFragment implements OnMapReady
     }
 
     private void onPreExcecuteRecalculateRouteTask() {
+        travelDistanceContainer.setVisibility(View.GONE);
+        travelTimeContainer.setVisibility(View.GONE);
         googleMap.clear();
         currentLocationInMap();
         addPoiMarker(getSeedArg());
@@ -264,6 +297,12 @@ public class RecommendedRouteFragment extends RoboFragment implements OnMapReady
                 .edit()
                 .putString(getString(R.string.travel_mode_key), selectedTravelMode.name())
                 .commit();
+    }
+
+    private String formatTime(int timeInSeconds) {
+        int timeInHours = (int) ((timeInSeconds / 60f) / 60f);
+        if (timeInHours > 0) return longTimeFormatter.format(new Date(timeInSeconds * 1_000L));
+        return shortTimeFormatter.format(new Date(timeInSeconds * 1_000L));
     }
 
     private static class RouteBuilderTask extends NetworkAsyncTask<Object[]> {

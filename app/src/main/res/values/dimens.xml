@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="list_overlap_negative">-50dp</dimen>
-    <dimen name="list_overlap">50dp</dimen>
+    <dimen name="card_overlap_negative">-50dp</dimen>
+    <dimen name="card_overlap">50dp</dimen>
     <dimen name="drawer_item_padding">8dp</dimen>
     <dimen name="drawer_item_vertical_padding">16dp</dimen>
     <dimen name="drawer_item_text">14sp</dimen>

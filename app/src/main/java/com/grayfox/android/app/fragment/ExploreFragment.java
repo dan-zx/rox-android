@@ -97,7 +97,7 @@ public class ExploreFragment extends RoboFragment implements OnMapReadyCallback,
                 onSelectRecommendation(recommendation);
             }
         });
-        cardView.getLayoutParams().height += (int) getResources().getDimension(R.dimen.list_overlap);
+        cardView.getLayoutParams().height += (int) getResources().getDimension(R.dimen.card_overlap);
         poiList.setLayoutManager(new LinearLayoutManager(getActivity()));
         poiList.setAdapter(recommendationAdapter);
         myLocationButton.setOnClickListener(new View.OnClickListener() {
@@ -155,10 +155,14 @@ public class ExploreFragment extends RoboFragment implements OnMapReadyCallback,
     @Override
     public void onStop() {
         super.onStop();
-        if (googleApiClient.isConnected()) {
-            stopLocationUpdates();
-            googleApiClient.disconnect();
-        }
+        stopLocationUpdates();
+        googleApiClient.disconnect();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (recommendationsTask != null && recommendationsTask.isActive()) recommendationsTask.cancel(true);
     }
 
     @Override

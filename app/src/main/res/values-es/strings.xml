@@ -27,6 +27,8 @@
     <string name="bike_directions_button_label">Bicicleta</string>
     <string name="transit_directions_button_label">Transporte público</string>
     <string name="driving_directions_button_label">Auto</string>
+    <string name="travel_distance">Distancia: %.2f km</string>
+    <string name="travel_time">Tiempo: %s</string>
 
     <!-- ProfileFragments -->
     <string name="profile_title"></string>
