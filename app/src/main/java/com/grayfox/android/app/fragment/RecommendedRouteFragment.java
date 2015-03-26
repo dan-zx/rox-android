@@ -65,10 +65,8 @@ public class RecommendedRouteFragment extends RoboFragment implements OnMapReady
     @InjectView(R.id.driving_directions_button)        private FloatingActionButton drivingDirectionsButton;
     @InjectView(R.id.travel_distance_container)        private CardView travelDistanceContainer;
     @InjectView(R.id.bike_directions_button)           private FloatingActionButton bikeDirectionsButton;
-    @InjectView(R.id.travel_time_container)            private CardView travelTimeContainer;
     @InjectView(R.id.building_route_layout)            private LinearLayout buildingRouteLayout;
     @InjectView(R.id.travel_distance_text)             private TextView travelDistanceTextView;
-    @InjectView(R.id.travel_time_text)                 private TextView travelTimeTextView;
     @InjectView(R.id.directions_menu)                  private FloatingActionMenu directionsMenu;
     @InjectView(R.id.route_list)                       private RecyclerView routeList;
     @InjectView(R.id.card_view)                        private CardView cardView;
@@ -196,13 +194,12 @@ public class RecommendedRouteFragment extends RoboFragment implements OnMapReady
         googleMap.addMarker(new MarkerOptions()
                 .position(latLng)
                 .title(getString(R.string.current_location))
-                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN)));
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_maps_location_dot)));
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 13f));
     }
 
     private void onPreExecuteRouteBuilderTask() {
         travelDistanceContainer.setVisibility(View.GONE);
-        travelTimeContainer.setVisibility(View.GONE);
         buildingRouteLayout.setVisibility(View.VISIBLE);
         routeList.setVisibility(View.GONE);
     }
@@ -220,17 +217,11 @@ public class RecommendedRouteFragment extends RoboFragment implements OnMapReady
         this.route = route;
         if(route != null) {
             double totalDistance = 0f;
-            int totalTime = 0;
-            for (DirectionsLeg leg : route.legs) {
-                totalDistance += leg.distance.inMeters;
-                totalTime += leg.duration.inSeconds;
-            }
+            for (DirectionsLeg leg : route.legs) totalDistance += leg.distance.inMeters;
             travelDistanceTextView.setText(getString(R.string.travel_distance, totalDistance / 1_000f));
-            travelTimeTextView.setText(getString(R.string.travel_time, formatTime(totalTime)));
             travelDistanceContainer.setVisibility(View.VISIBLE);
-            travelTimeContainer.setVisibility(View.VISIBLE);
             List<com.google.maps.model.LatLng> polyline = route.overviewPolyline.decodePath();
-            PolylineOptions pathOptions = new PolylineOptions().color(Color.RED);
+            PolylineOptions pathOptions = new PolylineOptions().color(getResources().getColor(R.color.accent));
             for (com.google.maps.model.LatLng point : polyline) pathOptions.add(new LatLng(point.lat, point.lng));
             googleMap.addPolyline(pathOptions);
         } else {
@@ -246,7 +237,6 @@ public class RecommendedRouteFragment extends RoboFragment implements OnMapReady
 
     private void onPreExcecuteRecalculateRouteTask() {
         travelDistanceContainer.setVisibility(View.GONE);
-        travelTimeContainer.setVisibility(View.GONE);
         googleMap.clear();
         currentLocationInMap();
         addPoiMarker(getSeedArg());
@@ -275,7 +265,7 @@ public class RecommendedRouteFragment extends RoboFragment implements OnMapReady
         Picasso.with(getActivity())
                 .load(poi.getCategories()[0].getIconUrl())
                 .placeholder(R.drawable.ic_generic_category)
-                .into(new PicassoMarker(marker, getActivity()));
+                .into(new PicassoMarker(marker, R.drawable.ic_map_pin_light_blue, getActivity()));
     }
 
     private Location getCurrentLocationArg() {

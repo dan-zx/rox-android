@@ -51,6 +51,14 @@ public class RecommendationAdapter extends RecyclerView.Adapter<RecommendationAd
                 if (onClickListener != null) onClickListener.onClick(recommendation);
             }
         });
+        switch (recommendation.getType()) {
+            case SELF:
+                holder.categoryImageView.setBackgroundResource(R.drawable.ic_map_pin_pink);
+                break;
+            case SOCIAL:
+                holder.categoryImageView.setBackgroundResource(R.drawable.ic_map_pin_dark_blue);
+                break;
+        }
         Picasso.with(holder.itemView.getContext())
                 .load(recommendation.getPoi().getCategories()[0].getIconUrl())
                 .placeholder(R.drawable.ic_generic_category)

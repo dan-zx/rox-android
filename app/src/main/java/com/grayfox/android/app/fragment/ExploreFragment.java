@@ -5,15 +5,13 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
-import android.widget.TextView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.github.clans.fab.FloatingActionButton;
@@ -27,12 +25,14 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.grayfox.android.app.R;
 import com.grayfox.android.app.activity.MainActivity;
 import com.grayfox.android.app.widget.RecommendationAdapter;
+import com.grayfox.android.app.widget.WrapContentLinearLayoutManager;
 import com.grayfox.android.app.widget.util.PicassoMarker;
 import com.grayfox.android.client.model.Recommendation;
 import com.grayfox.android.client.task.RecommendationAsyncTask;
@@ -51,9 +51,7 @@ public class ExploreFragment extends RoboFragment implements OnMapReadyCallback,
     private static final String TAG = ExploreFragment.class.getSimpleName();
 
     @InjectView(R.id.my_location_button) private FloatingActionButton myLocationButton;
-    @InjectView(R.id.searching_layout)   private LinearLayout searchingLayout;
-    @InjectView(R.id.searching_text)     private TextView searchingTextView;
-    @InjectView(R.id.card_view)          private CardView cardView;
+    @InjectView(R.id.progress_bar)       private ProgressBar progressBar;
     @InjectView(R.id.poi_list)           private RecyclerView poiList;
 
     @Inject private LocationManager locationManager;
@@ -97,8 +95,7 @@ public class ExploreFragment extends RoboFragment implements OnMapReadyCallback,
                 onSelectRecommendation(recommendation);
             }
         });
-        cardView.getLayoutParams().height += (int) getResources().getDimension(R.dimen.card_overlap);
-        poiList.setLayoutManager(new LinearLayoutManager(getActivity()));
+        poiList.setLayoutManager(new WrapContentLinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
         poiList.setAdapter(recommendationAdapter);
         myLocationButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -168,18 +165,19 @@ public class ExploreFragment extends RoboFragment implements OnMapReadyCallback,
     @Override
     public void onMapReady(GoogleMap googleMap) {
         this.googleMap = googleMap;
+        googleMap.setPadding(0, 0, 0, 250);
         googleMap.getUiSettings().setMapToolbarEnabled(false);
         googleMap.getUiSettings().setMyLocationButtonEnabled(false);
-        if (shouldRestoreCurrentLocationInMap) restoreCurrentLocationInMap();
+        if (shouldRestoreCurrentLocationInMap) showCurrentLocationInMap();
         if (shouldRestoreRecommendationsInMap) restoreRecommendationsInMap();
     }
 
-    private void restoreCurrentLocationInMap() {
+    private void showCurrentLocationInMap() {
         LatLng latLng = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
         googleMap.addMarker(new MarkerOptions()
                 .position(latLng)
                 .title(getString(R.string.current_location))
-                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN)));
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_maps_location_dot)));
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 13f));
     }
 
@@ -188,18 +186,26 @@ public class ExploreFragment extends RoboFragment implements OnMapReadyCallback,
             Marker marker = googleMap.addMarker(new MarkerOptions()
                     .position(new LatLng(recommendation.getPoi().getLocation().getLatitude(), recommendation.getPoi().getLocation().getLongitude()))
                     .title(recommendation.getPoi().getName()));
+            int backgroundResource = 0;
+            switch (recommendation.getType()) {
+                case SELF:
+                    backgroundResource = R.drawable.ic_map_pin_pink;
+                    break;
+                case SOCIAL:
+                    backgroundResource = R.drawable.ic_map_pin_dark_blue;
+                    break;
+            }
             Picasso.with(getActivity())
                     .load(recommendation.getPoi().getCategories()[0].getIconUrl())
                     .placeholder(R.drawable.ic_generic_category)
-                    .into(new PicassoMarker(marker, getActivity()));
+                    .into(new PicassoMarker(marker, backgroundResource, getActivity()));
         }
     }
 
     private void onPreLocationUpdate() {
         currentLocation = null;
         poiList.setVisibility(View.GONE);
-        searchingLayout.setVisibility(View.VISIBLE);
-        searchingTextView.setText(R.string.waiting_location_update);
+        progressBar.setVisibility(View.VISIBLE);
     }
 
     private boolean areAnyLocationProvidersEnabled() {
@@ -225,16 +231,12 @@ public class ExploreFragment extends RoboFragment implements OnMapReadyCallback,
 
     @Override
     public void onLocationChanged(Location location) {
+        shouldRequestLocationUpdatesOnConnect = false;
         currentLocation = location;
         stopLocationUpdates();
         onCompleteLocationUpdate();
-        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
         googleMap.clear();
-        googleMap.addMarker(new MarkerOptions()
-                .position(latLng)
-                .title(getString(R.string.current_location))
-                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN)));
-        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 13f));
+        showCurrentLocationInMap();
         int radius = getRadiusFromMapProjection();
 //        googleMap.addCircle(new CircleOptions()
 //                .center(latLng)
@@ -267,13 +269,12 @@ public class ExploreFragment extends RoboFragment implements OnMapReadyCallback,
 
     private void onCompleteLocationUpdate() {
         poiList.setVisibility(View.GONE);
-        searchingLayout.setVisibility(View.GONE);
+        progressBar.setVisibility(View.GONE);
     }
 
     private void onPreExecuteRecommendationsTask() {
         poiList.setVisibility(View.GONE);
-        searchingLayout.setVisibility(View.VISIBLE);
-        searchingTextView.setText(R.string.searching_recommendations);
+        progressBar.setVisibility(View.VISIBLE);
     }
 
     private void onRecommendationsAcquired(Recommendation[] recommendations) {
@@ -282,24 +283,30 @@ public class ExploreFragment extends RoboFragment implements OnMapReadyCallback,
         recommendationAdapter.add(recommendations);
         recommendationAdapter.notifyDataSetChanged();
         googleMap.clear();
-        googleMap.addMarker(new MarkerOptions()
-                .position(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()))
-                .title(getString(R.string.current_location))
-                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN)));
+        showCurrentLocationInMap();
         for (Recommendation recommendation : recommendations) {
             Marker marker = googleMap.addMarker(new MarkerOptions()
                     .position(new LatLng(recommendation.getPoi().getLocation().getLatitude(), recommendation.getPoi().getLocation().getLongitude()))
                     .title(recommendation.getPoi().getName()));
+            int backgroundResource = 0;
+            switch (recommendation.getType()) {
+                case SELF:
+                    backgroundResource = R.drawable.ic_map_pin_pink;
+                    break;
+                case SOCIAL:
+                    backgroundResource = R.drawable.ic_map_pin_dark_blue;
+                    break;
+            }
             Picasso.with(getActivity())
                     .load(recommendation.getPoi().getCategories()[0].getIconUrl())
                     .placeholder(R.drawable.ic_generic_category)
-                    .into(new PicassoMarker(marker, getActivity()));
+                    .into(new PicassoMarker(marker, backgroundResource, getActivity()));
         }
     }
 
     private void onCompleteRecommendationsTask() {
         poiList.setVisibility(View.VISIBLE);
-        searchingLayout.setVisibility(View.GONE);
+        progressBar.setVisibility(View.GONE);
     }
 
     private void onSelectRecommendation(Recommendation recommendation) {
