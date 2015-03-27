@@ -31,7 +31,6 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.grayfox.android.app.R;
 import com.grayfox.android.app.activity.MainActivity;
 import com.grayfox.android.app.widget.RecommendationAdapter;
-import com.grayfox.android.app.widget.WrapContentLinearLayoutManager;
 import com.grayfox.android.app.widget.util.PicassoMarker;
 import com.grayfox.android.client.model.Recommendation;
 import com.grayfox.android.client.task.RecommendationAsyncTask;
@@ -94,7 +93,7 @@ public class ExploreFragment extends RoboFragment implements OnMapReadyCallback,
                 onSelectRecommendation(recommendation);
             }
         });
-        poiList.setLayoutManager(new WrapContentLinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
+        poiList.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
         poiList.setAdapter(recommendationAdapter);
         myLocationButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -236,30 +235,21 @@ public class ExploreFragment extends RoboFragment implements OnMapReadyCallback,
         onCompleteLocationUpdate();
         googleMap.clear();
         showCurrentLocationInMap();
-        int radius = getRadiusFromMapProjection();
-//        googleMap.addCircle(new CircleOptions()
-//                .center(latLng)
-//                .radius(radius)
-//                .strokeColor(Color.BLUE));
         com.grayfox.android.client.model.Location myLocation = new com.grayfox.android.client.model.Location();
         myLocation.setLatitude(location.getLatitude());
         myLocation.setLongitude(location.getLongitude());
         recommendationsTask = new RecommendationsTask(this)
                 .location(myLocation)
-                .radius(radius);
+                .radius(getRadiusFromMapProjection());
         recommendationsTask.request();
     }
 
     private int getRadiusFromMapProjection() {
         LatLng point1 = googleMap.getProjection().getVisibleRegion().nearLeft;
         LatLng point2 = googleMap.getProjection().getVisibleRegion().nearRight;
-        double dLat = Math.toRadians(point2.latitude - point1.latitude);
-        double dLon = Math.toRadians(point2.longitude - point1.longitude);
-        double lat1 = Math.toRadians(point1.latitude);
-        double lat2 = Math.toRadians(point2.latitude);
-        double a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.sin(dLon / 2) * Math.sin(dLon / 2) * Math.cos(lat1) * Math.cos(lat2);
-        double c = 2 * Math.asin(Math.sqrt(a));
-        return (int) Math.round(6378137 * c);
+        float[] results = new float[1];
+        Location.distanceBetween(point1.latitude, point1.longitude, point2.latitude, point2.longitude, results);
+        return Math.round(results[0] / 2f);
     }
 
     private void stopLocationUpdates() {

@@ -32,6 +32,7 @@
             android:layout_toEndOf="@+id/category_image"
             android:layout_toRightOf="@+id/category_image"
             android:gravity="center_vertical"
+            android:maxWidth="250dp"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:textStyle="bold"/>
 
@@ -43,6 +44,7 @@
             android:layout_toEndOf="@+id/category_image"
             android:layout_toRightOf="@+id/category_image"
             android:gravity="center_vertical"
+            android:maxWidth="250dp"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:textStyle="italic"/>
     </RelativeLayout>

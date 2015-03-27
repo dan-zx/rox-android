@@ -29,7 +29,7 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/poi_list"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/recommendations_overlap"
         android:layout_alignParentBottom="true"
         android:background="@android:color/transparent"/>
 
