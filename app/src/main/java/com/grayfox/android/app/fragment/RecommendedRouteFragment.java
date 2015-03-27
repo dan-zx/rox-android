@@ -1,6 +1,5 @@
 package com.grayfox.android.app.fragment;
 
-import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -180,7 +179,7 @@ public class RecommendedRouteFragment extends RoboFragment implements OnMapReady
         googleMap.getUiSettings().setMapToolbarEnabled(false);
         googleMap.getUiSettings().setMyLocationButtonEnabled(false);
         addPoiMarker(getSeedArg());
-        currentLocationInMap();
+        showCurrentLocationInMap();
         if (shouldRestoreRoute) {
             if (nextPois != null) onAcquireNextPois(nextPois);
             if (route != null) onAcquireRoute(route);
@@ -188,13 +187,13 @@ public class RecommendedRouteFragment extends RoboFragment implements OnMapReady
         }
     }
 
-    private void currentLocationInMap() {
+    private void showCurrentLocationInMap() {
         Location currentLocation = getCurrentLocationArg();
         LatLng latLng = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
         googleMap.addMarker(new MarkerOptions()
                 .position(latLng)
                 .title(getString(R.string.current_location))
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_maps_location_dot)));
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_map_location)));
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 13f));
     }
 
@@ -238,7 +237,7 @@ public class RecommendedRouteFragment extends RoboFragment implements OnMapReady
     private void onPreExcecuteRecalculateRouteTask() {
         travelDistanceContainer.setVisibility(View.GONE);
         googleMap.clear();
-        currentLocationInMap();
+        showCurrentLocationInMap();
         addPoiMarker(getSeedArg());
         for (Poi poi : nextPois) addPoiMarker(poi);
         recalculatingRouteProgressBar.setVisibility(View.VISIBLE);

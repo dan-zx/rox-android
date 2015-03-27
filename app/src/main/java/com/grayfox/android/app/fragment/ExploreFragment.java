@@ -25,7 +25,6 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -177,7 +176,7 @@ public class ExploreFragment extends RoboFragment implements OnMapReadyCallback,
         googleMap.addMarker(new MarkerOptions()
                 .position(latLng)
                 .title(getString(R.string.current_location))
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_maps_location_dot)));
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_map_location)));
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 13f));
     }
 
