@@ -1,39 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
+<com.daimajia.swipe.SwipeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                android:id="@+id/swipe"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent">
 
-    <ImageView
-        android:id="@+id/category_image"
-        android:layout_width="40dp"
-        android:layout_height="40dp"/>
+    <include layout="@layout/delete_layout" />
 
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_alignParentTop="true"
-        android:layout_alignTop="@+id/poi_name"
-        android:layout_toRightOf="@+id/category_image"
-        android:scaleType="fitXY"
-        android:src="@drawable/route_bottom_dot"/>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/poi_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="30dp"
-        android:layout_marginRight="4dp"
-        android:layout_marginTop="2dp"
-        android:layout_toRightOf="@id/category_image"
-        android:textAppearance="?android:attr/textAppearanceLarge"/>
+        <ImageView
+            android:id="@+id/category_image"
+            android:layout_width="40dp"
+            android:layout_height="40dp"/>
 
-    <TextView
-        android:id="@+id/category_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/poi_name"
-        android:layout_marginLeft="30dp"
-        android:layout_marginRight="4dp"
-        android:layout_toRightOf="@id/category_image"
-        android:textAppearance="?android:attr/textAppearanceMedium"/>
-</RelativeLayout>
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentTop="true"
+            android:layout_alignTop="@+id/poi_name"
+            android:layout_toRightOf="@+id/category_image"
+            android:scaleType="fitXY"
+            android:src="@drawable/route_bottom_dot"/>
+
+        <TextView
+            android:id="@+id/poi_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="4dp"
+            android:layout_marginTop="2dp"
+            android:layout_toRightOf="@id/category_image"
+            android:textAppearance="?android:attr/textAppearanceLarge"/>
+
+        <TextView
+            android:id="@+id/category_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/poi_name"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="4dp"
+            android:layout_toRightOf="@id/category_image"
+            android:textAppearance="?android:attr/textAppearanceMedium"/>
+    </RelativeLayout>
+</com.daimajia.swipe.SwipeLayout>

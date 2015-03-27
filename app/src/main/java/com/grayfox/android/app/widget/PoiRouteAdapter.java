@@ -10,9 +10,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.daimajia.swipe.SwipeLayout;
+import com.daimajia.swipe.adapters.RecyclerSwipeAdapter;
+import com.daimajia.swipe.util.Attributes;
 import com.grayfox.android.app.R;
 import com.grayfox.android.app.widget.util.ColorTransformation;
 import com.grayfox.android.client.model.Poi;
@@ -24,7 +28,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
-public class PoiRouteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class PoiRouteAdapter extends RecyclerSwipeAdapter<RecyclerView.ViewHolder> {
 
     private static final String TAG = PoiRouteAdapter.class.getSimpleName();
 
@@ -32,14 +36,20 @@ public class PoiRouteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     private final List<Poi> poiSequence;
     private final Location currentLocation;
+    private OnDeleteItemListener onDeleteItemListener;
 
     public PoiRouteAdapter(Location currentLocation) {
         this.currentLocation = currentLocation;
         poiSequence = new ArrayList<>();
+        setMode(Attributes.Mode.Single);
     }
 
     public void add(Poi... pois) {
         poiSequence.addAll(Arrays.asList(pois));
+    }
+
+    public void setOnDeleteItemListener(OnDeleteItemListener onDeleteItemListener) {
+        this.onDeleteItemListener = onDeleteItemListener;
     }
 
     @Override
@@ -59,7 +69,7 @@ public class PoiRouteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
         Context context = holder.itemView.getContext();
         switch (ViewType.values()[getItemViewType(position)]) {
             case TOP:
@@ -68,8 +78,10 @@ public class PoiRouteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 topViewHolder.locationDescriptionTextView.setText(getAddress(context, currentLocation));
                 break;
             case MIDDLE:
-                Poi poi = poiSequence.get(position-1);
-                MiddleViewHolder middleViewHolder = (MiddleViewHolder) holder;
+                final Poi poi = poiSequence.get(position-1);
+                final MiddleViewHolder middleViewHolder = (MiddleViewHolder) holder;
+                middleViewHolder.swipeLayout.setShowMode(SwipeLayout.ShowMode.LayDown);
+                middleViewHolder.swipeLayout.setDragEdge(SwipeLayout.DragEdge.Right);
                 Picasso.with(context)
                         .load(poi.getCategories()[0].getIconUrl())
                         .transform(new ColorTransformation(context.getResources().getColor(R.color.secondary_text)))
@@ -77,10 +89,22 @@ public class PoiRouteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                         .into(middleViewHolder.categoryImageView);
                 middleViewHolder.categoryNameView.setText(poi.getCategories()[0].getName());
                 middleViewHolder.poiNameView.setText(poi.getName());
+                middleViewHolder.deleteButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        mItemManger.removeShownLayouts(middleViewHolder.swipeLayout);
+                        poiSequence.remove(position-1);
+                        notifyDataSetChanged();
+                        mItemManger.closeAllItems();
+                        if (onDeleteItemListener != null) onDeleteItemListener.onDelete(poi, position-1);
+                    }
+                });
                 break;
             case BOTTOM:
-                Poi lastPoi = poiSequence.get(position-1);
-                BottomViewHolder bottomViewHolder = (BottomViewHolder) holder;
+                final Poi lastPoi = poiSequence.get(position-1);
+                final BottomViewHolder bottomViewHolder = (BottomViewHolder) holder;
+                bottomViewHolder.swipeLayout.setShowMode(SwipeLayout.ShowMode.LayDown);
+                bottomViewHolder.swipeLayout.setDragEdge(SwipeLayout.DragEdge.Right);
                 Picasso.with(context)
                         .load(lastPoi.getCategories()[0].getIconUrl())
                         .transform(new ColorTransformation(context.getResources().getColor(R.color.secondary_text)))
@@ -88,6 +112,16 @@ public class PoiRouteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                         .into(bottomViewHolder.categoryImageView);
                 bottomViewHolder.categoryNameView.setText(lastPoi.getCategories()[0].getName());
                 bottomViewHolder.poiNameView.setText(lastPoi.getName());
+                bottomViewHolder.deleteButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        mItemManger.removeShownLayouts(bottomViewHolder.swipeLayout);
+                        poiSequence.remove(position-1);
+                        notifyDataSetChanged();
+                        mItemManger.closeAllItems();
+                        if (onDeleteItemListener != null) onDeleteItemListener.onDelete(lastPoi, position-1);
+                    }
+                });
                 break;
         }
     }
@@ -102,6 +136,11 @@ public class PoiRouteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     @Override
     public int getItemCount() {
         return poiSequence.size()+1;
+    }
+
+    @Override
+    public int getSwipeLayoutResourceId(int i) {
+        return R.id.swipe;
     }
 
     private String getAddress(Context context, Location location) {
@@ -126,6 +165,11 @@ public class PoiRouteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
     }
 
+    public static interface OnDeleteItemListener {
+
+        void onDelete(Poi poi, int position);
+    }
+
     private static class TopViewHolder extends RecyclerView.ViewHolder {
 
         private ImageView markerImage;
@@ -140,29 +184,37 @@ public class PoiRouteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     private static class MiddleViewHolder extends RecyclerView.ViewHolder {
 
+        private SwipeLayout swipeLayout;
         private ImageView categoryImageView;
         private TextView poiNameView;
         private TextView categoryNameView;
+        private ImageButton deleteButton;
 
         public MiddleViewHolder(View itemView) {
             super(itemView);
+            swipeLayout = (SwipeLayout) itemView.findViewById(R.id.swipe);
             categoryImageView = (ImageView) itemView.findViewById(R.id.category_image);
             poiNameView = (TextView) itemView.findViewById(R.id.poi_name);
             categoryNameView = (TextView) itemView.findViewById(R.id.category_name);
+            deleteButton = (ImageButton) itemView.findViewById(R.id.delete_button);
         }
     }
 
     private static class BottomViewHolder extends RecyclerView.ViewHolder {
 
+        private SwipeLayout swipeLayout;
         private ImageView categoryImageView;
         private TextView poiNameView;
         private TextView categoryNameView;
+        private ImageButton deleteButton;
 
         public BottomViewHolder(View itemView) {
             super(itemView);
+            swipeLayout = (SwipeLayout) itemView.findViewById(R.id.swipe);
             categoryImageView = (ImageView) itemView.findViewById(R.id.category_image);
             poiNameView = (TextView) itemView.findViewById(R.id.poi_name);
             categoryNameView = (TextView) itemView.findViewById(R.id.category_name);
+            deleteButton = (ImageButton) itemView.findViewById(R.id.delete_button);
         }
     }
 }
