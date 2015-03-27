@@ -113,6 +113,7 @@ public class RecommendedRouteFragment extends RoboFragment implements OnMapReady
                     .replace(R.id.map_container, fragment, MAP_FRAGMENT_TAG)
                     .commit();
         }
+        directionsMenu.setIconAnimated(false);
         walkingDirectionsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -141,7 +142,7 @@ public class RecommendedRouteFragment extends RoboFragment implements OnMapReady
                 if (routeBuilderTask != null && !routeBuilderTask.isActive()) recalculateRoute(TravelMode.BICYCLING);
             }
         });
-        cardView.getLayoutParams().height += (int) getResources().getDimension(R.dimen.card_overlap);
+        cardView.getLayoutParams().height += (int) getResources().getDimension(R.dimen.route_overlap);
         routeList.setLayoutManager(new LinearLayoutManager(getActivity()));
         poiRouteAdapter = new PoiRouteAdapter(getCurrentLocationArg());
         poiRouteAdapter.add(getSeedArg());
@@ -176,6 +177,7 @@ public class RecommendedRouteFragment extends RoboFragment implements OnMapReady
     @Override
     public void onMapReady(GoogleMap googleMap) {
         this.googleMap = googleMap;
+        googleMap.setPadding(0, 0, 0, (int) getResources().getDimension(R.dimen.route_overlap));
         googleMap.getUiSettings().setMapToolbarEnabled(false);
         googleMap.getUiSettings().setMyLocationButtonEnabled(false);
         addPoiMarker(getSeedArg());

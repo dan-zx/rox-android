@@ -39,7 +39,7 @@
             android:id="@+id/card_view"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_marginTop="@dimen/card_overlap_negative"
+            android:layout_marginTop="@dimen/route_overlap_negative"
             android:layout_weight="1"
             cv:cardCornerRadius="4dp"
             cv:cardElevation="4dp"

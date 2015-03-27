@@ -164,7 +164,7 @@ public class ExploreFragment extends RoboFragment implements OnMapReadyCallback,
     @Override
     public void onMapReady(GoogleMap googleMap) {
         this.googleMap = googleMap;
-        googleMap.setPadding(0, 0, 0, 250);
+        googleMap.setPadding(0, 0, 0, (int) getResources().getDimension(R.dimen.recommendations_overlap));
         googleMap.getUiSettings().setMapToolbarEnabled(false);
         googleMap.getUiSettings().setMyLocationButtonEnabled(false);
         if (shouldRestoreCurrentLocationInMap) showCurrentLocationInMap();
