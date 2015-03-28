@@ -7,10 +7,15 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -30,9 +35,16 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.grayfox.android.app.R;
 import com.grayfox.android.app.activity.MainActivity;
+import com.grayfox.android.app.widget.CategoryCursorAdapter;
+import com.grayfox.android.app.widget.PoiAdapter;
 import com.grayfox.android.app.widget.RecommendationAdapter;
 import com.grayfox.android.app.widget.util.PicassoMarker;
+import com.grayfox.android.client.CategoriesApi;
+import com.grayfox.android.client.PoisApi;
+import com.grayfox.android.client.model.Category;
+import com.grayfox.android.client.model.Poi;
 import com.grayfox.android.client.model.Recommendation;
+import com.grayfox.android.client.task.NetworkAsyncTask;
 import com.grayfox.android.client.task.RecommendationAsyncTask;
 import com.squareup.picasso.Picasso;
 import roboguice.fragment.RoboFragment;
@@ -53,21 +65,66 @@ public class ExploreFragment extends RoboFragment implements OnMapReadyCallback,
     @InjectView(R.id.poi_list)           private RecyclerView poiList;
 
     @Inject private LocationManager locationManager;
+    @Inject private InputMethodManager inputMethodManager;
 
     private boolean shouldRequestLocationUpdatesOnConnect;
     private boolean shouldRestoreCurrentLocationInMap;
     private boolean shouldRestoreRecommendationsInMap;
+    private boolean shouldRestorePois;
+    private MenuItem searchViewMenuItem;
+    private SearchView searchView;
     private GoogleMap googleMap;
     private GoogleApiClient googleApiClient;
     private Location currentLocation;
     private Recommendation[] recommendations;
+    private Poi[] pois;
     private RecommendationAsyncTask recommendationsTask;
+    private CategoryFilteringTask categoryFilteringTask;
+    private PoisTask poisTask;
     private RecommendationAdapter recommendationAdapter;
+    private PoiAdapter poiAdapter;
+    private CategoryCursorAdapter categoryAdapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
+        setHasOptionsMenu(true);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.fragment_explore, menu);
+        categoryAdapter = new CategoryCursorAdapter(getActivity());
+        searchViewMenuItem = menu.findItem(R.id.action_search);
+        searchView = (SearchView) searchViewMenuItem.getActionView();
+        searchView.setQueryHint(getString(R.string.search_for_places));
+        searchView.setSuggestionsAdapter(categoryAdapter);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) { return false; }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                if (newText != null && !newText.trim().isEmpty() && newText.length() > 1) {
+                    categoryFilteringTask = new CategoryFilteringTask(ExploreFragment.this)
+                            .query(newText);
+                    categoryFilteringTask.request();
+                }
+                return false;
+            }
+        });
+        searchView.setOnSuggestionListener(new SearchView.OnSuggestionListener() {
+            @Override
+            public boolean onSuggestionSelect(int position) { return false; }
+
+            @Override
+            public boolean onSuggestionClick(int position) {
+                onSuggestionClicked(position);
+                return false;
+            }
+        });
     }
 
     @Override
@@ -86,6 +143,13 @@ public class ExploreFragment extends RoboFragment implements OnMapReadyCallback,
                     .replace(R.id.map_container, fragment, MAP_FRAGMENT_TAG)
                     .commit();
         }
+        poiAdapter = new PoiAdapter();
+        poiAdapter.setOnClickListener(new PoiAdapter.OnClickListener() {
+            @Override
+            public void onClick(Poi poi) {
+                onSelectPoi(poi);
+            }
+        });
         recommendationAdapter = new RecommendationAdapter();
         recommendationAdapter.setOnClickListener(new RecommendationAdapter.OnClickListener() {
             @Override
@@ -94,7 +158,6 @@ public class ExploreFragment extends RoboFragment implements OnMapReadyCallback,
             }
         });
         poiList.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
-        poiList.setAdapter(recommendationAdapter);
         myLocationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -115,6 +178,7 @@ public class ExploreFragment extends RoboFragment implements OnMapReadyCallback,
         shouldRequestLocationUpdatesOnConnect = false;
         shouldRestoreCurrentLocationInMap = false;
         shouldRestoreRecommendationsInMap = false;
+        shouldRestorePois = false;
         if (savedInstanceState == null) {
             shouldRequestLocationUpdatesOnConnect = true;
             shouldRestoreCurrentLocationInMap = false;
@@ -170,6 +234,17 @@ public class ExploreFragment extends RoboFragment implements OnMapReadyCallback,
         if (shouldRestoreRecommendationsInMap) restoreRecommendationsInMap();
     }
 
+    private void onSuggestionClicked(int position) {
+        searchViewMenuItem.collapseActionView();
+        searchView.setQuery(null, false);
+        Category category = categoryAdapter.get(position);
+        poisTask = new PoisTask(this)
+                .currentLocation(getMapCenterLocation())
+                .radius(getRadiusFromMapProjection())
+                .categoryFoursquareId(category.getFoursquareId());
+        poisTask.request();
+    }
+
     private void showCurrentLocationInMap() {
         LatLng latLng = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
         googleMap.addMarker(new MarkerOptions()
@@ -197,6 +272,18 @@ public class ExploreFragment extends RoboFragment implements OnMapReadyCallback,
                     .load(recommendation.getPoi().getCategories()[0].getIconUrl())
                     .placeholder(R.drawable.ic_generic_category)
                     .into(new PicassoMarker(marker, backgroundResource, getActivity()));
+        }
+    }
+
+    private void restorePoisInMap() {
+        for (Poi poi : pois) {
+            Marker marker = googleMap.addMarker(new MarkerOptions()
+                    .position(new LatLng(poi.getLocation().getLatitude(), poi.getLocation().getLongitude()))
+                    .title(poi.getName()));
+            Picasso.with(getActivity())
+                    .load(poi.getCategories()[0].getIconUrl())
+                    .placeholder(R.drawable.ic_generic_category)
+                    .into(new PicassoMarker(marker, R.drawable.ic_map_pin_light_blue, getActivity()));
         }
     }
 
@@ -244,6 +331,13 @@ public class ExploreFragment extends RoboFragment implements OnMapReadyCallback,
         recommendationsTask.request();
     }
 
+    private Location getMapCenterLocation() {
+        Location location = new Location(LocationManager.GPS_PROVIDER);
+        location.setLatitude(googleMap.getCameraPosition().target.latitude);
+        location.setLongitude(googleMap.getCameraPosition().target.longitude);
+        return location;
+    }
+
     private int getRadiusFromMapProjection() {
         LatLng point1 = googleMap.getProjection().getVisibleRegion().nearLeft;
         LatLng point2 = googleMap.getProjection().getVisibleRegion().nearRight;
@@ -268,6 +362,8 @@ public class ExploreFragment extends RoboFragment implements OnMapReadyCallback,
 
     private void onRecommendationsAcquired(Recommendation[] recommendations) {
         this.recommendations = recommendations;
+        pois = null;
+        poiList.setAdapter(recommendationAdapter);
         recommendationAdapter.clear();
         recommendationAdapter.add(recommendations);
         recommendationAdapter.notifyDataSetChanged();
@@ -298,8 +394,46 @@ public class ExploreFragment extends RoboFragment implements OnMapReadyCallback,
         progressBar.setVisibility(View.GONE);
     }
 
+    private void onAquireSuggestions(Category[] categories) {
+        if (categories != null) categoryAdapter.add(categories);
+    }
+
+    private void onPreExecutePoisTask() {
+        poiList.setVisibility(View.GONE);
+        progressBar.setVisibility(View.VISIBLE);
+    }
+
+    private void onPoisAcquired(Poi[] pois) {
+        this.pois = pois;
+        recommendations = null;
+        poiList.setAdapter(poiAdapter);
+        poiAdapter.clear();
+        poiAdapter.add(pois);
+        poiAdapter.notifyDataSetChanged();
+        googleMap.clear();
+        for (Poi poi : pois) {
+            Marker marker = googleMap.addMarker(new MarkerOptions()
+                    .position(new LatLng(poi.getLocation().getLatitude(), poi.getLocation().getLongitude()))
+                    .title(poi.getName()));
+            Picasso.with(getActivity())
+                    .load(poi.getCategories()[0].getIconUrl())
+                    .placeholder(R.drawable.ic_generic_category)
+                    .into(new PicassoMarker(marker, R.drawable.ic_map_pin_light_blue, getActivity()));
+        }
+    }
+
+    private void onCompletePoisTaskTask() {
+        poiList.setVisibility(View.VISIBLE);
+        progressBar.setVisibility(View.GONE);
+    }
+
     private void onSelectRecommendation(Recommendation recommendation) {
         RecommendedRouteFragment fragment = RecommendedRouteFragment.newInstance(currentLocation, recommendation.getPoi());
+        ((MainActivity) getActivity()).setupFragment(fragment, true);
+    }
+
+    private void onSelectPoi(Poi poi) {
+        RecommendedRouteFragment fragment = RecommendedRouteFragment.newInstance(currentLocation, poi);
         ((MainActivity) getActivity()).setupFragment(fragment, true);
     }
 
@@ -363,6 +497,94 @@ public class ExploreFragment extends RoboFragment implements OnMapReadyCallback,
             super.onFinally();
             ExploreFragment fragment = reference.get();
             if (fragment != null) fragment.onCompleteRecommendationsTask();
+        }
+    }
+
+    private static class CategoryFilteringTask extends NetworkAsyncTask<Category[]> {
+
+        @Inject private CategoriesApi categoriesApi;
+
+        private WeakReference<ExploreFragment> reference;
+        private String query;
+
+        private CategoryFilteringTask(ExploreFragment fragment) {
+            super(fragment.getActivity().getApplicationContext());
+            reference = new WeakReference<>(fragment);
+        }
+
+        public CategoryFilteringTask query(String query) {
+            this.query = query;
+            return this;
+        }
+
+        @Override
+        public Category[] call() throws Exception {
+            return categoriesApi.awaitCategoriesLikeName(query);
+        }
+
+        @Override
+        protected void onSuccess(Category[] categories) throws Exception {
+            super.onSuccess(categories);
+            ExploreFragment fragment = reference.get();
+            if (fragment != null) fragment.onAquireSuggestions(categories);
+        }
+    }
+    private static class PoisTask extends NetworkAsyncTask<Poi[]> {
+
+        @Inject private PoisApi poisApi;
+
+        private WeakReference<ExploreFragment> reference;
+        private String categoryFoursquareId;
+        private Location currentLocation;
+        private int radius;
+
+        private PoisTask(ExploreFragment fragment) {
+            super(fragment.getActivity().getApplicationContext());
+            reference = new WeakReference<>(fragment);
+        }
+
+        public PoisTask currentLocation(Location currentLocation) {
+            this.currentLocation = currentLocation;
+            return this;
+        }
+
+        public PoisTask radius(int radius) {
+            this.radius = radius;
+            return this;
+        }
+
+        public PoisTask categoryFoursquareId(String categoryFoursquareId) {
+            this.categoryFoursquareId = categoryFoursquareId;
+            return this;
+        }
+
+        @Override
+        protected void onPreExecute() throws Exception {
+            super.onPreExecute();
+            ExploreFragment fragment = reference.get();
+            if (fragment != null) fragment.onPreExecutePoisTask();
+        }
+
+        @Override
+        public Poi[] call() throws Exception {
+            com.grayfox.android.client.model.Location myLocation = new com.grayfox.android.client.model.Location();
+            myLocation.setLatitude(currentLocation.getLatitude());
+            myLocation.setLongitude(currentLocation.getLongitude());
+            return poisApi.awaitSearchByCategory(myLocation, radius, categoryFoursquareId);
+        }
+
+        @Override
+        protected void onSuccess(Poi[] pois) throws Exception {
+            super.onSuccess(pois);
+            ExploreFragment fragment = reference.get();
+            if (fragment != null) fragment.onPoisAcquired(pois);
+        }
+
+        @Override
+        protected void onFinally() throws RuntimeException {
+            super.onFinally();
+            ExploreFragment fragment = reference.get();
+            if (fragment != null) fragment.onCompletePoisTaskTask();
         }
     }
 }

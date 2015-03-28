@@ -19,6 +19,7 @@
     <string name="waiting_location_update">Esperando ubicación&#8230;</string>
     <string name="location_update_timeout">Tiempo de espera de ubicación agotado</string>
     <string name="enable_location_updates">Activa los servicios de ubicación primero</string>
+    <string name="search_for_places">Buscar lugares</string>
 
     <!-- RecommendedRouteFragment -->
     <string name="building_route">Construyendo ruta&#8230;</string>
