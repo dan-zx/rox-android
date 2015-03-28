@@ -12,9 +12,7 @@ public class CategoriesApi extends BaseApi {
     }
 
     public Category[] awaitCategoriesLikeName(String partialName) {
-        String url = new Uri.Builder().scheme(getString(R.string.gf_api_host_scheme))
-                .encodedAuthority(getString(R.string.gf_api_host))
-                .appendEncodedPath(getString(R.string.gf_api_path))
+        String url = Uri.parse(getString(R.string.gf_api_base_url)).buildUpon()
                 .appendEncodedPath(getString(R.string.gf_api_categories_path))
                 .appendEncodedPath(getString(R.string.gf_api_categories_like_path))
                 .appendPath(partialName)

@@ -15,9 +15,7 @@ public class UsersApi extends BaseApi {
     }
 
     public String awaitAccessToken(String foursquareAuthorizationCode) {
-        String url = new Uri.Builder().scheme(getString(R.string.gf_api_host_scheme))
-                .encodedAuthority(getString(R.string.gf_api_host))
-                .appendEncodedPath(getString(R.string.gf_api_path))
+        String url = Uri.parse(getString(R.string.gf_api_base_url)).buildUpon()
                 .appendEncodedPath(getString(R.string.gf_api_users_path))
                 .appendEncodedPath(getString(R.string.gf_api_users_register_with_foursquare_path))
                 .appendQueryParameter("authorization-code", foursquareAuthorizationCode)
@@ -27,9 +25,7 @@ public class UsersApi extends BaseApi {
     }
 
     public User awaitSelfUser(String accessToken) {
-        String url = new Uri.Builder().scheme(getString(R.string.gf_api_host_scheme))
-                .encodedAuthority(getString(R.string.gf_api_host))
-                .appendEncodedPath(getString(R.string.gf_api_path))
+        String url = Uri.parse(getString(R.string.gf_api_base_url)).buildUpon()
                 .appendEncodedPath(getString(R.string.gf_api_users_path))
                 .appendEncodedPath(getString(R.string.gf_api_users_self_path))
                 .appendQueryParameter("access-token", accessToken)
@@ -39,9 +35,7 @@ public class UsersApi extends BaseApi {
     }
 
     public User[] awaitSelfUserFriends(String accessToken) {
-        String url = new Uri.Builder().scheme(getString(R.string.gf_api_host_scheme))
-                .encodedAuthority(getString(R.string.gf_api_host))
-                .appendEncodedPath(getString(R.string.gf_api_path))
+        String url = Uri.parse(getString(R.string.gf_api_base_url)).buildUpon()
                 .appendEncodedPath(getString(R.string.gf_api_users_path))
                 .appendEncodedPath(getString(R.string.gf_api_users_self_path))
                 .appendEncodedPath(getString(R.string.gf_api_users_friends_path))
@@ -52,9 +46,7 @@ public class UsersApi extends BaseApi {
     }
 
     public Category[] awaitSelfUserLikes(String accessToken) {
-        String url = new Uri.Builder().scheme(getString(R.string.gf_api_host_scheme))
-                .encodedAuthority(getString(R.string.gf_api_host))
-                .appendEncodedPath(getString(R.string.gf_api_path))
+        String url = Uri.parse(getString(R.string.gf_api_base_url)).buildUpon()
                 .appendEncodedPath(getString(R.string.gf_api_users_path))
                 .appendEncodedPath(getString(R.string.gf_api_users_self_path))
                 .appendEncodedPath(getString(R.string.gf_api_users_likes_path))
@@ -65,9 +57,7 @@ public class UsersApi extends BaseApi {
     }
 
     public Category[] awaitUserLikes(String accessToken, String foursquareId) {
-        String url = new Uri.Builder().scheme(getString(R.string.gf_api_host_scheme))
-                .encodedAuthority(getString(R.string.gf_api_host))
-                .appendEncodedPath(getString(R.string.gf_api_path))
+        String url = Uri.parse(getString(R.string.gf_api_base_url)).buildUpon()
                 .appendEncodedPath(getString(R.string.gf_api_users_path))
                 .appendPath(foursquareId)
                 .appendEncodedPath(getString(R.string.gf_api_users_likes_path))
@@ -78,9 +68,7 @@ public class UsersApi extends BaseApi {
     }
 
     public UpdateResult awaitAddLike(String accessToken, Category like) {
-        String url = new Uri.Builder().scheme(getString(R.string.gf_api_host_scheme))
-                .encodedAuthority(getString(R.string.gf_api_host))
-                .appendEncodedPath(getString(R.string.gf_api_path))
+        String url = Uri.parse(getString(R.string.gf_api_base_url)).buildUpon()
                 .appendEncodedPath(getString(R.string.gf_api_users_path))
                 .appendEncodedPath(getString(R.string.gf_api_users_self_path))
                 .appendEncodedPath(getString(R.string.gf_api_users_update_path))
@@ -92,9 +80,7 @@ public class UsersApi extends BaseApi {
     }
 
     public UpdateResult awaitRemoveLike(String accessToken, Category like) {
-        String url = new Uri.Builder().scheme(getString(R.string.gf_api_host_scheme))
-                .encodedAuthority(getString(R.string.gf_api_host))
-                .appendEncodedPath(getString(R.string.gf_api_path))
+        String url = Uri.parse(getString(R.string.gf_api_base_url)).buildUpon()
                 .appendEncodedPath(getString(R.string.gf_api_users_path))
                 .appendEncodedPath(getString(R.string.gf_api_users_self_path))
                 .appendEncodedPath(getString(R.string.gf_api_users_update_path))

@@ -1,15 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="gf_api_host_scheme" translatable="false">http</string>
     <!--
-    gray-fox.herokuapp.com
-    192.168.1.123:8080/gray-fox-server
-    10.0.2.2:8080/gray-fox-server
+    http://gray-fox.herokuapp.com/api
+    http://192.168.1.123:8080/gray-fox-server/api
+    http://10.0.2.2:8080/gray-fox-server/api
     -->
-    <string name="gf_api_host" translatable="false">gray-fox.herokuapp.com</string>
-    <string name="gf_api_path" translatable="false">api</string>
+    <string name="gf_api_base_url" translatable="false">http://gray-fox.herokuapp.com/api</string>
 
-    <!-- App Users API -->
+    <!-- Users API -->
     <string name="gf_api_users_path" translatable="false">users</string>
     <string name="gf_api_users_self_path" translatable="false">self</string>
     <string name="gf_api_users_friends_path" translatable="false">friends</string>
@@ -29,4 +27,8 @@
     <!-- Categories API -->
     <string name="gf_api_categories_path" translatable="false">categories</string>
     <string name="gf_api_categories_like_path" translatable="false">like</string>
+
+    <!-- POIs Api -->
+    <string name="gf_api_pois_path" translatable="false">pois</string>
+    <string name="gf_api_pois_search_path" translatable="false">search</string>
 </resources>

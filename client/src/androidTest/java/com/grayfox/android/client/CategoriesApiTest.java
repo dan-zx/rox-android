@@ -46,8 +46,7 @@ public class CategoriesApiTest {
     @Before
     public void setUp() throws Exception {
         categoriesApi = spy(new CategoriesApi(Robolectric.application));
-        String mockHost = mockWebServer.getUrl("/").toString().replaceAll("http://", "");
-        doReturn(mockHost).when(categoriesApi).getString(R.string.gf_api_host);
+        doReturn(mockWebServer.getUrl("/").toString()).when(categoriesApi).getString(R.string.gf_api_base_url);
     }
 
     @Test

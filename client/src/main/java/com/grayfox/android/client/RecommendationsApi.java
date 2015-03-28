@@ -14,9 +14,7 @@ public class RecommendationsApi extends BaseApi {
     }
 
     public Recommendation[] awaitRecommendationsByAll(String accessToken, Location location, Integer radius) {
-        String url = new Uri.Builder().scheme(getString(R.string.gf_api_host_scheme))
-                .encodedAuthority(getString(R.string.gf_api_host))
-                .appendEncodedPath(getString(R.string.gf_api_path))
+        String url = Uri.parse(getString(R.string.gf_api_base_url)).buildUpon()
                 .appendEncodedPath(getString(R.string.gf_api_recommendations_path))
                 .appendEncodedPath(getString(R.string.gf_api_recommendations_by_all_path))
                 .appendQueryParameter("access-token", accessToken)
@@ -28,9 +26,7 @@ public class RecommendationsApi extends BaseApi {
     }
 
     public Recommendation[] awaitRecommendationsByLikes(String accessToken, Location location, Integer radius) {
-        String url = new Uri.Builder().scheme(getString(R.string.gf_api_host_scheme))
-                .encodedAuthority(getString(R.string.gf_api_host))
-                .appendEncodedPath(getString(R.string.gf_api_path))
+        String url = Uri.parse(getString(R.string.gf_api_base_url)).buildUpon()
                 .appendEncodedPath(getString(R.string.gf_api_recommendations_path))
                 .appendEncodedPath(getString(R.string.gf_api_recommendations_by_likes_path))
                 .appendQueryParameter("access-token", accessToken)
@@ -42,9 +38,7 @@ public class RecommendationsApi extends BaseApi {
     }
 
     public Recommendation[] awaitRecommendationsByFriendsLikes(String accessToken, Location location, Integer radius) {
-        String url = new Uri.Builder().scheme(getString(R.string.gf_api_host_scheme))
-                .encodedAuthority(getString(R.string.gf_api_host))
-                .appendEncodedPath(getString(R.string.gf_api_path))
+        String url = Uri.parse(getString(R.string.gf_api_base_url)).buildUpon()
                 .appendEncodedPath(getString(R.string.gf_api_recommendations_path))
                 .appendEncodedPath(getString(R.string.gf_api_recommendations_by_friends_likes_path))
                 .appendQueryParameter("access-token", accessToken)
@@ -56,9 +50,7 @@ public class RecommendationsApi extends BaseApi {
     }
 
     public Poi[] awaitNextPois(String accessToken, Poi seed) {
-        String url = new Uri.Builder().scheme(getString(R.string.gf_api_host_scheme))
-                .encodedAuthority(getString(R.string.gf_api_host))
-                .appendEncodedPath(getString(R.string.gf_api_path))
+        String url = Uri.parse(getString(R.string.gf_api_base_url)).buildUpon()
                 .appendEncodedPath(getString(R.string.gf_api_recommendations_path))
                 .appendEncodedPath(getString(R.string.gf_api_recommendations_next_pois_path))
                 .appendQueryParameter("access-token", accessToken)
