@@ -57,7 +57,7 @@ repositories {
 
 ext {
     androidSupportVersion = '22.0.0'
-    playServicesVersion = '7.0.0'
+    playServicesVersion = '6.5.87'
     roboguiceVersion = '3.0.1'
 }
 
