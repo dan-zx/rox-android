@@ -1,4 +1,4 @@
-package com.grayfox.android.app.widget.drawer;
+package com.grayfox.android.app.widget;
 
 import com.grayfox.android.client.model.User;
 

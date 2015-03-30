@@ -11,7 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.grayfox.android.app.R;
-import com.grayfox.android.app.widget.util.ColorTransformation;
+import com.grayfox.android.app.util.ColorTransformation;
 import com.grayfox.android.client.CategoriesApi;
 import com.grayfox.android.client.model.Category;
 

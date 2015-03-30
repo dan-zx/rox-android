@@ -35,7 +35,7 @@ import com.google.maps.model.TravelMode;
 import com.grayfox.android.app.R;
 import com.grayfox.android.app.dao.AccessTokenDao;
 import com.grayfox.android.app.widget.PoiRouteAdapter;
-import com.grayfox.android.app.widget.util.PicassoMarker;
+import com.grayfox.android.app.util.PicassoMarker;
 import com.grayfox.android.client.RecommendationsApi;
 import com.grayfox.android.client.model.Poi;
 import com.grayfox.android.client.task.NetworkAsyncTask;
@@ -47,7 +47,6 @@ import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 
 import javax.inject.Inject;

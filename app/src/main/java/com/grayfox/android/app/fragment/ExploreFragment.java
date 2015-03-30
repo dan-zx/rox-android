@@ -38,7 +38,7 @@ import com.grayfox.android.app.activity.MainActivity;
 import com.grayfox.android.app.widget.CategoryCursorAdapter;
 import com.grayfox.android.app.widget.PoiAdapter;
 import com.grayfox.android.app.widget.RecommendationAdapter;
-import com.grayfox.android.app.widget.util.PicassoMarker;
+import com.grayfox.android.app.util.PicassoMarker;
 import com.grayfox.android.client.CategoriesApi;
 import com.grayfox.android.client.PoisApi;
 import com.grayfox.android.client.model.Category;

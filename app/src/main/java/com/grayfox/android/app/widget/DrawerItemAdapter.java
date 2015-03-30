@@ -1,4 +1,4 @@
-package com.grayfox.android.app.widget.drawer;
+package com.grayfox.android.app.widget;
 
 import android.content.Context;
 import android.graphics.PorterDuff;

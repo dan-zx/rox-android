@@ -2,18 +2,16 @@ package com.grayfox.android.app.widget;
 
 import android.content.Context;
 import android.graphics.PorterDuff;
-import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.grayfox.android.app.R;
-import com.grayfox.android.app.widget.util.ColorTransformation;
+import com.grayfox.android.app.util.ColorTransformation;
 import com.grayfox.android.client.model.Category;
 
 import com.squareup.picasso.Picasso;

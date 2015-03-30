@@ -17,10 +17,10 @@ import android.view.MenuItem;
 import com.grayfox.android.app.R;
 import com.grayfox.android.app.fragment.ExploreFragment;
 import com.grayfox.android.app.fragment.UserProfileFragment;
-import com.grayfox.android.app.widget.drawer.DrawerHeader;
-import com.grayfox.android.app.widget.drawer.DrawerItem;
-import com.grayfox.android.app.widget.drawer.DrawerItemAdapter;
-import com.grayfox.android.app.widget.drawer.DrawerOption;
+import com.grayfox.android.app.widget.DrawerHeader;
+import com.grayfox.android.app.widget.DrawerItem;
+import com.grayfox.android.app.widget.DrawerItemAdapter;
+import com.grayfox.android.app.widget.DrawerOption;
 import com.grayfox.android.client.model.User;
 import com.grayfox.android.client.task.GetSelfUserAsyncTask;
 

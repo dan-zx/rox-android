@@ -1,4 +1,4 @@
-package com.grayfox.android.app.widget.util;
+package com.grayfox.android.app.util;
 
 import android.graphics.Bitmap;
 import android.graphics.Color;
