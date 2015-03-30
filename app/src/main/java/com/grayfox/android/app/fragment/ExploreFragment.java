@@ -4,6 +4,7 @@ import android.content.IntentSender;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -177,32 +178,21 @@ public class ExploreFragment extends RoboFragment implements OnMapReadyCallback,
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        shouldRequestLocationUpdatesOnConnect = false;
-        shouldRestoreCurrentLocationInMap = false;
-        shouldRestoreRecommendationsInMap = false;
-        shouldRestorePois = false;
         if (savedInstanceState == null) {
             shouldRequestLocationUpdatesOnConnect = true;
             shouldRestoreCurrentLocationInMap = false;
             shouldRestoreRecommendationsInMap = false;
+            shouldRestorePois = false;
         } else {
-            if (currentLocation == null) {
-                shouldRequestLocationUpdatesOnConnect = true;
-            } else if (currentLocation != null && recommendations == null) {
-                shouldRequestLocationUpdatesOnConnect = false;
-                if (recommendationsTask == null || !recommendationsTask.isActive()) {
-                    onLocationChanged(currentLocation);
-                    shouldRestoreCurrentLocationInMap = true;
-                } else if (recommendationsTask != null && recommendationsTask.isActive()) {
-                    onPreExecuteRecommendationsTask();
-                    shouldRestoreCurrentLocationInMap = true;
-                }
-            } else if (currentLocation != null && recommendations != null) {
-                shouldRequestLocationUpdatesOnConnect = false;
+            if (poisTask != null && poisTask.isActive()) onPreExecutePoisTask();
+            else if (pois != null) {
+                onPoisAcquired(pois);
+                onCompletePoisTaskTask();
+            }
+            if (recommendationsTask != null && recommendationsTask.isActive()) onPreExecuteRecommendationsTask();
+            else if (recommendations != null) {
                 onRecommendationsAcquired(recommendations);
                 onCompleteRecommendationsTask();
-                shouldRestoreCurrentLocationInMap = true;
-                shouldRestoreRecommendationsInMap = true;
             }
         }
     }
@@ -218,12 +208,20 @@ public class ExploreFragment extends RoboFragment implements OnMapReadyCallback,
         super.onStop();
         stopLocationUpdates();
         googleApiClient.disconnect();
+        PreferenceManager.getDefaultSharedPreferences(getActivity())
+                .edit()
+                .putFloat(getString(R.string.last_map_location_lat_key), (float) googleMap.getCameraPosition().target.latitude)
+                .putFloat(getString(R.string.last_map_location_lng_key), (float) googleMap.getCameraPosition().target.longitude)
+                .putFloat(getString(R.string.last_map_zoom_key), googleMap.getCameraPosition().zoom)
+                .commit();
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
         if (recommendationsTask != null && recommendationsTask.isActive()) recommendationsTask.cancel(true);
+        if (categoryFilteringTask != null && categoryFilteringTask.isActive()) categoryFilteringTask.cancel(true);
+        if (poisTask != null && poisTask.isActive()) poisTask.cancel(true);
     }
 
     @Override
@@ -232,11 +230,18 @@ public class ExploreFragment extends RoboFragment implements OnMapReadyCallback,
         googleMap.setPadding(0, 0, 0, (int) getResources().getDimension(R.dimen.recommendations_overlap));
         googleMap.getUiSettings().setMapToolbarEnabled(false);
         googleMap.getUiSettings().setMyLocationButtonEnabled(false);
+        LatLng latLng = new LatLng(
+                PreferenceManager.getDefaultSharedPreferences(getActivity()).getFloat(getString(R.string.last_map_location_lat_key), 0f),
+                PreferenceManager.getDefaultSharedPreferences(getActivity()).getFloat(getString(R.string.last_map_location_lng_key), 0f));
+        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng,
+                PreferenceManager.getDefaultSharedPreferences(getActivity()).getFloat(getString(R.string.last_map_zoom_key), 0f)));
         if (shouldRestoreCurrentLocationInMap) showCurrentLocationInMap();
         if (shouldRestoreRecommendationsInMap) restoreRecommendationsInMap();
+        if (shouldRestorePois) restorePoisInMap();
     }
 
     private void onSuggestionClicked(int position) {
+        shouldRestoreCurrentLocationInMap = false;
         searchViewMenuItem.collapseActionView();
         searchView.setQuery(null, false);
         Category category = categoryAdapter.get(position);
@@ -248,12 +253,14 @@ public class ExploreFragment extends RoboFragment implements OnMapReadyCallback,
     }
 
     private void showCurrentLocationInMap() {
-        LatLng latLng = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
-        googleMap.addMarker(new MarkerOptions()
-                .position(latLng)
-                .title(getString(R.string.current_location))
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_map_location)));
-        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 13f));
+        if (currentLocation != null) {
+            LatLng latLng = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
+            googleMap.addMarker(new MarkerOptions()
+                    .position(latLng)
+                    .title(getString(R.string.current_location))
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_map_location)));
+            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 13f));
+        }
     }
 
     private void restoreRecommendationsInMap() {
@@ -302,6 +309,7 @@ public class ExploreFragment extends RoboFragment implements OnMapReadyCallback,
 
     private void onRequestLocationUpdates() {
         if (areAnyLocationProvidersEnabled()) {
+            shouldRequestLocationUpdatesOnConnect = true;
             onPreLocationUpdate();
             LocationRequest locationRequest = LocationRequest.create()
                     .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
@@ -319,6 +327,7 @@ public class ExploreFragment extends RoboFragment implements OnMapReadyCallback,
     @Override
     public void onLocationChanged(Location location) {
         shouldRequestLocationUpdatesOnConnect = false;
+        shouldRestoreCurrentLocationInMap = true;
         currentLocation = location;
         stopLocationUpdates();
         onCompleteLocationUpdate();
@@ -360,6 +369,8 @@ public class ExploreFragment extends RoboFragment implements OnMapReadyCallback,
     }
 
     private void onRecommendationsAcquired(Recommendation[] recommendations) {
+        shouldRestoreRecommendationsInMap = true;
+        shouldRestorePois = false;
         this.recommendations = recommendations;
         pois = null;
         poiList.setAdapter(recommendationAdapter);
@@ -394,7 +405,7 @@ public class ExploreFragment extends RoboFragment implements OnMapReadyCallback,
     }
 
     private void onAquireSuggestions(Category[] categories) {
-        if (categories != null) categoryAdapter.add(categories);
+        if (categories != null) categoryAdapter.set(categories);
     }
 
     private void onPreExecutePoisTask() {
@@ -403,6 +414,8 @@ public class ExploreFragment extends RoboFragment implements OnMapReadyCallback,
     }
 
     private void onPoisAcquired(Poi[] pois) {
+        shouldRestoreRecommendationsInMap = false;
+        shouldRestorePois = true;
         this.pois = pois;
         recommendations = null;
         poiList.setAdapter(poiAdapter);

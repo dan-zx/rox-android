@@ -40,7 +40,7 @@ public class CategoryCursorAdapter extends CursorAdapter {
         categoryNameTextView.setText(cursor.getString(cursor.getColumnIndex(CursorColums.CATEGORY_NAME)));
     }
 
-    public void add(Category... categories) {
+    public void set(Category... categories) {
         MatrixCursor cursor = createCursor();
         for (int i = 0; i < categories.length; i++) {
             cursor.addRow(new String[]{String.valueOf(i+1), categories[i].getName(), categories[i].getIconUrl(), categories[i].getFoursquareId()});

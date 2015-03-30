@@ -2,4 +2,7 @@
 <resources>
     <string name="access_token_key" translatable="false">ACCESS_TOKEN</string>
     <string name="travel_mode_key" translatable="false">TRAVEL_MODE</string>
+    <string name="last_map_location_lat_key" translatable="false">LAST_MAP_LAT</string>
+    <string name="last_map_location_lng_key" translatable="false">LAST_MAP_LNG</string>
+    <string name="last_map_zoom_key" translatable="false">LAST_MAP_ZOOM</string>
 </resources>
