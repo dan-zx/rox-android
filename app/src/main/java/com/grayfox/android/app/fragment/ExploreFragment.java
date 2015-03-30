@@ -20,6 +20,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.github.clans.fab.FloatingActionButton;
+
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
@@ -33,24 +34,26 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+
 import com.grayfox.android.app.R;
 import com.grayfox.android.app.activity.MainActivity;
+import com.grayfox.android.app.dao.AccessTokenDao;
+import com.grayfox.android.app.task.NetworkAsyncTask;
+import com.grayfox.android.app.util.PicassoMarker;
 import com.grayfox.android.app.widget.CategoryCursorAdapter;
 import com.grayfox.android.app.widget.PoiAdapter;
 import com.grayfox.android.app.widget.RecommendationAdapter;
-import com.grayfox.android.app.util.PicassoMarker;
 import com.grayfox.android.client.CategoriesApi;
 import com.grayfox.android.client.PoisApi;
+import com.grayfox.android.client.RecommendationsApi;
 import com.grayfox.android.client.model.Category;
 import com.grayfox.android.client.model.Poi;
 import com.grayfox.android.client.model.Recommendation;
-import com.grayfox.android.client.task.NetworkAsyncTask;
-import com.grayfox.android.client.task.RecommendationAsyncTask;
+
 import com.squareup.picasso.Picasso;
+
 import roboguice.fragment.RoboFragment;
 import roboguice.inject.InjectView;
-
-import java.lang.ref.WeakReference;
 
 import javax.inject.Inject;
 
@@ -78,7 +81,7 @@ public class ExploreFragment extends RoboFragment implements OnMapReadyCallback,
     private Location currentLocation;
     private Recommendation[] recommendations;
     private Poi[] pois;
-    private RecommendationAsyncTask recommendationsTask;
+    private RecommendationsTask recommendationsTask;
     private CategoryFilteringTask categoryFilteringTask;
     private PoisTask poisTask;
     private RecommendationAdapter recommendationAdapter;
@@ -108,8 +111,7 @@ public class ExploreFragment extends RoboFragment implements OnMapReadyCallback,
             @Override
             public boolean onQueryTextChange(String newText) {
                 if (newText != null && !newText.trim().isEmpty() && newText.length() > 1) {
-                    categoryFilteringTask = new CategoryFilteringTask(ExploreFragment.this)
-                            .query(newText);
+                    categoryFilteringTask = new CategoryFilteringTask().query(newText);
                     categoryFilteringTask.request();
                 }
                 return false;
@@ -238,7 +240,7 @@ public class ExploreFragment extends RoboFragment implements OnMapReadyCallback,
         searchViewMenuItem.collapseActionView();
         searchView.setQuery(null, false);
         Category category = categoryAdapter.get(position);
-        poisTask = new PoisTask(this)
+        poisTask = new PoisTask()
                 .currentLocation(getMapCenterLocation())
                 .radius(getRadiusFromMapProjection())
                 .categoryFoursquareId(category.getFoursquareId());
@@ -322,11 +324,8 @@ public class ExploreFragment extends RoboFragment implements OnMapReadyCallback,
         onCompleteLocationUpdate();
         googleMap.clear();
         showCurrentLocationInMap();
-        com.grayfox.android.client.model.Location myLocation = new com.grayfox.android.client.model.Location();
-        myLocation.setLatitude(location.getLatitude());
-        myLocation.setLongitude(location.getLongitude());
-        recommendationsTask = new RecommendationsTask(this)
-                .location(myLocation)
+        recommendationsTask = new RecommendationsTask()
+                .location(location)
                 .radius(getRadiusFromMapProjection());
         recommendationsTask.request();
     }
@@ -469,47 +468,63 @@ public class ExploreFragment extends RoboFragment implements OnMapReadyCallback,
         }
     }
 
-    private static class RecommendationsTask extends RecommendationAsyncTask {
+    private class RecommendationsTask extends NetworkAsyncTask<Recommendation[]> {
 
-        private WeakReference<ExploreFragment> reference;
+        @Inject private AccessTokenDao accessTokenDao;
+        @Inject private RecommendationsApi recommendationsApi;
 
-        private RecommendationsTask(ExploreFragment fragment) {
-            super(fragment.getActivity().getApplicationContext());
-            reference = new WeakReference<>(fragment);
+        private Location location;
+        private Integer radius;
+
+        private RecommendationsTask() {
+            super(getActivity().getApplicationContext());
+        }
+
+        private RecommendationsTask location(Location location) {
+            this.location = location;
+            return this;
+        }
+
+        private RecommendationsTask radius(int radius) {
+            this.radius = radius;
+            return this;
         }
 
         @Override
         protected void onPreExecute() throws Exception {
             super.onPreExecute();
-            ExploreFragment fragment = reference.get();
-            if (fragment != null) fragment.onPreExecuteRecommendationsTask();
+            onPreExecuteRecommendationsTask();
+        }
+
+        @Override
+        public Recommendation[] call() throws Exception {
+            com.grayfox.android.client.model.Location myLocation = new com.grayfox.android.client.model.Location();
+            myLocation.setLatitude(location.getLatitude());
+            myLocation.setLongitude(location.getLongitude());
+            return recommendationsApi.awaitRecommendationsByAll(accessTokenDao.fetchAccessToken(), myLocation, radius);
         }
 
         @Override
         protected void onSuccess(Recommendation[] recommendations) throws Exception {
             super.onSuccess(recommendations);
-            ExploreFragment fragment = reference.get();
-            if (fragment != null) fragment.onRecommendationsAcquired(recommendations);
+            onRecommendationsAcquired(recommendations);
         }
 
         @Override
         protected void onFinally() throws RuntimeException {
             super.onFinally();
-            ExploreFragment fragment = reference.get();
-            if (fragment != null) fragment.onCompleteRecommendationsTask();
+            onCompleteRecommendationsTask();
         }
     }
 
-    private static class CategoryFilteringTask extends NetworkAsyncTask<Category[]> {
+    private class CategoryFilteringTask extends NetworkAsyncTask<Category[]> {
 
         @Inject private CategoriesApi categoriesApi;
 
-        private WeakReference<ExploreFragment> reference;
         private String query;
 
-        private CategoryFilteringTask(ExploreFragment fragment) {
-            super(fragment.getActivity().getApplicationContext());
-            reference = new WeakReference<>(fragment);
+        private CategoryFilteringTask() {
+            super(getActivity().getApplicationContext());
         }
 
         public CategoryFilteringTask query(String query) {
@@ -525,22 +540,20 @@ public class ExploreFragment extends RoboFragment implements OnMapReadyCallback,
         @Override
         protected void onSuccess(Category[] categories) throws Exception {
             super.onSuccess(categories);
-            ExploreFragment fragment = reference.get();
-            if (fragment != null) fragment.onAquireSuggestions(categories);
+            onAquireSuggestions(categories);
         }
     }
-    private static class PoisTask extends NetworkAsyncTask<Poi[]> {
+
+    private class PoisTask extends NetworkAsyncTask<Poi[]> {
 
         @Inject private PoisApi poisApi;
 
-        private WeakReference<ExploreFragment> reference;
         private String categoryFoursquareId;
         private Location currentLocation;
         private int radius;
 
-        private PoisTask(ExploreFragment fragment) {
-            super(fragment.getActivity().getApplicationContext());
-            reference = new WeakReference<>(fragment);
+        private PoisTask() {
+            super(getActivity().getApplicationContext());
         }
 
         public PoisTask currentLocation(Location currentLocation) {
@@ -561,8 +574,7 @@ public class ExploreFragment extends RoboFragment implements OnMapReadyCallback,
         @Override
         protected void onPreExecute() throws Exception {
             super.onPreExecute();
-            ExploreFragment fragment = reference.get();
-            if (fragment != null) fragment.onPreExecutePoisTask();
+            onPreExecutePoisTask();
         }
 
         @Override
@@ -576,15 +588,13 @@ public class ExploreFragment extends RoboFragment implements OnMapReadyCallback,
         @Override
         protected void onSuccess(Poi[] pois) throws Exception {
             super.onSuccess(pois);
-            ExploreFragment fragment = reference.get();
-            if (fragment != null) fragment.onPoisAcquired(pois);
+            onPoisAcquired(pois);
         }
 
         @Override
         protected void onFinally() throws RuntimeException {
             super.onFinally();
-            ExploreFragment fragment = reference.get();
-            if (fragment != null) fragment.onCompletePoisTaskTask();
+            onCompletePoisTaskTask();
         }
     }
 }

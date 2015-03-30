@@ -9,7 +9,7 @@ import android.widget.TextView;
 
 import com.grayfox.android.app.R;
 import com.grayfox.android.client.model.Poi;
-import com.grayfox.android.client.model.Recommendation;
+
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;

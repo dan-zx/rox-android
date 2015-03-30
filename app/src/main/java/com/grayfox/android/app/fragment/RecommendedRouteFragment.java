@@ -15,9 +15,9 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
+
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -32,19 +32,20 @@ import com.google.maps.GeoApiContext;
 import com.google.maps.model.DirectionsLeg;
 import com.google.maps.model.DirectionsRoute;
 import com.google.maps.model.TravelMode;
+
 import com.grayfox.android.app.R;
 import com.grayfox.android.app.dao.AccessTokenDao;
-import com.grayfox.android.app.widget.PoiRouteAdapter;
+import com.grayfox.android.app.task.NetworkAsyncTask;
 import com.grayfox.android.app.util.PicassoMarker;
+import com.grayfox.android.app.widget.PoiRouteAdapter;
 import com.grayfox.android.client.RecommendationsApi;
 import com.grayfox.android.client.model.Poi;
-import com.grayfox.android.client.task.NetworkAsyncTask;
+
 import com.squareup.picasso.Picasso;
+
 import roboguice.fragment.RoboFragment;
 import roboguice.inject.InjectView;
 
-import java.lang.ref.WeakReference;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -70,8 +71,6 @@ public class RecommendedRouteFragment extends RoboFragment implements OnMapReady
     @InjectView(R.id.card_view)                        private CardView cardView;
 
     private boolean shouldRestoreRoute;
-    private SimpleDateFormat longTimeFormatter;
-    private SimpleDateFormat shortTimeFormatter;
     private GoogleMap googleMap;
     private RecalculateRouteTask recalculateRouteTask;
     private RouteBuilderTask routeBuilderTask;
@@ -91,8 +90,6 @@ public class RecommendedRouteFragment extends RoboFragment implements OnMapReady
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        longTimeFormatter = new SimpleDateFormat(getString(R.string.long_time_format));
-        shortTimeFormatter = new SimpleDateFormat(getString(R.string.short_time_format));
         setRetainInstance(true);
     }
 
@@ -161,7 +158,7 @@ public class RecommendedRouteFragment extends RoboFragment implements OnMapReady
         super.onActivityCreated(savedInstanceState);
         shouldRestoreRoute = false;
         if (savedInstanceState == null) {
-            routeBuilderTask = new RouteBuilderTask(this)
+            routeBuilderTask = new RouteBuilderTask()
                     .seed(getSeedArg())
                     .origin(getCurrentLocationArg())
                     .travelMode(getCurrentTravelMode());
@@ -253,7 +250,7 @@ public class RecommendedRouteFragment extends RoboFragment implements OnMapReady
 
     private void recalculateRoute(TravelMode travelMode) {
         saveCurrentTravelMode(travelMode);
-        recalculateRouteTask = new RecalculateRouteTask(this)
+        recalculateRouteTask = new RecalculateRouteTask()
                 .seed(getSeedArg())
                 .origin(getCurrentLocationArg())
                 .nextPois(nextPois)
@@ -305,23 +302,21 @@ public class RecommendedRouteFragment extends RoboFragment implements OnMapReady
                 .commit();
     }
 
-    private static class RouteBuilderTask extends NetworkAsyncTask<Object[]> {
+    private class RouteBuilderTask extends NetworkAsyncTask<Object[]> {
 
         @Inject private GeoApiContext geoApiContext;
         @Inject private AccessTokenDao accessTokenDao;
         @Inject private RecommendationsApi recommendationsApi;
 
-        private WeakReference<RecommendedRouteFragment> reference;
         private Poi seed;
         private Location origin;
         private TravelMode travelMode;
 
-        private RouteBuilderTask(RecommendedRouteFragment fragment) {
-            super(fragment.getActivity().getApplicationContext());
-            reference = new WeakReference<>(fragment);
+        private RouteBuilderTask() {
+            super(getActivity().getApplicationContext());
         }
 
-        public RouteBuilderTask seed(Poi seed) {
+        private RouteBuilderTask seed(Poi seed) {
             this.seed = seed;
             return this;
         }
@@ -339,8 +334,7 @@ public class RecommendedRouteFragment extends RoboFragment implements OnMapReady
         @Override
         protected void onPreExecute() throws Exception {
             super.onPreExecute();
-            RecommendedRouteFragment fragment = reference.get();
-            if (fragment != null) fragment.onPreExecuteRouteBuilderTask();
+            onPreExecuteRouteBuilderTask();
         }
 
         @Override
@@ -368,20 +362,17 @@ public class RecommendedRouteFragment extends RoboFragment implements OnMapReady
         }
 
         private void onAcquiredNextPois(Poi[] nextPois) {
-            RecommendedRouteFragment fragment = reference.get();
-            if (fragment != null) fragment.onAcquireNextPois(nextPois);
+            onAcquireNextPois(nextPois);
         }
 
         private void onAcquiredRoute(DirectionsRoute route) {
-            RecommendedRouteFragment fragment = reference.get();
-            if (fragment != null) fragment.onAcquireRoute(route);
+            onAcquireRoute(route);
         }
 
         @Override
         protected void onFinally() throws RuntimeException {
             super.onFinally();
-            RecommendedRouteFragment fragment = reference.get();
-            if (fragment != null) fragment.onCompleteRouteBuilderTask();
+            onCompleteRouteBuilderTask();
         }
 
         private String toGoogleMapsServicesLatLng(Location location) {
@@ -395,27 +386,25 @@ public class RecommendedRouteFragment extends RoboFragment implements OnMapReady
         }
     }
 
-    private static class RecalculateRouteTask extends NetworkAsyncTask<DirectionsRoute> {
+    private class RecalculateRouteTask extends NetworkAsyncTask<DirectionsRoute> {
 
         @Inject private GeoApiContext geoApiContext;
 
-        private WeakReference<RecommendedRouteFragment> reference;
         private Poi seed;
         private List<Poi> nextPois;
         private Location origin;
         private TravelMode travelMode;
 
-        private RecalculateRouteTask(RecommendedRouteFragment fragment) {
-            super(fragment.getActivity().getApplicationContext());
-            reference = new WeakReference<>(fragment);
+        private RecalculateRouteTask() {
+            super(getActivity().getApplicationContext());
         }
 
-        public RecalculateRouteTask seed(Poi seed) {
+        private RecalculateRouteTask seed(Poi seed) {
             this.seed = seed;
             return this;
         }
 
-        public RecalculateRouteTask nextPois(List<Poi> nextPois) {
+        private RecalculateRouteTask nextPois(List<Poi> nextPois) {
             this.nextPois = nextPois;
             return this;
         }
@@ -433,8 +422,7 @@ public class RecommendedRouteFragment extends RoboFragment implements OnMapReady
         @Override
         protected void onPreExecute() throws Exception {
             super.onPreExecute();
-            RecommendedRouteFragment fragment = reference.get();
-            if (fragment != null) fragment.onPreExcecuteRecalculateRouteTask();
+            onPreExcecuteRecalculateRouteTask();
         }
 
         @Override
@@ -456,15 +444,13 @@ public class RecommendedRouteFragment extends RoboFragment implements OnMapReady
         @Override
         protected void onSuccess(DirectionsRoute route) throws Exception {
             super.onSuccess(route);
-            RecommendedRouteFragment fragment = reference.get();
-            if (fragment != null) fragment.onAcquireRoute(route);
+            onAcquireRoute(route);
         }
 
         @Override
         protected void onFinally() throws RuntimeException {
             super.onFinally();
-            RecommendedRouteFragment fragment = reference.get();
-            if (fragment != null) fragment.onCompleteRecalculateRoute();
+            onCompleteRecalculateRoute();
         }
 
         private String toGoogleMapsServicesLatLng(Location location) {

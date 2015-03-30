@@ -9,8 +9,8 @@ import android.util.Log;
 
 import com.google.inject.name.Named;
 
-import com.grayfox.android.client.model.User;
 import com.grayfox.android.app.dao.UserDao;
+import com.grayfox.android.client.model.User;
 
 import javax.inject.Inject;
 

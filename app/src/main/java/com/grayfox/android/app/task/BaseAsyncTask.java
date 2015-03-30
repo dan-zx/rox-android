@@ -1,4 +1,4 @@
-package com.grayfox.android.client.task;
+package com.grayfox.android.app.task;
 
 import android.content.Context;
 import android.widget.Toast;

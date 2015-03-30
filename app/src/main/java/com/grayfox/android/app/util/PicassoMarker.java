@@ -11,7 +11,9 @@ import android.widget.LinearLayout;
 
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.Marker;
+
 import com.grayfox.android.app.R;
+
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 

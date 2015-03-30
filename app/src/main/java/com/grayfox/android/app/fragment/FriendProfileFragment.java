@@ -13,11 +13,14 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.astuetz.PagerSlidingTabStrip;
+
 import com.grayfox.android.app.R;
+import com.grayfox.android.app.dao.AccessTokenDao;
+import com.grayfox.android.app.task.NetworkAsyncTask;
 import com.grayfox.android.app.widget.LikeAdapter;
+import com.grayfox.android.client.UsersApi;
 import com.grayfox.android.client.model.Category;
 import com.grayfox.android.client.model.User;
-import com.grayfox.android.client.task.GetUserLikesAsyncTask;
 
 import com.squareup.picasso.Picasso;
 
@@ -26,7 +29,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import roboguice.fragment.RoboFragment;
 import roboguice.inject.InjectView;
 
-import java.lang.ref.WeakReference;
+import javax.inject.Inject;
 
 public class FriendProfileFragment extends RoboFragment {
 
@@ -40,7 +43,7 @@ public class FriendProfileFragment extends RoboFragment {
     @InjectView(R.id.likes_list)     private RecyclerView likesList;
     @InjectView(R.id.no_likes_found) private TextView noLikesFoundText;
 
-    private GetUserLikesAsyncTask task;
+    private GetFriendLikesTask task;
     private User friend;
 
     public static FriendProfileFragment newInstance(User friend) {
@@ -95,8 +98,7 @@ public class FriendProfileFragment extends RoboFragment {
         super.onActivityCreated(savedInstanceState);
         setUpUserArg();
         if (savedInstanceState == null) {
-            task = new GetFriendLikesTask(this)
-                    .foursquareId(friend.getFoursquareId());
+            task = new GetFriendLikesTask().foursquareId(friend.getFoursquareId());
             task.request();
         } else {
             if (task != null && task.isActive()) onPreExecuteFriendTask();
@@ -147,34 +149,43 @@ public class FriendProfileFragment extends RoboFragment {
         return (User) getArguments().getSerializable(FRIEND_ARG);
     }
 
-    private static class GetFriendLikesTask extends GetUserLikesAsyncTask {
+    private class GetFriendLikesTask extends NetworkAsyncTask<Category[]> {
 
-        private WeakReference<FriendProfileFragment> reference;
+        @Inject private AccessTokenDao accessTokenDao;
+        @Inject private UsersApi usersApi;
 
-        private GetFriendLikesTask(FriendProfileFragment fragment) {
-            super(fragment.getActivity().getApplicationContext());
-            reference = new WeakReference<>(fragment);
+        private String foursquareId;
+
+        private GetFriendLikesTask() {
+            super(getActivity().getApplicationContext());
+        }
+
+        private GetFriendLikesTask foursquareId(String foursquareId) {
+            this.foursquareId = foursquareId;
+            return this;
         }
 
         @Override
         protected void onPreExecute() throws Exception {
             super.onPreExecute();
-            FriendProfileFragment fragment = reference.get();
-            if (fragment != null) fragment.onPreExecuteFriendTask();
+            onPreExecuteFriendTask();
+        }
+
+        @Override
+        public Category[] call() throws Exception {
+            return usersApi.awaitUserLikes(accessTokenDao.fetchAccessToken(), foursquareId);
         }
 
         @Override
         protected void onSuccess(Category[] likes) throws Exception {
             super.onSuccess(likes);
-            FriendProfileFragment fragment = reference.get();
-            if (fragment != null) fragment.onGotFriendLikes(likes);
+            onGotFriendLikes(likes);
         }
 
         @Override
         protected void onFinally() throws RuntimeException {
             super.onFinally();
-            FriendProfileFragment fragment = reference.get();
-            if (fragment != null) fragment.onFriendTaskFinally();
+            onFriendTaskFinally();
         }
     }
 }

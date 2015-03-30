@@ -15,7 +15,8 @@ import com.foursquare.android.nativeoauth.model.AuthCodeResponse;
 
 import com.grayfox.android.app.R;
 import com.grayfox.android.app.dao.AccessTokenDao;
-import com.grayfox.android.client.task.RegisterUserAsyncTask;
+import com.grayfox.android.app.task.NetworkAsyncTask;
+import com.grayfox.android.client.UsersApi;
 
 import roboguice.activity.RoboActionBarActivity;
 import roboguice.inject.ContentView;
@@ -132,13 +133,22 @@ public class SignInActivity extends RoboActionBarActivity {
                 .show();
     }
 
-    private static class RegisterTask extends RegisterUserAsyncTask {
+    private static class RegisterTask extends NetworkAsyncTask<Void> {
+
+        @Inject private AccessTokenDao accessTokenDao;
+        @Inject private UsersApi usersApi;
 
         private WeakReference<SignInActivity> reference;
+        private String foursquareAuthorizationCode;
 
         private RegisterTask(SignInActivity activity) {
             super(activity.getApplicationContext());
             reference = new WeakReference<>(activity);
+        }
+
+        public RegisterTask foursquareAuthorizationCode(String foursquareAuthorizationCode) {
+            this.foursquareAuthorizationCode = foursquareAuthorizationCode;
+            return this;
         }
 
         @Override
@@ -146,6 +156,13 @@ public class SignInActivity extends RoboActionBarActivity {
             super.onPreExecute();
             SignInActivity activity = reference.get();
             if (activity != null) activity.onPreRegister();
+        }
+
+        @Override
+        public Void call() throws Exception {
+            String accessToken = usersApi.awaitAccessToken(foursquareAuthorizationCode);
+            accessTokenDao.saveOrUpdateAccessToken(accessToken);
+            return null;
         }
 
         @Override
@@ -160,6 +177,12 @@ public class SignInActivity extends RoboActionBarActivity {
             super.onFinally();
             SignInActivity activity = reference.get();
             if (activity != null) activity.onRegisterFinally();
+        }
+
+        @Override
+        protected void onException(Exception e) throws RuntimeException {
+            super.onException(e);
+            accessTokenDao.deleteAccessToken();
         }
     }
 }

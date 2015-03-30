@@ -1,5 +1,6 @@
 package com.grayfox.android.app.fragment;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -19,23 +20,22 @@ import com.astuetz.PagerSlidingTabStrip;
 
 import com.grayfox.android.app.R;
 import com.grayfox.android.app.activity.FriendProfileActivity;
+import com.grayfox.android.app.dao.AccessTokenDao;
+import com.grayfox.android.app.task.NetworkAsyncTask;
 import com.grayfox.android.app.widget.CategoryFilterableAdapter;
 import com.grayfox.android.app.widget.FriendAdapter;
 import com.grayfox.android.app.widget.LikeAdapter;
+import com.grayfox.android.client.UsersApi;
 import com.grayfox.android.client.model.Category;
+import com.grayfox.android.client.model.UpdateResult;
 import com.grayfox.android.client.model.User;
-import com.grayfox.android.client.task.CompleteUserAsyncTask;
-import com.grayfox.android.client.task.PostAddLikeAsyncTask;
 
-import com.grayfox.android.client.task.PostRemoveLikeAsyncTask;
 import com.squareup.picasso.Picasso;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
 import roboguice.fragment.RoboFragment;
 import roboguice.inject.InjectView;
-
-import java.lang.ref.WeakReference;
 
 import javax.inject.Inject;
 
@@ -76,8 +76,7 @@ public class UserProfileFragment extends RoboFragment {
         super.onActivityCreated(savedInstanceState);
         setUpUserArg();
         if (savedInstanceState == null) {
-            task = new CompleteUserTask(this);
-            task.currentUser(user);
+            task = new CompleteUserTask().currentUser(user);
             task.request();
         } else {
             if (task != null && task.isActive()) onPreExecuteTask();
@@ -86,8 +85,7 @@ public class UserProfileFragment extends RoboFragment {
                     onCompleteUser(user);
                     onTaskFinally();
                 } else {
-                    task = new CompleteUserTask(this);
-                    task.currentUser(user);
+                    task = new CompleteUserTask().currentUser(user);
                     task.request();
                 }
             }
@@ -130,34 +128,45 @@ public class UserProfileFragment extends RoboFragment {
         return (User) getArguments().getSerializable(USER_ARG);
     }
 
-    private static class CompleteUserTask extends CompleteUserAsyncTask {
+    private class CompleteUserTask extends NetworkAsyncTask<User> {
 
-        private WeakReference<UserProfileFragment> reference;
+        @Inject private AccessTokenDao accessTokenDao;
+        @Inject private UsersApi usersApi;
 
-        private CompleteUserTask(UserProfileFragment fragment) {
-            super(fragment.getActivity().getApplicationContext());
-            reference = new WeakReference<>(fragment);
+        private User user;
+
+        private CompleteUserTask() {
+            super(getActivity().getApplicationContext());
+        }
+
+        public CompleteUserTask currentUser(User user) {
+            this.user = user;
+            return this;
         }
 
         @Override
         protected void onPreExecute() throws Exception {
             super.onPreExecute();
-            UserProfileFragment fragment = reference.get();
-            if (fragment != null) fragment.onPreExecuteTask();
+            onPreExecuteTask();
+        }
+
+        @Override
+        public User call() throws Exception {
+            user.setFriends(usersApi.awaitSelfUserFriends(accessTokenDao.fetchAccessToken()));
+            user.setLikes(usersApi.awaitSelfUserLikes(accessTokenDao.fetchAccessToken()));
+            return user;
         }
 
         @Override
         protected void onSuccess(User user) throws Exception {
             super.onSuccess(user);
-            UserProfileFragment fragment = reference.get();
-            if (fragment != null) fragment.onCompleteUser(user);
+            onCompleteUser(user);
         }
 
         @Override
         protected void onFinally() throws RuntimeException {
             super.onFinally();
-            UserProfileFragment fragment = reference.get();
-            if (fragment != null) fragment.onTaskFinally();
+            onTaskFinally();
         }
     }
 
@@ -319,14 +328,14 @@ public class UserProfileFragment extends RoboFragment {
             inputMethodManager.hideSoftInputFromWindow(likeSearchView.getWindowToken(), 0);
             if (likeAdapter.add(category)) {
                 likeAdapter.notifyDataSetChanged();
-                new PostAddLikeAsyncTask(getActivity().getApplicationContext())
+                new AddLikeTask(getActivity().getApplicationContext())
                         .like(category)
                         .request();
             }
         }
 
         private void onRemoveLike(Category like) {
-            new PostRemoveLikeAsyncTask(getActivity().getApplicationContext())
+            new RemoveLikeTask(getActivity().getApplicationContext())
                     .like(like)
                     .request();
         }
@@ -335,6 +344,50 @@ public class UserProfileFragment extends RoboFragment {
             Category[] likes = new Category[getArguments().getInt(LIKES_LENGTH_ARG)];
             for (int i = 0; i < likes.length; i++) likes[i] = (Category) getArguments().getSerializable(String.format(LIKES_FORMAT_ARG, i));
             return likes;
+        }
+
+        private static class AddLikeTask extends NetworkAsyncTask<UpdateResult> {
+
+            @Inject private AccessTokenDao accessTokenDao;
+            @Inject private UsersApi usersApi;
+
+            private Category like;
+
+            private AddLikeTask(Context context) {
+                super(context);
+            }
+
+            private AddLikeTask like(Category like) {
+                this.like = like;
+                return this;
+            }
+
+            @Override
+            public UpdateResult call() throws Exception {
+                return usersApi.awaitAddLike(accessTokenDao.fetchAccessToken(), like);
+            }
+        }
+
+        private static class RemoveLikeTask extends NetworkAsyncTask<UpdateResult> {
+
+            @Inject private AccessTokenDao accessTokenDao;
+            @Inject private UsersApi usersApi;
+
+            private Category like;
+
+            private RemoveLikeTask(Context context) {
+                super(context);
+            }
+
+            private RemoveLikeTask like(Category like) {
+                this.like = like;
+                return this;
+            }
+
+            @Override
+            public UpdateResult call() throws Exception {
+                return usersApi.awaitRemoveLike(accessTokenDao.fetchAccessToken(), like);
+            }
         }
     }
 }

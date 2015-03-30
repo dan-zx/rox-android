@@ -1,7 +1,10 @@
 package com.grayfox.android.app.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -15,14 +18,17 @@ import android.view.Gravity;
 import android.view.MenuItem;
 
 import com.grayfox.android.app.R;
+import com.grayfox.android.app.dao.AccessTokenDao;
+import com.grayfox.android.app.dao.UserDao;
 import com.grayfox.android.app.fragment.ExploreFragment;
 import com.grayfox.android.app.fragment.UserProfileFragment;
+import com.grayfox.android.app.task.BaseAsyncTask;
 import com.grayfox.android.app.widget.DrawerHeader;
 import com.grayfox.android.app.widget.DrawerItem;
 import com.grayfox.android.app.widget.DrawerItemAdapter;
 import com.grayfox.android.app.widget.DrawerOption;
+import com.grayfox.android.client.UsersApi;
 import com.grayfox.android.client.model.User;
-import com.grayfox.android.client.task.GetSelfUserAsyncTask;
 
 import roboguice.activity.RoboActionBarActivity;
 import roboguice.inject.ContentView;
@@ -31,6 +37,8 @@ import roboguice.inject.InjectView;
 import java.lang.ref.WeakReference;
 import java.util.Arrays;
 import java.util.List;
+
+import javax.inject.Inject;
 
 @ContentView(R.layout.activity_main)
 public class MainActivity extends RoboActionBarActivity {
@@ -78,8 +86,7 @@ public class MainActivity extends RoboActionBarActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (drawerToggle.onOptionsItemSelected(item)) return true;
-        return super.onOptionsItemSelected(item);
+        return drawerToggle.onOptionsItemSelected(item) || super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -179,13 +186,35 @@ public class MainActivity extends RoboActionBarActivity {
         drawerItemAdapter.notifyDataSetChanged();
     }
 
-    private static class GetSelfUserTask extends GetSelfUserAsyncTask {
+    private static class GetSelfUserTask extends BaseAsyncTask<User> {
+
+        @Inject private AccessTokenDao accessTokenDao;
+        @Inject private UsersApi usersApi;
+        @Inject private UserDao userDao;
 
         private WeakReference<MainActivity> reference;
 
         private GetSelfUserTask(MainActivity activity) {
             super(activity.getApplicationContext());
             reference = new WeakReference<>(activity);
+        }
+
+        @Override
+        public User call() throws Exception {
+            if (isConnected()) {
+                User user = usersApi.awaitSelfUser(accessTokenDao.fetchAccessToken());
+                if (user != null) {
+                    userDao.saveOrUpdate(user);
+                    return user;
+                }
+            }
+            return userDao.fetchCurrent();
+        }
+
+        private boolean isConnected() {
+            ConnectivityManager connectivityManager = (ConnectivityManager) getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo netInfo = connectivityManager.getActiveNetworkInfo();
+            return netInfo != null && netInfo.isConnectedOrConnecting();
         }
 
         @Override

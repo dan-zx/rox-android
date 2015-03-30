@@ -8,13 +8,13 @@ import android.support.v4.widget.CursorAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.grayfox.android.app.R;
 import com.grayfox.android.app.util.ColorTransformation;
 import com.grayfox.android.client.model.Category;
+
 import com.squareup.picasso.Picasso;
 
 public class CategoryCursorAdapter extends CursorAdapter {
