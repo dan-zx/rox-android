@@ -36,7 +36,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import com.grayfox.android.app.R;
-import com.grayfox.android.app.activity.MainActivity;
+import com.grayfox.android.app.activity.RecommendedRouteActivity;
 import com.grayfox.android.app.dao.AccessTokenDao;
 import com.grayfox.android.app.task.NetworkAsyncTask;
 import com.grayfox.android.app.util.PicassoMarker;
@@ -427,13 +427,11 @@ public class ExploreFragment extends RoboFragment implements OnMapReadyCallback,
     }
 
     private void onSelectRecommendation(Recommendation recommendation) {
-        RecommendedRouteFragment fragment = RecommendedRouteFragment.newInstance(currentLocation, recommendation.getPoi());
-        ((MainActivity) getActivity()).setupFragment(fragment, true);
+        getActivity().startActivity(RecommendedRouteActivity.getIntent(getActivity(), currentLocation, recommendation.getPoi()));
     }
 
     private void onSelectPoi(Poi poi) {
-        RecommendedRouteFragment fragment = RecommendedRouteFragment.newInstance(currentLocation, poi);
-        ((MainActivity) getActivity()).setupFragment(fragment, true);
+        getActivity().startActivity(RecommendedRouteActivity.getIntent(getActivity(), currentLocation, poi));
     }
 
     @Override

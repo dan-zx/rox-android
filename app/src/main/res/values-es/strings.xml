@@ -22,6 +22,7 @@
     <string name="search_for_places">Buscar lugares</string>
 
     <!-- RecommendedRouteFragment -->
+    <string name="recommended_route_title">Ruta recomendada</string>
     <string name="building_route">Construyendo ruta&#8230;</string>
     <string name="unavailable_route">Ruta no disponible. Elija otro medio de transporte.</string>
     <string name="walking_directions_button_label">Caminando</string>
@@ -32,7 +33,6 @@
     <string name="travel_time">Tiempo: %s</string>
 
     <!-- ProfileFragments -->
-    <string name="profile_title"></string>
     <string name="profile_user_friends_tab">Amigos</string>
     <string name="profile_user_likes_tab">Gustos</string>
     <string name="no_friends_found">No hay amigos aún :(</string>

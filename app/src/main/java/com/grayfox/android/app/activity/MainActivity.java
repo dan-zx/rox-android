@@ -8,7 +8,6 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -21,7 +20,6 @@ import com.grayfox.android.app.R;
 import com.grayfox.android.app.dao.AccessTokenDao;
 import com.grayfox.android.app.dao.UserDao;
 import com.grayfox.android.app.fragment.ExploreFragment;
-import com.grayfox.android.app.fragment.UserProfileFragment;
 import com.grayfox.android.app.task.BaseAsyncTask;
 import com.grayfox.android.app.widget.DrawerHeader;
 import com.grayfox.android.app.widget.DrawerItem;
@@ -63,7 +61,7 @@ public class MainActivity extends RoboActionBarActivity {
         super.onCreate(savedInstanceState);
         setupNavigationDrawer();
         if (savedInstanceState == null) {
-            setupFragment(new ExploreFragment(), false);
+            setupFragment(new ExploreFragment());
             setTitle(R.string.explore_title);
             drawerItemAdapter.setSelectedPosition(2);
             new GetSelfUserTask(this).execute();
@@ -143,32 +141,25 @@ public class MainActivity extends RoboActionBarActivity {
         drawerOptions.setAdapter(drawerItemAdapter);
     }
 
-    public void setupFragment(Fragment fragment, boolean addToBackStack) {
+    public void setupFragment(Fragment fragment) {
         FragmentManager fragmentManager = getSupportFragmentManager();
         Fragment currentFragment = fragmentManager.findFragmentByTag(FRAGMENT_TAG);
         if (currentFragment == null || !currentFragment.getClass().equals(fragment.getClass())) {
-            FragmentTransaction transaction = fragmentManager.beginTransaction()
-                    .replace(R.id.content_frame, fragment, FRAGMENT_TAG);
-            if (addToBackStack) transaction.addToBackStack(null);
-            else while (fragmentManager.getBackStackEntryCount() > 0) fragmentManager.popBackStackImmediate();
-            transaction.commit();
+            fragmentManager.beginTransaction()
+                    .replace(R.id.content_frame, fragment, FRAGMENT_TAG).
+                    commit();
         }
     }
 
     private void onDrawerMenuSelected(int position) {
         switch (position) {
             case 0:
-                if (user != null) {
-                    invalidateOptionsMenu();
-                    setupFragment(UserProfileFragment.newInstance(user), true);
-                    setTitle(R.string.profile_title);
-                    drawerItemAdapter.setSelectedPosition(-1);
-                }
+                if (user != null) startActivity(UserProfileActivity.getIntent(this, user));
                 drawerLayout.closeDrawers();
                 break;
             case 2:
                 invalidateOptionsMenu();
-                setupFragment(new ExploreFragment(), false);
+                setupFragment(new ExploreFragment());
                 setTitle(R.string.explore_title);
                 drawerItemAdapter.setSelectedPosition(position);
                 drawerLayout.closeDrawers();

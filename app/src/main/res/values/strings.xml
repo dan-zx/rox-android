@@ -24,6 +24,7 @@
     <string name="search_for_places">Search for places</string>
 
     <!-- RecommendedRouteFragment -->
+    <string name="recommended_route_title">Recommended route</string>
     <string name="building_route">Building route&#8230;</string>
     <string name="unavailable_route">Unavailable route. Choose a different travel mode.</string>
     <string name="walking_directions_button_label">Walking</string>
@@ -36,7 +37,7 @@
     <string name="short_time_format" translatable="false">m\' m\'</string>
 
     <!-- ProfileFragments -->
-    <string name="profile_title"></string>
+    <string name="profile_title" translatable="false"></string>
     <string name="profile_user_friends_tab">Friends</string>
     <string name="profile_user_likes_tab">Likes</string>
     <string name="no_friends_found">No friends yet :(</string>

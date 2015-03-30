@@ -40,8 +40,16 @@
             android:name=".activity.MainActivity"
             android:theme="@style/AppTheme.WithToolbar"/>
         <activity
+            android:name=".activity.UserProfileActivity"
+            android:label="@string/profile_title"
+            android:theme="@style/AppTheme.WithToolbar"/>
+        <activity
             android:name=".activity.FriendProfileActivity"
             android:label="@string/profile_title"
+            android:theme="@style/AppTheme.WithToolbar"/>
+        <activity
+            android:name=".activity.RecommendedRouteActivity"
+            android:label="@string/recommended_route_title"
             android:theme="@style/AppTheme.WithToolbar"/>
         <activity
             android:name=".activity.SettingsActivity"
