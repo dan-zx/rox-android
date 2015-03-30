@@ -440,11 +440,15 @@ public class ExploreFragment extends RoboFragment implements OnMapReadyCallback,
     }
 
     private void onSelectRecommendation(Recommendation recommendation) {
-        getActivity().startActivity(RecommendedRouteActivity.getIntent(getActivity(), currentLocation, recommendation.getPoi()));
+        if (currentLocation != null) {
+            getActivity().startActivity(RecommendedRouteActivity.getIntent(getActivity(), currentLocation, recommendation.getPoi()));
+        }
     }
 
     private void onSelectPoi(Poi poi) {
-        getActivity().startActivity(RecommendedRouteActivity.getIntent(getActivity(), currentLocation, poi));
+        if (currentLocation != null) {
+            getActivity().startActivity(RecommendedRouteActivity.getIntent(getActivity(), currentLocation, poi));
+        }
     }
 
     @Override

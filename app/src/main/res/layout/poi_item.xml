@@ -28,10 +28,8 @@
             android:id="@+id/poi_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignTop="@+id/category_image"
-            android:layout_toEndOf="@+id/category_image"
+            android:layout_centerVertical="true"
             android:layout_toRightOf="@+id/category_image"
-            android:gravity="center_vertical"
             android:maxWidth="250dp"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:textStyle="bold"/>
