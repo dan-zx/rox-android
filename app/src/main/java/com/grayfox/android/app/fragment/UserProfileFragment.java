@@ -24,7 +24,7 @@ import com.grayfox.android.app.dao.AccessTokenDao;
 import com.grayfox.android.app.task.NetworkAsyncTask;
 import com.grayfox.android.app.widget.CategoryFilterableAdapter;
 import com.grayfox.android.app.widget.FriendAdapter;
-import com.grayfox.android.app.widget.LikeAdapter;
+import com.grayfox.android.app.widget.LikeDeletableAdapter;
 import com.grayfox.android.client.UsersApi;
 import com.grayfox.android.client.model.Category;
 import com.grayfox.android.client.model.UpdateResult;
@@ -276,7 +276,7 @@ public class UserProfileFragment extends RoboFragment {
         @Inject private InputMethodManager inputMethodManager;
 
         private CategoryFilterableAdapter categoryAdapter;
-        private LikeAdapter likeAdapter;
+        private LikeDeletableAdapter likeAdapter;
 
         private static LikesFragment newInstance(Category[] likes) {
             LikesFragment fragment = new LikesFragment();
@@ -310,9 +310,8 @@ public class UserProfileFragment extends RoboFragment {
                 likeList.setVisibility(View.GONE);
             } else {
                 noLikesTextView.setVisibility(View.GONE);
-                likeAdapter = new LikeAdapter(likes);
-                likeAdapter.setEditable(true);
-                likeAdapter.setOnRemoveLikeListener(new LikeAdapter.OnRemoveLikeListener() {
+                likeAdapter = new LikeDeletableAdapter(likes);
+                likeAdapter.setOnRemoveLikeListener(new LikeDeletableAdapter.OnRemoveLikeListener() {
                     @Override
                     public void onRemove(Category like) {
                         onRemoveLike(like);

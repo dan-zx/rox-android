@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.daimajia.swipe.SwipeLayout android:id="@+id/swipe"
-                                xmlns:android="http://schemas.android.com/apk/res/android"
+<com.daimajia.swipe.SwipeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                android:id="@+id/swipe"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent">
 
-    <include layout="@layout/delete_layout" />
+    <include layout="@layout/delete_layout"/>
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@android:color/white">
 
         <ImageView
             android:id="@+id/category_image"

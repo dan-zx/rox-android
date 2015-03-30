@@ -80,7 +80,7 @@ public class PoiRouteAdapter extends RecyclerSwipeAdapter<RecyclerView.ViewHolde
             case MIDDLE:
                 final Poi poi = poiSequence.get(position-1);
                 final MiddleViewHolder middleViewHolder = (MiddleViewHolder) holder;
-                middleViewHolder.swipeLayout.setShowMode(SwipeLayout.ShowMode.LayDown);
+                middleViewHolder.swipeLayout.setShowMode(SwipeLayout.ShowMode.PullOut);
                 middleViewHolder.swipeLayout.setDragEdge(SwipeLayout.DragEdge.Right);
                 Picasso.with(context)
                         .load(poi.getCategories()[0].getIconUrl())
@@ -103,7 +103,7 @@ public class PoiRouteAdapter extends RecyclerSwipeAdapter<RecyclerView.ViewHolde
             case BOTTOM:
                 final Poi lastPoi = poiSequence.get(position-1);
                 final BottomViewHolder bottomViewHolder = (BottomViewHolder) holder;
-                bottomViewHolder.swipeLayout.setShowMode(SwipeLayout.ShowMode.LayDown);
+                bottomViewHolder.swipeLayout.setShowMode(SwipeLayout.ShowMode.PullOut);
                 bottomViewHolder.swipeLayout.setDragEdge(SwipeLayout.DragEdge.Right);
                 Picasso.with(context)
                         .load(lastPoi.getCategories()[0].getIconUrl())
