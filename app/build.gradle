@@ -71,7 +71,7 @@ dependencies {
     compile "com.google.android.gms:play-services-location:${playServicesVersion}"
     compile 'com.google.maps:google-maps-services:0.1.6'
     compile 'com.jpardogo.materialtabstrip:library:1.0.9'
-    compile 'com.github.clans:fab:1.0.1'
+    compile 'com.github.clans:fab:1.2.0'
     compile 'de.hdodenhof:circleimageview:1.2.1'
     compile 'com.daimajia.swipelayout:library:1.1.9@aar'
     compile 'com.foursquare:foursquare-android-oauth:1.0.2'

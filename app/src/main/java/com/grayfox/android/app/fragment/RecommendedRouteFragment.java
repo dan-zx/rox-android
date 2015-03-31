@@ -10,6 +10,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -55,6 +57,7 @@ import javax.inject.Inject;
 
 public class RecommendedRouteFragment extends RoboFragment implements OnMapReadyCallback {
 
+    private static final int SCROLL_OFFSET = 4;
     private static final String MAP_FRAGMENT_TAG = "MAP_FRAGMENT";
     private static final String CURRENT_LOCATION_ARG = "CURRENT_LOCATION";
     private static final String SEED_ARG = "SEED";
@@ -78,6 +81,8 @@ public class RecommendedRouteFragment extends RoboFragment implements OnMapReady
     private PoiRouteAdapter poiRouteAdapter;
     private DirectionsRoute route;
     private List<Poi> pois;
+    private Animation showFamAnimation;
+    private Animation hideFamAnimation;
 
     public static RecommendedRouteFragment newInstance(Location currentLocation, Poi seed) {
         RecommendedRouteFragment fragment = new RecommendedRouteFragment();
@@ -155,17 +160,29 @@ public class RecommendedRouteFragment extends RoboFragment implements OnMapReady
             }
         });
         routeList.setAdapter(poiRouteAdapter);
-        DragSortRecycler dragSortRecycler = new DragSortRecycler();
+        final DragSortRecycler dragSortRecycler = new DragSortRecycler();
         dragSortRecycler.setViewHandleId(R.id.category_image);
         dragSortRecycler.setOnItemMovedListener(new DragSortRecycler.OnItemMovedListener() {
             @Override
             public void onItemMoved(int from, int to) {
-                onReorderPoisInRoute(from ,to);
+                onReorderPoisInRoute(from, to);
             }
         });
         routeList.addItemDecoration(dragSortRecycler);
         routeList.addOnItemTouchListener(dragSortRecycler);
-        routeList.setOnScrollListener(dragSortRecycler.getScrollListener());
+        routeList.setOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                dragSortRecycler.getScrollListener().onScrolled(recyclerView, dx, dy);
+                if (Math.abs(dy) > SCROLL_OFFSET) {
+                    if (dy > 0) hideDirectionsMenu();
+                    else showDirectionsMenu();
+                }
+            }
+        });
+        showFamAnimation = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_scale_up);
+        hideFamAnimation = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_scale_down);
         fragment.getMapAsync(this);
     }
 
@@ -331,6 +348,20 @@ public class RecommendedRouteFragment extends RoboFragment implements OnMapReady
                 .edit()
                 .putString(getString(R.string.travel_mode_key), selectedTravelMode.name())
                 .commit();
+    }
+
+    private void showDirectionsMenu() {
+        if (directionsMenu.getVisibility() == View.INVISIBLE) {
+            directionsMenu.startAnimation(showFamAnimation);
+            directionsMenu.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void hideDirectionsMenu() {
+        if (directionsMenu.getVisibility() == View.VISIBLE) {
+            directionsMenu.startAnimation(hideFamAnimation);
+            directionsMenu.setVisibility(View.INVISIBLE);
+        }
     }
 
     private class RouteBuilderTask extends NetworkAsyncTask<Object[]> {
