@@ -37,6 +37,7 @@ import com.grayfox.android.app.R;
 import com.grayfox.android.app.dao.AccessTokenDao;
 import com.grayfox.android.app.task.NetworkAsyncTask;
 import com.grayfox.android.app.util.PicassoMarker;
+import com.grayfox.android.app.widget.DragSortRecycler;
 import com.grayfox.android.app.widget.PoiRouteAdapter;
 import com.grayfox.android.client.RecommendationsApi;
 import com.grayfox.android.client.model.Poi;
@@ -76,7 +77,7 @@ public class RecommendedRouteFragment extends RoboFragment implements OnMapReady
     private RouteBuilderTask routeBuilderTask;
     private PoiRouteAdapter poiRouteAdapter;
     private DirectionsRoute route;
-    private List<Poi> nextPois;
+    private List<Poi> pois;
 
     public static RecommendedRouteFragment newInstance(Location currentLocation, Poi seed) {
         RecommendedRouteFragment fragment = new RecommendedRouteFragment();
@@ -85,6 +86,10 @@ public class RecommendedRouteFragment extends RoboFragment implements OnMapReady
         args.putSerializable(SEED_ARG, seed);
         fragment.setArguments(args);
         return fragment;
+    }
+
+    public RecommendedRouteFragment() {
+        pois = new ArrayList<>();
     }
 
     @Override
@@ -141,8 +146,8 @@ public class RecommendedRouteFragment extends RoboFragment implements OnMapReady
         });
         cardView.getLayoutParams().height += (int) getResources().getDimension(R.dimen.route_overlap);
         routeList.setLayoutManager(new LinearLayoutManager(getActivity()));
+        routeList.setItemAnimator(null);
         poiRouteAdapter = new PoiRouteAdapter(getCurrentLocationArg());
-        poiRouteAdapter.add(getSeedArg());
         poiRouteAdapter.setOnDeleteItemListener(new PoiRouteAdapter.OnDeleteItemListener() {
             @Override
             public void onDelete(Poi poi, int position) {
@@ -150,6 +155,17 @@ public class RecommendedRouteFragment extends RoboFragment implements OnMapReady
             }
         });
         routeList.setAdapter(poiRouteAdapter);
+        DragSortRecycler dragSortRecycler = new DragSortRecycler();
+        dragSortRecycler.setViewHandleId(R.id.category_image);
+        dragSortRecycler.setOnItemMovedListener(new DragSortRecycler.OnItemMovedListener() {
+            @Override
+            public void onItemMoved(int from, int to) {
+                onReorderPoisInRoute(from ,to);
+            }
+        });
+        routeList.addItemDecoration(dragSortRecycler);
+        routeList.addOnItemTouchListener(dragSortRecycler);
+        routeList.setOnScrollListener(dragSortRecycler.getScrollListener());
         fragment.getMapAsync(this);
     }
 
@@ -158,6 +174,9 @@ public class RecommendedRouteFragment extends RoboFragment implements OnMapReady
         super.onActivityCreated(savedInstanceState);
         shouldRestoreRoute = false;
         if (savedInstanceState == null) {
+            Poi seed = getSeedArg();
+            pois.add(seed);
+            poiRouteAdapter.add(seed);
             routeBuilderTask = new RouteBuilderTask()
                     .seed(getSeedArg())
                     .origin(getCurrentLocationArg())
@@ -167,6 +186,7 @@ public class RecommendedRouteFragment extends RoboFragment implements OnMapReady
             if (routeBuilderTask != null && routeBuilderTask.isActive()) onPreExecuteRouteBuilderTask();
             if (recalculateRouteTask != null && recalculateRouteTask.isActive()) onPreExcecuteRecalculateRouteTask();
             else shouldRestoreRoute = true;
+            restorePois();
         }
     }
 
@@ -183,10 +203,9 @@ public class RecommendedRouteFragment extends RoboFragment implements OnMapReady
         googleMap.setPadding(0, 0, 0, (int) getResources().getDimension(R.dimen.route_overlap));
         googleMap.getUiSettings().setMapToolbarEnabled(false);
         googleMap.getUiSettings().setMyLocationButtonEnabled(false);
-        addPoiMarker(getSeedArg());
         showCurrentLocationInMap();
+        for (Poi poi : pois) addPoiMarker(poi);
         if (shouldRestoreRoute) {
-            if (nextPois != null) onAcquireNextPois(nextPois.toArray(new Poi[nextPois.size()]));
             if (route != null) onAcquireRoute(route);
             onCompleteRouteBuilderTask();
         }
@@ -202,6 +221,11 @@ public class RecommendedRouteFragment extends RoboFragment implements OnMapReady
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 13f));
     }
 
+    private void restorePois() {
+        poiRouteAdapter.set(pois.toArray(new Poi[pois.size()]));
+        poiRouteAdapter.notifyDataSetChanged();
+    }
+
     private void onPreExecuteRouteBuilderTask() {
         travelDistanceContainer.setVisibility(View.GONE);
         buildingRouteLayout.setVisibility(View.VISIBLE);
@@ -209,7 +233,7 @@ public class RecommendedRouteFragment extends RoboFragment implements OnMapReady
     }
 
     private void onAcquireNextPois(Poi[] nextPois) {
-        this.nextPois = new ArrayList<>(Arrays.asList(nextPois));
+        pois.addAll(Arrays.asList(nextPois));
         if (nextPois != null && nextPois.length > 0) {
             poiRouteAdapter.add(nextPois);
             poiRouteAdapter.notifyDataSetChanged();
@@ -219,7 +243,7 @@ public class RecommendedRouteFragment extends RoboFragment implements OnMapReady
 
     private void onAcquireRoute(DirectionsRoute route) {
         this.route = route;
-        if(route != null) {
+        if (route != null) {
             double totalDistance = 0f;
             for (DirectionsLeg leg : route.legs) totalDistance += leg.distance.inMeters;
             travelDistanceTextView.setText(getString(R.string.travel_distance, totalDistance / 1_000f));
@@ -243,17 +267,15 @@ public class RecommendedRouteFragment extends RoboFragment implements OnMapReady
         travelDistanceContainer.setVisibility(View.GONE);
         googleMap.clear();
         showCurrentLocationInMap();
-        addPoiMarker(getSeedArg());
-        for (Poi poi : nextPois) addPoiMarker(poi);
+        for (Poi poi : pois) addPoiMarker(poi);
         recalculatingRouteProgressBar.setVisibility(View.VISIBLE);
     }
 
     private void recalculateRoute(TravelMode travelMode) {
         saveCurrentTravelMode(travelMode);
         recalculateRouteTask = new RecalculateRouteTask()
-                .seed(getSeedArg())
                 .origin(getCurrentLocationArg())
-                .nextPois(nextPois)
+                .pois(pois)
                 .travelMode(travelMode);
         recalculateRouteTask.request();
     }
@@ -275,9 +297,18 @@ public class RecommendedRouteFragment extends RoboFragment implements OnMapReady
     }
 
     private void onDeletePoiInRoute(int position) {
-        if (position == 0 && getSeedArg() != null) getArguments().putSerializable(SEED_ARG, null);
-        else if (getSeedArg() != null) nextPois.remove(position-1);
-        else nextPois.remove(position);
+        int poiPosition = position-1;
+        pois.remove(poiPosition);
+        recalculateRoute(getCurrentTravelMode());
+    }
+
+    private void onReorderPoisInRoute(int from, int to) {
+        int poiFromPosition = from-1;
+        int poiToPosition = to-1;
+        Poi removed = pois.remove(poiFromPosition);
+        pois.add(poiToPosition, removed);
+        poiRouteAdapter.move(from, to);
+        poiRouteAdapter.notifyDataSetChanged();
         recalculateRoute(getCurrentTravelMode());
     }
 
@@ -390,8 +421,7 @@ public class RecommendedRouteFragment extends RoboFragment implements OnMapReady
 
         @Inject private GeoApiContext geoApiContext;
 
-        private Poi seed;
-        private List<Poi> nextPois;
+        private List<Poi> pois;
         private Location origin;
         private TravelMode travelMode;
 
@@ -399,13 +429,8 @@ public class RecommendedRouteFragment extends RoboFragment implements OnMapReady
             super(getActivity().getApplicationContext());
         }
 
-        private RecalculateRouteTask seed(Poi seed) {
-            this.seed = seed;
-            return this;
-        }
-
-        private RecalculateRouteTask nextPois(List<Poi> nextPois) {
-            this.nextPois = nextPois;
+        private RecalculateRouteTask pois(List<Poi> pois) {
+            this.pois = pois;
             return this;
         }
 
@@ -427,9 +452,6 @@ public class RecommendedRouteFragment extends RoboFragment implements OnMapReady
 
         @Override
         public DirectionsRoute call() throws Exception {
-            List<Poi> pois = new ArrayList<>();
-            if (seed != null) pois.add(seed);
-            pois.addAll(nextPois);
             String[] waypoints = new String[pois.size()-1];
             for (int i = 0; i < waypoints.length; i++) waypoints[i] = toGoogleMapsServicesLatLng(pois.get(i).getLocation());
             DirectionsRoute[] routes = DirectionsApi.newRequest(geoApiContext)

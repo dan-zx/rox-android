@@ -48,6 +48,18 @@ public class PoiRouteAdapter extends RecyclerSwipeAdapter<RecyclerView.ViewHolde
         poiSequence.addAll(Arrays.asList(pois));
     }
 
+    public void set(Poi... pois) {
+        poiSequence.clear();
+        poiSequence.addAll(Arrays.asList(pois));
+    }
+
+    public void move(int from, int to) {
+        int poiFromPosition = from-1;
+        int poiToPosition = to-1;
+        Poi removed = poiSequence.remove(poiFromPosition);
+        poiSequence.add(poiToPosition, removed);
+    }
+
     public void setOnDeleteItemListener(OnDeleteItemListener onDeleteItemListener) {
         this.onDeleteItemListener = onDeleteItemListener;
     }
@@ -96,7 +108,7 @@ public class PoiRouteAdapter extends RecyclerSwipeAdapter<RecyclerView.ViewHolde
                         poiSequence.remove(position-1);
                         notifyDataSetChanged();
                         mItemManger.closeAllItems();
-                        if (onDeleteItemListener != null) onDeleteItemListener.onDelete(poi, position-1);
+                        if (onDeleteItemListener != null) onDeleteItemListener.onDelete(poi, position);
                     }
                 });
                 break;
@@ -119,7 +131,7 @@ public class PoiRouteAdapter extends RecyclerSwipeAdapter<RecyclerView.ViewHolde
                         poiSequence.remove(position-1);
                         notifyDataSetChanged();
                         mItemManger.closeAllItems();
-                        if (onDeleteItemListener != null) onDeleteItemListener.onDelete(lastPoi, position-1);
+                        if (onDeleteItemListener != null) onDeleteItemListener.onDelete(lastPoi, position);
                     }
                 });
                 break;
