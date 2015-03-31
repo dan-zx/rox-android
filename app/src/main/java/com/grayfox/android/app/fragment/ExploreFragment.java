@@ -259,7 +259,7 @@ public class ExploreFragment extends RoboFragment implements OnMapReadyCallback,
                     .position(latLng)
                     .title(getString(R.string.current_location))
                     .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_map_location)));
-            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 13f));
+            googleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
         }
     }
 
