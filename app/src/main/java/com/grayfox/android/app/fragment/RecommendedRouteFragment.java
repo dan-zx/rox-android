@@ -10,6 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.LinearLayout;
@@ -216,7 +217,13 @@ public class RecommendedRouteFragment extends RoboFragment implements OnMapReady
     @Override
     public void onMapReady(GoogleMap googleMap) {
         this.googleMap = googleMap;
-        googleMap.setPadding(0, 0, 0, routeContainer.getLayoutParams().height);
+        routeContainer.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                RecommendedRouteFragment.this.googleMap.setPadding(0, 0, 0, routeContainer.getHeight());
+                routeContainer.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+            }
+        });
         googleMap.getUiSettings().setMapToolbarEnabled(false);
         googleMap.getUiSettings().setMyLocationButtonEnabled(false);
         googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
@@ -363,7 +370,7 @@ public class RecommendedRouteFragment extends RoboFragment implements OnMapReady
         } else {
             routeContainer.startAnimation(verticalShowAnimation);
             routeContainer.setVisibility(View.VISIBLE);
-            googleMap.setPadding(0, 0, 0, routeContainer.getLayoutParams().height);
+            googleMap.setPadding(0, 0, 0, routeContainer.getHeight());
         }
     }
 

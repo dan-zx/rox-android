@@ -24,80 +24,87 @@
                 android:background="@android:color/transparent"/>
         </RelativeLayout>
 
-        <RelativeLayout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_above="@+id/route_container">
-
-            <ProgressBar
-                android:id="@+id/recalculating_route_progress_bar"
-                style="?android:attr/progressBarStyleLarge"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:visibility="gone"/>
-        </RelativeLayout>
-
-        <android.support.v7.widget.CardView
-            android:id="@+id/route_container"
-            android:layout_width="match_parent"
-            android:layout_height="250dp"
-            android:layout_alignParentBottom="true"
-            cv:cardCornerRadius="4dp"
-            cv:cardElevation="4dp"
-            cv:cardUseCompatPadding="true">
+            android:orientation="vertical"
+            android:weightSum="2">
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="0dp"
+                android:layout_weight="1">
 
-                <android.support.v7.widget.CardView
-                    android:id="@+id/travel_distance_container"
+                <ProgressBar
+                    android:id="@+id/recalculating_route_progress_bar"
+                    style="?android:attr/progressBarStyleLarge"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="4dp"
-                    android:layout_marginLeft="4dp"
-                    cv:cardCornerRadius="4dp"
-                    cv:cardElevation="4dp"
-                    cv:cardUseCompatPadding="true">
-
-                    <TextView
-                        android:id="@+id/travel_distance_text"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:padding="8dp"/>
-                </android.support.v7.widget.CardView>
-
-                <android.support.v7.widget.RecyclerView
-                    android:id="@+id/route_list"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_below="@id/travel_distance_container"/>
-
-                <LinearLayout
-                    android:id="@+id/building_route_layout"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true"
-                    android:layout_centerVertical="true"
-                    android:orientation="vertical">
-
-                    <ProgressBar
-                        style="?android:attr/progressBarStyleLarge"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"/>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_margin="4dp"
-                        android:text="@string/building_route"
-                        android:textAppearance="?android:attr/textAppearanceMedium"/>
-                </LinearLayout>
+                    android:layout_centerInParent="true"
+                    android:visibility="gone"/>
             </RelativeLayout>
-        </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.CardView
+                android:id="@+id/route_container"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                cv:cardCornerRadius="4dp"
+                cv:cardElevation="4dp"
+                cv:cardUseCompatPadding="true">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <android.support.v7.widget.CardView
+                        android:id="@+id/travel_distance_container"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="4dp"
+                        android:layout_marginLeft="4dp"
+                        cv:cardCornerRadius="4dp"
+                        cv:cardElevation="4dp"
+                        cv:cardUseCompatPadding="true">
+
+                        <TextView
+                            android:id="@+id/travel_distance_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:padding="8dp"/>
+                    </android.support.v7.widget.CardView>
+
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/route_list"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_below="@id/travel_distance_container"/>
+
+                    <LinearLayout
+                        android:id="@+id/building_route_layout"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:layout_centerVertical="true"
+                        android:orientation="vertical">
+
+                        <ProgressBar
+                            style="?android:attr/progressBarStyleLarge"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_margin="4dp"
+                            android:text="@string/building_route"
+                            android:textAppearance="?android:attr/textAppearanceMedium"/>
+                    </LinearLayout>
+                </RelativeLayout>
+            </android.support.v7.widget.CardView>
+        </LinearLayout>
     </RelativeLayout>
 
     <View
