@@ -71,8 +71,8 @@ public class RecommendedRouteFragment extends RoboFragment implements OnMapReady
     @InjectView(R.id.building_route_layout)            private LinearLayout buildingRouteLayout;
     @InjectView(R.id.travel_distance_text)             private TextView travelDistanceTextView;
     @InjectView(R.id.directions_menu)                  private FloatingActionMenu directionsMenu;
+    @InjectView(R.id.route_container)                  private CardView routeContainer;
     @InjectView(R.id.route_list)                       private RecyclerView routeList;
-    @InjectView(R.id.card_view)                        private CardView cardView;
 
     private boolean shouldRestoreRoute;
     private GoogleMap googleMap;
@@ -81,8 +81,8 @@ public class RecommendedRouteFragment extends RoboFragment implements OnMapReady
     private PoiRouteAdapter poiRouteAdapter;
     private DirectionsRoute route;
     private List<Poi> pois;
-    private Animation showFamAnimation;
-    private Animation hideFamAnimation;
+    private Animation verticalShowAnimation;
+    private Animation verticalHideAnimation;
 
     public static RecommendedRouteFragment newInstance(Location currentLocation, Poi seed) {
         RecommendedRouteFragment fragment = new RecommendedRouteFragment();
@@ -149,7 +149,6 @@ public class RecommendedRouteFragment extends RoboFragment implements OnMapReady
                 if (routeBuilderTask != null && !routeBuilderTask.isActive()) recalculateRoute(TravelMode.BICYCLING);
             }
         });
-        cardView.getLayoutParams().height += (int) getResources().getDimension(R.dimen.route_overlap);
         routeList.setLayoutManager(new LinearLayoutManager(getActivity()));
         routeList.setItemAnimator(null);
         poiRouteAdapter = new PoiRouteAdapter(getCurrentLocationArg());
@@ -181,8 +180,8 @@ public class RecommendedRouteFragment extends RoboFragment implements OnMapReady
                 }
             }
         });
-        showFamAnimation = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_scale_up);
-        hideFamAnimation = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_scale_down);
+        verticalShowAnimation = AnimationUtils.loadAnimation(getActivity(), R.anim.vertical_show);
+        verticalHideAnimation = AnimationUtils.loadAnimation(getActivity(), R.anim.vertical_hide);
         fragment.getMapAsync(this);
     }
 
@@ -217,9 +216,15 @@ public class RecommendedRouteFragment extends RoboFragment implements OnMapReady
     @Override
     public void onMapReady(GoogleMap googleMap) {
         this.googleMap = googleMap;
-        googleMap.setPadding(0, 0, 0, (int) getResources().getDimension(R.dimen.route_overlap));
+        googleMap.setPadding(0, 0, 0, routeContainer.getLayoutParams().height);
         googleMap.getUiSettings().setMapToolbarEnabled(false);
         googleMap.getUiSettings().setMyLocationButtonEnabled(false);
+        googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+            @Override
+            public void onMapClick(LatLng latLng) {
+                toggleRouteContainer();
+            }
+        });
         showCurrentLocationInMap();
         for (Poi poi : pois) addPoiMarker(poi);
         if (shouldRestoreRoute) {
@@ -350,17 +355,29 @@ public class RecommendedRouteFragment extends RoboFragment implements OnMapReady
                 .commit();
     }
 
+    private void toggleRouteContainer() {
+        if (routeContainer.getVisibility() == View.VISIBLE) {
+            routeContainer.startAnimation(verticalHideAnimation);
+            routeContainer.setVisibility(View.GONE);
+            googleMap.setPadding(0, 0, 0, 0);
+        } else {
+            routeContainer.startAnimation(verticalShowAnimation);
+            routeContainer.setVisibility(View.VISIBLE);
+            googleMap.setPadding(0, 0, 0, routeContainer.getLayoutParams().height);
+        }
+    }
+
     private void showDirectionsMenu() {
-        if (directionsMenu.getVisibility() == View.INVISIBLE) {
-            directionsMenu.startAnimation(showFamAnimation);
+        if (directionsMenu.getVisibility() == View.GONE) {
+            directionsMenu.startAnimation(verticalShowAnimation);
             directionsMenu.setVisibility(View.VISIBLE);
         }
     }
 
     private void hideDirectionsMenu() {
         if (directionsMenu.getVisibility() == View.VISIBLE) {
-            directionsMenu.startAnimation(hideFamAnimation);
-            directionsMenu.setVisibility(View.INVISIBLE);
+            directionsMenu.startAnimation(verticalHideAnimation);
+            directionsMenu.setVisibility(View.GONE);
         }
     }
 
