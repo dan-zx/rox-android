@@ -45,7 +45,6 @@ import com.grayfox.android.app.widget.CategoryCursorAdapter;
 import com.grayfox.android.app.widget.PoiAdapter;
 import com.grayfox.android.app.widget.RecommendationAdapter;
 import com.grayfox.android.client.PoisApi;
-import com.grayfox.android.client.RecommendationsApi;
 import com.grayfox.android.client.model.Category;
 import com.grayfox.android.client.model.Poi;
 import com.grayfox.android.client.model.Recommendation;
@@ -269,6 +268,9 @@ public class ExploreFragment extends RoboFragment implements OnMapReadyCallback,
                     .title(recommendation.getPoi().getName()));
             int backgroundResource = 0;
             switch (recommendation.getType()) {
+                case GLOBAL:
+                    backgroundResource = R.drawable.ic_map_pin_light_blue;
+                    break;
                 case SELF:
                     backgroundResource = R.drawable.ic_map_pin_pink;
                     break;
@@ -384,6 +386,9 @@ public class ExploreFragment extends RoboFragment implements OnMapReadyCallback,
                     .title(recommendation.getPoi().getName()));
             int backgroundResource = 0;
             switch (recommendation.getType()) {
+                case GLOBAL:
+                    backgroundResource = R.drawable.ic_map_pin_light_blue;
+                    break;
                 case SELF:
                     backgroundResource = R.drawable.ic_map_pin_pink;
                     break;
@@ -485,7 +490,7 @@ public class ExploreFragment extends RoboFragment implements OnMapReadyCallback,
     private class RecommendationsTask extends NetworkAsyncTask<Recommendation[]> {
 
         @Inject private AccessTokenDao accessTokenDao;
-        @Inject private RecommendationsApi recommendationsApi;
+        @Inject private PoisApi poisApi;
 
         private Location location;
         private Integer radius;
@@ -515,7 +520,7 @@ public class ExploreFragment extends RoboFragment implements OnMapReadyCallback,
             com.grayfox.android.client.model.Location myLocation = new com.grayfox.android.client.model.Location();
             myLocation.setLatitude(location.getLatitude());
             myLocation.setLongitude(location.getLongitude());
-            return recommendationsApi.awaitRecommendationsByAll(accessTokenDao.fetchAccessToken(), myLocation, radius);
+            return poisApi.awaitRecommendations(accessTokenDao.fetchAccessToken(), myLocation, radius);
         }
 
         @Override

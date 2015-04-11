@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 public class Recommendation implements Serializable {
 
-    public static enum Type {SOCIAL, SELF}
+    public static enum Type {GLOBAL, SELF, SOCIAL}
 
     private static final long serialVersionUID = 4322497520093419157L;
 

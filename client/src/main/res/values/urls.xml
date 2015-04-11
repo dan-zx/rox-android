@@ -17,15 +17,10 @@
     <string name="gf_api_users_add_like_path" translatable="false">addlike</string>
     <string name="gf_api_users_remove_like_path" translatable="false">removelike</string>
 
-    <!-- Recommendations API -->
-    <string name="gf_api_recommendations_path" translatable="false">recommendations</string>
-    <string name="gf_api_recommendations_by_all_path" translatable="false">byall</string>
-    <string name="gf_api_recommendations_by_likes_path" translatable="false">bylikes</string>
-    <string name="gf_api_recommendations_by_friends_likes_path" translatable="false">byfriendslikes</string>
-
     <!-- POIs Api -->
     <string name="gf_api_pois_path" translatable="false">pois</string>
     <string name="gf_api_pois_search_path" translatable="false">search</string>
     <string name="gf_api_pois_next_path" translatable="false">next</string>
-    <string name="gf_api_categories_like_path" translatable="false">categories/like</string>
+    <string name="gf_api_pois_recommend_path" translatable="false">recommend</string>
+    <string name="gf_api_pois_categories_like_path" translatable="false">categories/like</string>
 </resources>

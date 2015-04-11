@@ -52,6 +52,9 @@ public class RecommendationAdapter extends RecyclerView.Adapter<RecommendationAd
             }
         });
         switch (recommendation.getType()) {
+            case GLOBAL:
+                holder.categoryImageView.setBackgroundResource(R.drawable.ic_map_pin_light_blue);
+                break;
             case SELF:
                 holder.categoryImageView.setBackgroundResource(R.drawable.ic_map_pin_pink);
                 break;

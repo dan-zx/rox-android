@@ -1,0 +1,64 @@
+{
+    "response":[
+        {
+            "type":"SELF",
+            "reason":"You liked Italian Restaurant",
+            "poi":{
+                "name":"Vittorio's",
+                "location":{
+                    "latitude":19.043296008919373,
+                    "longitude":-98.19728136062622
+                },
+                "foursquareId":"4c22837f9a67a593219edc87",
+                "foursquareRating":8.6,
+                "categories":[
+                    {
+                        "name":"Italian Restaurant",
+                        "iconUrl":"https://ss3.4sqi.net/img/categories_v2/food/default_88.png",
+                        "foursquareId":"4bf58dd8d48988d110941735"
+                    }
+                ]
+            }
+        },
+        {
+            "type":"SOCIAL",
+            "reason":"Your friend Jane Doe liked Brewery",
+            "poi":{
+                "name":"El Corona",
+                "location":{
+                    "latitude":19.046120299277323,
+                    "longitude":-98.20206759449505
+                },
+                "foursquareId":"4ce636f3708460fc485e86c3",
+                "foursquareRating":8.2,
+                "categories":[
+                    {
+                        "name":"Brewery",
+                        "iconUrl":"https://ss3.4sqi.net/img/categories_v2/nightlife/default_88.png",
+                        "foursquareId":"50327c8591d4c4b30a586d5d"
+                    }
+                ]
+            }
+        },
+        {
+            "type":"GLOBAL",
+            "reason":"This place is popular",
+            "poi":{
+                "name":"La Pasita",
+                "location":{
+                    "latitude":19.04104454259915,
+                    "longitude":-98.19588661193848
+                },
+                "foursquareId":"4c095fd97e3fc928ddddf182",
+                "foursquareRating":9.0,
+                "categories":[
+                    {
+                        "name":"Cocktail Bar",
+                        "iconUrl":"https://ss3.4sqi.net/img/categories_v2/nightlife/default_88.png",
+                        "foursquareId":"4bf58dd8d48988d11e941735"
+                    }
+                ]
+            }
+        }
+    ]
+}
