@@ -5,7 +5,7 @@
     http://192.168.1.123:8080/gray-fox-server/api
     http://10.0.2.2:8080/gray-fox-server/api
     -->
-    <string name="gf_api_base_url" translatable="false"> http://gray-fox.herokuapp.com/api</string>
+    <string name="gf_api_base_url" translatable="false">http://gray-fox.herokuapp.com/api</string>
 
     <!-- Users API -->
     <string name="gf_api_users_path" translatable="false">users</string>
@@ -14,21 +14,18 @@
     <string name="gf_api_users_likes_path" translatable="false">likes</string>
     <string name="gf_api_users_register_with_foursquare_path" translatable="false">register/foursquare</string>
     <string name="gf_api_users_update_path" translatable="false">update</string>
-    <string name="gf_api_users_addlike_path" translatable="false">addlike</string>
-    <string name="gf_api_users_removelike_path" translatable="false">removelike</string>
+    <string name="gf_api_users_add_like_path" translatable="false">addlike</string>
+    <string name="gf_api_users_remove_like_path" translatable="false">removelike</string>
 
     <!-- Recommendations API -->
     <string name="gf_api_recommendations_path" translatable="false">recommendations</string>
     <string name="gf_api_recommendations_by_all_path" translatable="false">byall</string>
     <string name="gf_api_recommendations_by_likes_path" translatable="false">bylikes</string>
     <string name="gf_api_recommendations_by_friends_likes_path" translatable="false">byfriendslikes</string>
-    <string name="gf_api_recommendations_next_pois_path" translatable="false">nextpois</string>
-
-    <!-- Categories API -->
-    <string name="gf_api_categories_path" translatable="false">categories</string>
-    <string name="gf_api_categories_like_path" translatable="false">like</string>
 
     <!-- POIs Api -->
     <string name="gf_api_pois_path" translatable="false">pois</string>
     <string name="gf_api_pois_search_path" translatable="false">search</string>
+    <string name="gf_api_pois_next_path" translatable="false">next</string>
+    <string name="gf_api_categories_like_path" translatable="false">categories/like</string>
 </resources>

@@ -2,7 +2,7 @@ package com.grayfox.android.client.model;
 
 import java.io.Serializable;
 
-public class UpdateResult implements Serializable {
+public class UpdateResponse implements Serializable {
 
     private static final long serialVersionUID = 1450022070052339450L;
 
@@ -29,7 +29,7 @@ public class UpdateResult implements Serializable {
         if (this == obj) return true;
         if (obj == null) return false;
         if (getClass() != obj.getClass()) return false;
-        UpdateResult other = (UpdateResult) obj;
+        UpdateResponse other = (UpdateResponse) obj;
         if (success != other.success) return false;
         return true;
     }
@@ -37,7 +37,7 @@ public class UpdateResult implements Serializable {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append("UpdateResult [success=").append(success).append("]");
+        builder.append("UpdateResponse [success=").append(success).append("]");
         return builder.toString();
     }
     

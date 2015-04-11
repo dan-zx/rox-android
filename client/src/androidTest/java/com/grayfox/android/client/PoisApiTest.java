@@ -100,6 +100,102 @@ public class PoisApiTest {
         poisApi.awaitSearchByCategory(location, 20_000, "fakeId");
     }
 
+    @Test
+    public void testAwaitNextPois() throws Exception {
+        Poi seed = new Poi();
+        seed.setName("Fisher's Puebla");
+        seed.setLocation(new Location());
+        seed.getLocation().setLatitude(19.04873185577618);
+        seed.getLocation().setLongitude(-98.21319222450256);
+        seed.setFoursquareId("4ba69285f964a520615f39e3");
+        seed.setCategories(new Category[1]);
+        seed.getCategories()[0] = new Category();
+        seed.getCategories()[0].setName("Seafood Restaurant");
+        seed.getCategories()[0].setIconUrl("https://ss3.4sqi.net/img/categories_v2/food/default_88.png");
+        seed.getCategories()[0].setFoursquareId("4bf58dd8d48988d1ce941735");
+
+        Poi poi1 = new Poi();
+        poi1.setName("Cinépolis");
+        poi1.setLocation(new Location());
+        poi1.getLocation().setLatitude(19.032099226143384);
+        poi1.getLocation().setLongitude(-98.23300838470459);
+        poi1.setFoursquareId("4bad0850f964a52082263be3");
+        poi1.setCategories(new Category[1]);
+        poi1.getCategories()[0] = new Category();
+        poi1.getCategories()[0].setName("Multiplex");
+        poi1.getCategories()[0].setIconUrl("https://ss3.4sqi.net/img/categories_v2/arts_entertainment/movietheater_88.png");
+        poi1.getCategories()[0].setFoursquareId("4bf58dd8d48988d180941735");
+
+        Poi poi2 = new Poi();
+        poi2.setName("Chili's");
+        poi2.setLocation(new Location());
+        poi2.getLocation().setLatitude(19.032072262618215);
+        poi2.getLocation().setLongitude(-98.23318352096007);
+        poi2.setFoursquareId("4be47d022457a593414daa15");
+        poi2.setCategories(new Category[1]);
+        poi2.getCategories()[0] = new Category();
+        poi2.getCategories()[0].setName("American Restaurant");
+        poi2.getCategories()[0].setIconUrl("https://ss3.4sqi.net/img/categories_v2/food/default_88.png");
+        poi2.getCategories()[0].setFoursquareId("4bf58dd8d48988d14e941735");
+
+        Poi[] expected = {poi1, poi2};
+
+        mockWebServer.enqueue(new MockResponse()
+                .setStatus("HTTP/1.1 200 OK")
+                .setBody(getJsonFrom("responses/nextpois.json")));
+        assertThat(poisApi.awaitNextPois(seed)).isNotNull().isNotEmpty().hasSize(expected.length).isEqualTo(expected);
+    }
+
+    @Test(expected = ApiException.class)
+    public void testAwaitNextPoisError() throws Exception {
+        Poi seed = new Poi();
+        seed.setName("Fisher's Puebla");
+        seed.setLocation(new Location());
+        seed.getLocation().setLatitude(19.04873185577618);
+        seed.getLocation().setLongitude(-98.21319222450256);
+        seed.setFoursquareId("4ba69285f964a520615f39e3");
+        seed.setCategories(new Category[1]);
+        seed.getCategories()[0] = new Category();
+        seed.getCategories()[0].setName("Seafood Restaurant");
+        seed.getCategories()[0].setIconUrl("https://ss3.4sqi.net/img/categories_v2/food/default_88.png");
+        seed.getCategories()[0].setFoursquareId("4bf58dd8d48988d1ce941735");
+
+        mockWebServer.enqueue(new MockResponse()
+                .setStatus("HTTP/1.1 500 Internal Server Error")
+                .setBody(getJsonFrom("responses/error.json")));
+        poisApi.awaitNextPois(seed);
+    }
+
+    @Test
+    public void testAwaitCategoriesLikeName() throws Exception {
+        Category category1 = new Category();
+        category1.setName("Argentinian Restaurant");
+        category1.setIconUrl("https://ss3.4sqi.net/img/categories_v2/food/default_88.png");
+        category1.setFoursquareId("4bf58dd8d48988d107941735");
+
+        Category category2 = new Category();
+        category2.setName("Mexican Restaurant");
+        category2.setIconUrl("https://ss3.4sqi.net/img/categories_v2/food/default_88.png");
+        category2.setFoursquareId("4bf58dd8d48988d1c1941735");
+
+        Category[] expectedResponse = {category1, category2};
+
+        mockWebServer.enqueue(new MockResponse()
+                .setStatus("HTTP/1.1 200 OK")
+                .setBody(getJsonFrom("responses/categories.json")));
+        Category[] actualResponse = poisApi.awaitCategoriesLikeName("rest");
+
+        assertThat(actualResponse).isNotNull().isNotEmpty().hasSize(expectedResponse.length).isEqualTo(expectedResponse);
+    }
+
+    @Test(expected = ApiException.class)
+    public void testAwaitCategoriesLikeNameError() throws Exception {
+        mockWebServer.enqueue(new MockResponse()
+                .setStatus("HTTP/1.1 500 Internal Server Error")
+                .setBody(getJsonFrom("responses/error.json")));
+        poisApi.awaitCategoriesLikeName("rest");
+    }
+
     private String getJsonFrom(String file) throws Exception {
         InputStream in = getClass().getClassLoader().getResourceAsStream(file);
         BufferedReader br = new BufferedReader(new InputStreamReader(in));

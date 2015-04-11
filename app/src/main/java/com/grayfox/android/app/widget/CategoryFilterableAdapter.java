@@ -12,7 +12,7 @@ import android.widget.TextView;
 
 import com.grayfox.android.app.R;
 import com.grayfox.android.app.util.ColorTransformation;
-import com.grayfox.android.client.CategoriesApi;
+import com.grayfox.android.client.PoisApi;
 import com.grayfox.android.client.model.Category;
 
 import com.squareup.picasso.Picasso;
@@ -70,7 +70,7 @@ public class CategoryFilterableAdapter extends BaseAdapter implements Filterable
 
     @Override
     public Filter getFilter() {
-        return new CategoryApiFilter();
+        return new CategoryFilter();
     }
 
     private static class ViewHolder {
@@ -84,19 +84,19 @@ public class CategoryFilterableAdapter extends BaseAdapter implements Filterable
         }
     }
 
-    private class CategoryApiFilter extends Filter {
+    private class CategoryFilter extends Filter {
 
-        private CategoriesApi categoriesApi;
+        private PoisApi poisApi;
 
-        private CategoryApiFilter() {
-            categoriesApi = new CategoriesApi(context);
+        private CategoryFilter() {
+            poisApi = new PoisApi(context);
         }
 
         @Override
         protected FilterResults performFiltering(CharSequence constraint) {
             FilterResults filterResults = new FilterResults();
             if (constraint != null && !constraint.toString().trim().isEmpty()) {
-                Category[] result = categoriesApi.awaitCategoriesLikeName(constraint.toString());
+                Category[] result = poisApi.awaitCategoriesLikeName(constraint.toString());
                 filterResults.values = result;
                 filterResults.count = result.length;
             }

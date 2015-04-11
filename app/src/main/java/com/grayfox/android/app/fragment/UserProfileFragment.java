@@ -27,7 +27,7 @@ import com.grayfox.android.app.widget.FriendAdapter;
 import com.grayfox.android.app.widget.LikeDeletableAdapter;
 import com.grayfox.android.client.UsersApi;
 import com.grayfox.android.client.model.Category;
-import com.grayfox.android.client.model.UpdateResult;
+import com.grayfox.android.client.model.UpdateResponse;
 import com.grayfox.android.client.model.User;
 
 import com.squareup.picasso.Picasso;
@@ -345,7 +345,7 @@ public class UserProfileFragment extends RoboFragment {
             return likes;
         }
 
-        private static class AddLikeTask extends NetworkAsyncTask<UpdateResult> {
+        private static class AddLikeTask extends NetworkAsyncTask<UpdateResponse> {
 
             @Inject private AccessTokenDao accessTokenDao;
             @Inject private UsersApi usersApi;
@@ -362,12 +362,12 @@ public class UserProfileFragment extends RoboFragment {
             }
 
             @Override
-            public UpdateResult call() throws Exception {
+            public UpdateResponse call() throws Exception {
                 return usersApi.awaitAddLike(accessTokenDao.fetchAccessToken(), like);
             }
         }
 
-        private static class RemoveLikeTask extends NetworkAsyncTask<UpdateResult> {
+        private static class RemoveLikeTask extends NetworkAsyncTask<UpdateResponse> {
 
             @Inject private AccessTokenDao accessTokenDao;
             @Inject private UsersApi usersApi;
@@ -384,7 +384,7 @@ public class UserProfileFragment extends RoboFragment {
             }
 
             @Override
-            public UpdateResult call() throws Exception {
+            public UpdateResponse call() throws Exception {
                 return usersApi.awaitRemoveLike(accessTokenDao.fetchAccessToken(), like);
             }
         }

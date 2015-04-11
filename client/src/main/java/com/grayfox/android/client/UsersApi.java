@@ -5,7 +5,7 @@ import android.net.Uri;
 
 import com.grayfox.android.client.model.AccessToken;
 import com.grayfox.android.client.model.Category;
-import com.grayfox.android.client.model.UpdateResult;
+import com.grayfox.android.client.model.UpdateResponse;
 import com.grayfox.android.client.model.User;
 
 public class UsersApi extends BaseApi {
@@ -67,27 +67,27 @@ public class UsersApi extends BaseApi {
         return get(url, Category[].class);
     }
 
-    public UpdateResult awaitAddLike(String accessToken, Category like) {
+    public UpdateResponse awaitAddLike(String accessToken, Category like) {
         String url = Uri.parse(getString(R.string.gf_api_base_url)).buildUpon()
                 .appendEncodedPath(getString(R.string.gf_api_users_path))
                 .appendEncodedPath(getString(R.string.gf_api_users_self_path))
                 .appendEncodedPath(getString(R.string.gf_api_users_update_path))
-                .appendEncodedPath(getString(R.string.gf_api_users_addlike_path))
+                .appendEncodedPath(getString(R.string.gf_api_users_add_like_path))
                 .appendQueryParameter("access-token", accessToken)
                 .build().toString();
 
-        return put(url, like, UpdateResult.class);
+        return put(url, like, UpdateResponse.class);
     }
 
-    public UpdateResult awaitRemoveLike(String accessToken, Category like) {
+    public UpdateResponse awaitRemoveLike(String accessToken, Category like) {
         String url = Uri.parse(getString(R.string.gf_api_base_url)).buildUpon()
                 .appendEncodedPath(getString(R.string.gf_api_users_path))
                 .appendEncodedPath(getString(R.string.gf_api_users_self_path))
                 .appendEncodedPath(getString(R.string.gf_api_users_update_path))
-                .appendEncodedPath(getString(R.string.gf_api_users_removelike_path))
+                .appendEncodedPath(getString(R.string.gf_api_users_remove_like_path))
                 .appendQueryParameter("access-token", accessToken)
                 .build().toString();
 
-        return delete(url, like, UpdateResult.class);
+        return delete(url, like, UpdateResponse.class);
     }
 }

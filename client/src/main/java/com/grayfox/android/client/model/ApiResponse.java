@@ -102,7 +102,7 @@ public class ApiResponse<T> {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append("Result [error =").append(error).append(", response=").append(response).append("]");
+        builder.append("ApiResponse [error =").append(error).append(", response=").append(response).append("]");
         return builder.toString();
     }
 }

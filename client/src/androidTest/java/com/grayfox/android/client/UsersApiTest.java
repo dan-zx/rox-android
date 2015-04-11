@@ -6,7 +6,7 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
 
 import com.grayfox.android.client.model.Category;
-import com.grayfox.android.client.model.UpdateResult;
+import com.grayfox.android.client.model.UpdateResponse;
 import com.grayfox.android.client.model.User;
 
 import com.squareup.okhttp.mockwebserver.MockResponse;
@@ -244,9 +244,9 @@ public class UsersApiTest {
         return sb.toString();
     }
 
-    private UpdateResult updateOk() {
-        UpdateResult updateResult = new UpdateResult();
-        updateResult.setSuccess(true);
-        return updateResult;
+    private UpdateResponse updateOk() {
+        UpdateResponse updateResponse = new UpdateResponse();
+        updateResponse.setSuccess(true);
+        return updateResponse;
     }
 }

@@ -44,7 +44,6 @@ import com.grayfox.android.app.util.PicassoMarker;
 import com.grayfox.android.app.widget.CategoryCursorAdapter;
 import com.grayfox.android.app.widget.PoiAdapter;
 import com.grayfox.android.app.widget.RecommendationAdapter;
-import com.grayfox.android.client.CategoriesApi;
 import com.grayfox.android.client.PoisApi;
 import com.grayfox.android.client.RecommendationsApi;
 import com.grayfox.android.client.model.Category;
@@ -534,7 +533,7 @@ public class ExploreFragment extends RoboFragment implements OnMapReadyCallback,
 
     private class CategoryFilteringTask extends NetworkAsyncTask<Category[]> {
 
-        @Inject private CategoriesApi categoriesApi;
+        @Inject private PoisApi poisApi;
 
         private String query;
 
@@ -549,7 +548,7 @@ public class ExploreFragment extends RoboFragment implements OnMapReadyCallback,
 
         @Override
         public Category[] call() throws Exception {
-            return categoriesApi.awaitCategoriesLikeName(query);
+            return poisApi.awaitCategoriesLikeName(query);
         }
 
         @Override

@@ -9,7 +9,6 @@ import com.google.maps.GeoApiContext;
 
 import com.grayfox.android.app.R;
 import com.grayfox.android.app.dao.source.sqlite.GrayFoxDatabaseHelper;
-import com.grayfox.android.client.CategoriesApi;
 import com.grayfox.android.client.PoisApi;
 import com.grayfox.android.client.RecommendationsApi;
 import com.grayfox.android.client.UsersApi;
@@ -28,8 +27,6 @@ public class ConfigModule extends AbstractModule {
                 .toInstance(new UsersApi(context));
         bind(RecommendationsApi.class)
                 .toInstance(new RecommendationsApi(context));
-        bind(CategoriesApi.class)
-                .toInstance(new CategoriesApi(context));
         bind(PoisApi.class)
                 .toInstance(new PoisApi(context));
         bind(SQLiteOpenHelper.class)

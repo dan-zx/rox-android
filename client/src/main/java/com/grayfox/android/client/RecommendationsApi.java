@@ -4,7 +4,6 @@ import android.content.Context;
 import android.net.Uri;
 
 import com.grayfox.android.client.model.Location;
-import com.grayfox.android.client.model.Poi;
 import com.grayfox.android.client.model.Recommendation;
 
 public class RecommendationsApi extends BaseApi {
@@ -47,15 +46,5 @@ public class RecommendationsApi extends BaseApi {
                 .build().toString();
 
         return get(url, Recommendation[].class);
-    }
-
-    public Poi[] awaitNextPois(String accessToken, Poi seed) {
-        String url = Uri.parse(getString(R.string.gf_api_base_url)).buildUpon()
-                .appendEncodedPath(getString(R.string.gf_api_recommendations_path))
-                .appendEncodedPath(getString(R.string.gf_api_recommendations_next_pois_path))
-                .appendQueryParameter("access-token", accessToken)
-                .build().toString();
-
-        return post(url, seed, Poi[].class);
     }
 }

@@ -37,13 +37,12 @@ import com.google.maps.model.DirectionsRoute;
 import com.google.maps.model.TravelMode;
 
 import com.grayfox.android.app.R;
-import com.grayfox.android.app.dao.AccessTokenDao;
 import com.grayfox.android.app.task.NetworkAsyncTask;
 import com.grayfox.android.app.util.Pair;
 import com.grayfox.android.app.util.PicassoMarker;
 import com.grayfox.android.app.widget.DragSortRecycler;
 import com.grayfox.android.app.widget.PoiRouteAdapter;
-import com.grayfox.android.client.RecommendationsApi;
+import com.grayfox.android.client.PoisApi;
 import com.grayfox.android.client.model.Poi;
 
 import com.squareup.picasso.Picasso;
@@ -392,8 +391,7 @@ public class RecommendedRouteFragment extends RoboFragment implements OnMapReady
     private class RouteBuilderTask extends NetworkAsyncTask<Pair<Poi[], DirectionsRoute>> {
 
         @Inject private GeoApiContext geoApiContext;
-        @Inject private AccessTokenDao accessTokenDao;
-        @Inject private RecommendationsApi recommendationsApi;
+        @Inject private PoisApi poisApi;
 
         private Poi seed;
         private Location origin;
@@ -426,7 +424,7 @@ public class RecommendedRouteFragment extends RoboFragment implements OnMapReady
 
         @Override
         public Pair<Poi[], DirectionsRoute> call() throws Exception {
-            Poi[] nextPois = recommendationsApi.awaitNextPois(accessTokenDao.fetchAccessToken(), seed);
+            Poi[] nextPois = poisApi.awaitNextPois(seed);
             List<Poi> pois = new ArrayList<>();
             pois.add(seed);
             pois.addAll(Arrays.asList(nextPois));
