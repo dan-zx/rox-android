@@ -39,6 +39,7 @@ import com.google.maps.model.TravelMode;
 import com.grayfox.android.app.R;
 import com.grayfox.android.app.dao.AccessTokenDao;
 import com.grayfox.android.app.task.NetworkAsyncTask;
+import com.grayfox.android.app.util.Pair;
 import com.grayfox.android.app.util.PicassoMarker;
 import com.grayfox.android.app.widget.DragSortRecycler;
 import com.grayfox.android.app.widget.PoiRouteAdapter;
@@ -388,7 +389,7 @@ public class RecommendedRouteFragment extends RoboFragment implements OnMapReady
         }
     }
 
-    private class RouteBuilderTask extends NetworkAsyncTask<Object[]> {
+    private class RouteBuilderTask extends NetworkAsyncTask<Pair<Poi[], DirectionsRoute>> {
 
         @Inject private GeoApiContext geoApiContext;
         @Inject private AccessTokenDao accessTokenDao;
@@ -424,7 +425,7 @@ public class RecommendedRouteFragment extends RoboFragment implements OnMapReady
         }
 
         @Override
-        public Object[] call() throws Exception {
+        public Pair<Poi[], DirectionsRoute> call() throws Exception {
             Poi[] nextPois = recommendationsApi.awaitNextPois(accessTokenDao.fetchAccessToken(), seed);
             List<Poi> pois = new ArrayList<>();
             pois.add(seed);
@@ -437,14 +438,14 @@ public class RecommendedRouteFragment extends RoboFragment implements OnMapReady
                     .mode(travelMode)
                     .waypoints(waypoints)
                     .await();
-            return new Object[] {nextPois, routes == null || routes.length == 0 ? null : routes[0]};
+            return new Pair(nextPois, routes == null || routes.length == 0 ? null : routes[0]);
         }
 
         @Override
-        protected void onSuccess(Object[] objects) throws Exception {
+        protected void onSuccess(Pair<Poi[], DirectionsRoute> objects) throws Exception {
             super.onSuccess(objects);
-            onAcquiredNextPois((Poi[]) objects[0]);
-            onAcquiredRoute((DirectionsRoute) objects[1]);
+            onAcquiredNextPois(objects._0);
+            onAcquiredRoute(objects._1);
         }
 
         private void onAcquiredNextPois(Poi[] nextPois) {
