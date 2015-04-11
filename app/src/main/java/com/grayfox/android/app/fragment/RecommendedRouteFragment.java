@@ -176,13 +176,15 @@ public class RecommendedRouteFragment extends RoboFragment implements OnMapReady
                 super.onScrolled(recyclerView, dx, dy);
                 dragSortRecycler.getScrollListener().onScrolled(recyclerView, dx, dy);
                 if (Math.abs(dy) > SCROLL_OFFSET) {
-                    if (dy > 0) hideDirectionsMenu();
-                    else showDirectionsMenu();
+                    if (dy > 0) directionsMenu.hideMenuButton(true);
+                    else directionsMenu.showMenuButton(true);
                 }
             }
         });
         verticalShowAnimation = AnimationUtils.loadAnimation(getActivity(), R.anim.vertical_show);
         verticalHideAnimation = AnimationUtils.loadAnimation(getActivity(), R.anim.vertical_hide);
+        directionsMenu.setMenuButtonShowAnimation(verticalShowAnimation);
+        directionsMenu.setMenuButtonHideAnimation(verticalHideAnimation);
         fragment.getMapAsync(this);
     }
 
@@ -371,20 +373,6 @@ public class RecommendedRouteFragment extends RoboFragment implements OnMapReady
             routeContainer.startAnimation(verticalShowAnimation);
             routeContainer.setVisibility(View.VISIBLE);
             googleMap.setPadding(0, 0, 0, routeContainer.getHeight());
-        }
-    }
-
-    private void showDirectionsMenu() {
-        if (directionsMenu.getVisibility() == View.GONE) {
-            directionsMenu.startAnimation(verticalShowAnimation);
-            directionsMenu.setVisibility(View.VISIBLE);
-        }
-    }
-
-    private void hideDirectionsMenu() {
-        if (directionsMenu.getVisibility() == View.VISIBLE) {
-            directionsMenu.startAnimation(verticalHideAnimation);
-            directionsMenu.setVisibility(View.GONE);
         }
     }
 
