@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<class-diagram version="1.1.6" icons="true" automaticImage="PNG" always-add-relationships="true" generalizations="true" 
+  realizations="true" associations="true" dependencies="true" nesting-relationships="true">  
+  <package id="1" language="java" name="com.grayfox.android.app.activity" project="gray-fox-android" 
+    file="/gray-fox-android/src/com/grayfox/android/app/activity" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="189" y="38"/>    
+    <display autosize="true" stereotype="true" accessors="true"/>  
+  </package>  
+  <package id="2" language="java" name="com.grayfox.android.app.dao" project="gray-fox-android" 
+    file="/gray-fox-android/src/com/grayfox/android/app/dao" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="-47" y="149"/>    
+    <display autosize="true" stereotype="true" accessors="true"/>  
+  </package>  
+  <package id="3" language="java" name="com.grayfox.android.client" project="gray-fox-android" 
+    file="/gray-fox-android/src/com/grayfox/android/client" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="188" y="340"/>    
+    <display autosize="true" stereotype="true" accessors="true"/>  
+  </package>  
+  <package id="4" language="java" name="com.grayfox.android.app.fragment" project="gray-fox-android" 
+    file="/gray-fox-android/src/com/grayfox/android/app/fragment" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="48" width="221" x="81" y="125"/>    
+    <display autosize="true" stereotype="true" accessors="true"/>  
+  </package>  
+  <package id="5" language="java" name="com.grayfox.android.app.widget" project="gray-fox-android" 
+    file="/gray-fox-android/src/com/grayfox/android/app/widget" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="192" y="246"/>    
+    <display autosize="true" stereotype="true" accessors="true"/>  
+  </package>  
+  <dependency id="6">    
+    <bendpoint x="359" y="183"/>    
+    <end type="SOURCE" refId="1"/>    
+    <end type="TARGET" refId="5"/>  
+  </dependency>  
+  <dependency id="7">    
+    <bendpoint x="50" y="125"/>    
+    <end type="SOURCE" refId="1"/>    
+    <end type="TARGET" refId="2"/>  
+  </dependency>  
+  <dependency id="8">    
+    <end type="SOURCE" refId="4"/>    
+    <end type="TARGET" refId="5"/>  
+  </dependency>  
+  <dependency id="9">    
+    <end type="SOURCE" refId="1"/>    
+    <end type="TARGET" refId="4"/>  
+  </dependency>  
+  <dependency id="10">    
+    <end type="SOURCE" refId="5"/>    
+    <end type="TARGET" refId="3"/>  
+  </dependency>  
+  <dependency id="11">    
+    <bendpoint x="28" y="246"/>    
+    <end type="SOURCE" refId="4"/>    
+    <end type="TARGET" refId="3"/>  
+  </dependency>  
+  <dependency id="12">    
+    <end type="SOURCE" refId="4"/>    
+    <end type="TARGET" refId="2"/>  
+  </dependency>  
+  <dependency id="13">    
+    <bendpoint x="426" y="210"/>    
+    <end type="SOURCE" refId="1"/>    
+    <end type="TARGET" refId="3"/>  
+  </dependency>  
+  <classifier-display autosize="true" stereotype="true" package="true" initial-value="true" signature="true" 
+    accessors="true" visibility="true">    
+    <attributes public="true" package="true" protected="true" private="true" static="true"/>    
+    <operations public="true" package="true" protected="true" private="true" static="true"/>  
+  </classifier-display>  
+  <association-display labels="true" multiplicity="true"/>
+</class-diagram>
