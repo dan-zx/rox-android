@@ -121,35 +121,6 @@ public class UsersApiTest {
     }
 
     @Test
-    public void testGetSelfUserLikes() throws Exception {
-        Category like1 = new Category();
-        like1.setName("Argentinian Restaurant");
-        like1.setIconUrl("https://ss3.4sqi.net/img/categories_v2/food/default_88.png");
-        like1.setFoursquareId("4bf58dd8d48988d107941735");
-
-        Category like2 = new Category();
-        like2.setName("Mexican Restaurant");
-        like2.setIconUrl("https://ss3.4sqi.net/img/categories_v2/food/default_88.png");
-        like2.setFoursquareId("4bf58dd8d48988d1c1941735");
-
-        Category[] likes = {like1, like2};
-
-        mockWebServer.enqueue(new MockResponse()
-                .setStatus("HTTP/1.1 200 OK")
-                .setBody(getJsonFrom("responses/categories.json")));
-
-        assertThat(usersApi.awaitSelfUserLikes("fakeAccessToken")).isNotNull().isNotEmpty().hasSize(likes.length).isEqualTo(likes);
-    }
-
-    @Test(expected = ApiException.class)
-    public void testGetSelfUserLikesError() throws Exception {
-        mockWebServer.enqueue(new MockResponse()
-                .setStatus("HTTP/1.1 500 Internal Server Error")
-                .setBody(getJsonFrom("responses/error.json")));
-        usersApi.awaitSelfUserLikes("fakeAccessToken");
-    }
-
-    @Test
     public void testGetUserLikes() throws Exception {
         Category like1 = new Category();
         like1.setName("Argentinian Restaurant");
@@ -180,58 +151,38 @@ public class UsersApiTest {
 
     @Test
     public void testAddLike() throws Exception {
-        Category like = new Category();
-        like.setName("Fake Category");
-        like.setIconUrl("https://ss3.4sqi.net/img/categories_v2/fake/default_88.png");
-        like.setFoursquareId("234jsafknmk34k");
-
         mockWebServer.enqueue(new MockResponse()
                 .setStatus("HTTP/1.1 200 OK")
                 .setBody(getJsonFrom("responses/update_ok.json")));
 
-        assertThat(usersApi.awaitAddLike("fakeAccessToken", like)).isNotNull().isEqualTo(updateOk());
+        assertThat(usersApi.awaitAddLike("fakeAccessToken", "fakeFoursquareId")).isNotNull().isEqualTo(updateOk());
     }
 
     @Test(expected = ApiException.class)
     public void testAddLikeError() throws Exception {
-        Category like = new Category();
-        like.setName("Fake Category");
-        like.setIconUrl("https://ss3.4sqi.net/img/categories_v2/fake/default_88.png");
-        like.setFoursquareId("234jsafknmk34k");
-
         mockWebServer.enqueue(new MockResponse()
                 .setStatus("HTTP/1.1 500 Internal Server Error")
                 .setBody(getJsonFrom("responses/error.json")));
 
-        usersApi.awaitAddLike("fakeAccessToken", like);
+        usersApi.awaitAddLike("fakeAccessToken", "fakeFoursquareId");
     }
 
     @Test
     public void testRemoveLike() throws Exception {
-        Category like = new Category();
-        like.setName("Fake Category");
-        like.setIconUrl("https://ss3.4sqi.net/img/categories_v2/fake/default_88.png");
-        like.setFoursquareId("234jsafknmk34k");
-
         mockWebServer.enqueue(new MockResponse()
                 .setStatus("HTTP/1.1 200 OK")
                 .setBody(getJsonFrom("responses/update_ok.json")));
 
-        assertThat(usersApi.awaitRemoveLike("fakeAccessToken", like)).isNotNull().isEqualTo(updateOk());
+        assertThat(usersApi.awaitRemoveLike("fakeAccessToken", "fakeFoursquareId")).isNotNull().isEqualTo(updateOk());
     }
 
     @Test(expected = ApiException.class)
     public void testRemoveLikeError() throws Exception {
-        Category like = new Category();
-        like.setName("Fake Category");
-        like.setIconUrl("https://ss3.4sqi.net/img/categories_v2/fake/default_88.png");
-        like.setFoursquareId("234jsafknmk34k");
-
         mockWebServer.enqueue(new MockResponse()
                 .setStatus("HTTP/1.1 500 Internal Server Error")
                 .setBody(getJsonFrom("responses/error.json")));
 
-        usersApi.awaitRemoveLike("fakeAccessToken", like);
+        usersApi.awaitRemoveLike("fakeAccessToken", "fakeFoursquareId");
     }
 
     private String getJsonFrom(String file) throws Exception {

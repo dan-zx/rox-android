@@ -18,7 +18,7 @@ public class UsersApi extends BaseApi {
         String url = Uri.parse(getString(R.string.gf_api_base_url)).buildUpon()
                 .appendEncodedPath(getString(R.string.gf_api_users_path))
                 .appendEncodedPath(getString(R.string.gf_api_users_register_with_foursquare_path))
-                .appendQueryParameter("authorization-code", foursquareAuthorizationCode)
+                .appendQueryParameter("authorization_code", foursquareAuthorizationCode)
                 .build().toString();
 
         return get(url, AccessToken.class).getToken();
@@ -28,7 +28,7 @@ public class UsersApi extends BaseApi {
         String url = Uri.parse(getString(R.string.gf_api_base_url)).buildUpon()
                 .appendEncodedPath(getString(R.string.gf_api_users_path))
                 .appendEncodedPath(getString(R.string.gf_api_users_self_path))
-                .appendQueryParameter("access-token", accessToken)
+                .appendQueryParameter("access_token", accessToken)
                 .build().toString();
 
         return get(url, User.class);
@@ -39,55 +39,46 @@ public class UsersApi extends BaseApi {
                 .appendEncodedPath(getString(R.string.gf_api_users_path))
                 .appendEncodedPath(getString(R.string.gf_api_users_self_path))
                 .appendEncodedPath(getString(R.string.gf_api_users_friends_path))
-                .appendQueryParameter("access-token", accessToken)
+                .appendQueryParameter("access_token", accessToken)
                 .build().toString();
 
         return get(url, User[].class);
     }
 
-    public Category[] awaitSelfUserLikes(String accessToken) {
+    public Category[] awaitUserLikes(String accessToken, String userFoursquareId) {
         String url = Uri.parse(getString(R.string.gf_api_base_url)).buildUpon()
                 .appendEncodedPath(getString(R.string.gf_api_users_path))
-                .appendEncodedPath(getString(R.string.gf_api_users_self_path))
+                .appendPath(userFoursquareId)
                 .appendEncodedPath(getString(R.string.gf_api_users_likes_path))
-                .appendQueryParameter("access-token", accessToken)
+                .appendQueryParameter("access_token", accessToken)
                 .build().toString();
 
         return get(url, Category[].class);
     }
 
-    public Category[] awaitUserLikes(String accessToken, String foursquareId) {
-        String url = Uri.parse(getString(R.string.gf_api_base_url)).buildUpon()
-                .appendEncodedPath(getString(R.string.gf_api_users_path))
-                .appendPath(foursquareId)
-                .appendEncodedPath(getString(R.string.gf_api_users_likes_path))
-                .appendQueryParameter("access-token", accessToken)
-                .build().toString();
-
-        return get(url, Category[].class);
-    }
-
-    public UpdateResponse awaitAddLike(String accessToken, Category like) {
+    public UpdateResponse awaitAddLike(String accessToken, String categoryFoursquareId) {
         String url = Uri.parse(getString(R.string.gf_api_base_url)).buildUpon()
                 .appendEncodedPath(getString(R.string.gf_api_users_path))
                 .appendEncodedPath(getString(R.string.gf_api_users_self_path))
                 .appendEncodedPath(getString(R.string.gf_api_users_update_path))
                 .appendEncodedPath(getString(R.string.gf_api_users_add_like_path))
-                .appendQueryParameter("access-token", accessToken)
+                .appendQueryParameter("access_token", accessToken)
+                .appendQueryParameter("category_foursquare_id", categoryFoursquareId)
                 .build().toString();
 
-        return put(url, like, UpdateResponse.class);
+        return put(url, null, UpdateResponse.class);
     }
 
-    public UpdateResponse awaitRemoveLike(String accessToken, Category like) {
+    public UpdateResponse awaitRemoveLike(String accessToken, String categoryFoursquareId) {
         String url = Uri.parse(getString(R.string.gf_api_base_url)).buildUpon()
                 .appendEncodedPath(getString(R.string.gf_api_users_path))
                 .appendEncodedPath(getString(R.string.gf_api_users_self_path))
                 .appendEncodedPath(getString(R.string.gf_api_users_update_path))
                 .appendEncodedPath(getString(R.string.gf_api_users_remove_like_path))
-                .appendQueryParameter("access-token", accessToken)
+                .appendQueryParameter("access_token", accessToken)
+                .appendQueryParameter("category_foursquare_id", categoryFoursquareId)
                 .build().toString();
 
-        return delete(url, like, UpdateResponse.class);
+        return delete(url, null, UpdateResponse.class);
     }
 }

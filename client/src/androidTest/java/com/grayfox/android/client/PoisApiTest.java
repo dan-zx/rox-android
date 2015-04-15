@@ -104,20 +104,7 @@ public class PoisApiTest {
     }
 
     @Test
-    public void testAwaitNextPois() throws Exception {
-        Poi seed = new Poi();
-        seed.setName("Fisher's Puebla");
-        seed.setLocation(new Location());
-        seed.getLocation().setLatitude(19.04873185577618);
-        seed.getLocation().setLongitude(-98.21319222450256);
-        seed.setFoursquareId("4ba69285f964a520615f39e3");
-        seed.setFoursquareRating(8.3);
-        seed.setCategories(new Category[1]);
-        seed.getCategories()[0] = new Category();
-        seed.getCategories()[0].setName("Seafood Restaurant");
-        seed.getCategories()[0].setIconUrl("https://ss3.4sqi.net/img/categories_v2/food/default_88.png");
-        seed.getCategories()[0].setFoursquareId("4bf58dd8d48988d1ce941735");
-
+    public void testAwaitRoute() throws Exception {
         Category category = new Category();
         category.setName("Coffee Shop");
         category.setIconUrl("https://ss3.4sqi.net/img/categories_v2/food/default_88.png");
@@ -146,28 +133,15 @@ public class PoisApiTest {
         mockWebServer.enqueue(new MockResponse()
                 .setStatus("HTTP/1.1 200 OK")
                 .setBody(getJsonFrom("responses/pois.json")));
-        assertThat(poisApi.awaitNextPois(seed)).isNotNull().isNotEmpty().hasSize(expected.length).isEqualTo(expected);
+        assertThat(poisApi.awaitRoute("fakeFoursquareId")).isNotNull().isNotEmpty().hasSize(expected.length).isEqualTo(expected);
     }
 
     @Test(expected = ApiException.class)
-    public void testAwaitNextPoisError() throws Exception {
-        Poi seed = new Poi();
-        seed.setName("Fisher's Puebla");
-        seed.setLocation(new Location());
-        seed.getLocation().setLatitude(19.04873185577618);
-        seed.getLocation().setLongitude(-98.21319222450256);
-        seed.setFoursquareId("4ba69285f964a520615f39e3");
-        seed.setFoursquareRating(8.3);
-        seed.setCategories(new Category[1]);
-        seed.getCategories()[0] = new Category();
-        seed.getCategories()[0].setName("Seafood Restaurant");
-        seed.getCategories()[0].setIconUrl("https://ss3.4sqi.net/img/categories_v2/food/default_88.png");
-        seed.getCategories()[0].setFoursquareId("4bf58dd8d48988d1ce941735");
-
+    public void testAwaitRouteError() throws Exception {
         mockWebServer.enqueue(new MockResponse()
                 .setStatus("HTTP/1.1 500 Internal Server Error")
                 .setBody(getJsonFrom("responses/error.json")));
-        poisApi.awaitNextPois(seed);
+        poisApi.awaitRoute("fakeFoursquareId");
     }
 
     @Test

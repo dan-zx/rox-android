@@ -153,7 +153,7 @@ public class UserProfileFragment extends RoboFragment {
         @Override
         public User call() throws Exception {
             user.setFriends(usersApi.awaitSelfUserFriends(accessTokenDao.fetchAccessToken()));
-            user.setLikes(usersApi.awaitSelfUserLikes(accessTokenDao.fetchAccessToken()));
+            user.setLikes(usersApi.awaitUserLikes(accessTokenDao.fetchAccessToken(), "self"));
             return user;
         }
 
@@ -363,7 +363,7 @@ public class UserProfileFragment extends RoboFragment {
 
             @Override
             public UpdateResponse call() throws Exception {
-                return usersApi.awaitAddLike(accessTokenDao.fetchAccessToken(), like);
+                return usersApi.awaitAddLike(accessTokenDao.fetchAccessToken(), like.getFoursquareId());
             }
         }
 
@@ -385,7 +385,7 @@ public class UserProfileFragment extends RoboFragment {
 
             @Override
             public UpdateResponse call() throws Exception {
-                return usersApi.awaitRemoveLike(accessTokenDao.fetchAccessToken(), like);
+                return usersApi.awaitRemoveLike(accessTokenDao.fetchAccessToken(), like.getFoursquareId());
             }
         }
     }

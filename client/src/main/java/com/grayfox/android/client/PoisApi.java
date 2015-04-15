@@ -20,19 +20,20 @@ public class PoisApi extends BaseApi {
                 .appendEncodedPath(getString(R.string.gf_api_pois_search_path))
                 .appendQueryParameter("location", location != null ? location.stringValues() : null)
                 .appendQueryParameter("radius", radius != null ? radius.toString() : null)
-                .appendQueryParameter("category-foursquare-id", categoryFoursquareId)
+                .appendQueryParameter("category_foursquare_id", categoryFoursquareId)
                 .build().toString();
 
         return get(url, Poi[].class);
     }
 
-    public Poi[] awaitNextPois(Poi seed) {
+    public Poi[] awaitRoute(String poiFoursquareId) {
         String url = Uri.parse(getString(R.string.gf_api_base_url)).buildUpon()
                 .appendEncodedPath(getString(R.string.gf_api_pois_path))
-                .appendEncodedPath(getString(R.string.gf_api_pois_next_path))
+                .appendEncodedPath(getString(R.string.gf_api_pois_route_path))
+                .appendQueryParameter("poi_foursquare_id", poiFoursquareId)
                 .build().toString();
 
-        return post(url, seed, Poi[].class);
+        return get(url, Poi[].class);
     }
 
     public Category[] awaitCategoriesLikeName(String partialName) {
@@ -49,7 +50,7 @@ public class PoisApi extends BaseApi {
         String url = Uri.parse(getString(R.string.gf_api_base_url)).buildUpon()
                 .appendEncodedPath(getString(R.string.gf_api_pois_path))
                 .appendEncodedPath(getString(R.string.gf_api_pois_recommend_path))
-                .appendQueryParameter("access-token", accessToken)
+                .appendQueryParameter("access_token", accessToken)
                 .appendQueryParameter("location", location != null ? location.stringValues() : null)
                 .appendQueryParameter("radius", radius != null ? radius.toString() : null)
                 .build().toString();

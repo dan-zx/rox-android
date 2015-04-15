@@ -41,32 +41,29 @@ abstract class BaseApi {
 
     protected <T> T get(String url, Class<T> responseClass) {
         Log.d(TAG, url);
-        Request request = buildRequestForJson(url).get().build();
-        return callForResult(request, responseClass);
-    }
-
-    protected <T> T post(String url, Object payload, Class<T> responseClass) {
-        Log.d(TAG, url);
-        Request request = buildRequestForJsonWithJsonContent(url)
-                .post(RequestBody.create(JSON_MEDIA_TYPE, new Gson().toJson(payload)))
-                .build();
-        return callForResult(request, responseClass);
+        return callForResult(buildRequestForJson(url).get().build(), responseClass);
     }
 
     protected <T> T put(String url, Object payload, Class<T> responseClass) {
         Log.d(TAG, url);
-        Request request = buildRequestForJsonWithJsonContent(url)
-                .put(RequestBody.create(JSON_MEDIA_TYPE, new Gson().toJson(payload)))
-                .build();
-        return callForResult(request, responseClass);
+        Request.Builder requestBuilder = buildRequestForJson(url);
+        if (payload != null) {
+            requestBuilder.header(Header.CONTENT_TYPE.getValue(), ContentType.APPLICATION_JSON.getMimeType())
+                    .put(RequestBody.create(JSON_MEDIA_TYPE, new Gson().toJson(payload)))
+                    .build();
+        } else requestBuilder.put(null);
+        return callForResult(requestBuilder.build(), responseClass);
     }
 
     protected <T> T delete(String url, Object payload, Class<T> responseClass) {
         Log.d(TAG, url);
-        Request request = buildRequestForJsonWithJsonContent(url)
-                .method("DELETE", RequestBody.create(JSON_MEDIA_TYPE, new Gson().toJson(payload)))
-                .build();
-        return callForResult(request, responseClass);
+        Request.Builder requestBuilder = buildRequestForJson(url);
+        if (payload != null) {
+            requestBuilder.header(Header.CONTENT_TYPE.getValue(), ContentType.APPLICATION_JSON.getMimeType())
+                    .method("DELETE", RequestBody.create(JSON_MEDIA_TYPE, new Gson().toJson(payload)))
+                    .build();
+        } else requestBuilder.delete();
+        return callForResult(requestBuilder.build(), responseClass);
     }
 
     private Request.Builder buildRequestForJson(String url) {
@@ -75,11 +72,6 @@ abstract class BaseApi {
                 .header(Header.ACCEPT.getValue(), ContentType.APPLICATION_JSON.getMimeType())
                 .header(Header.ACCEPT_LANGUAGE.getValue(), Locale.getDefault().getLanguage())
                 .header(Header.ACCEPT_CHARSET.getValue(), Charset.UTF_8.getValue());
-    }
-
-    private Request.Builder buildRequestForJsonWithJsonContent(String url) {
-        return buildRequestForJson(url)
-                .header(Header.CONTENT_TYPE.getValue(), ContentType.APPLICATION_JSON.getMimeType());
     }
 
     private <T> T callForResult(Request request, Class<T> responseClass) {

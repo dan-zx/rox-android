@@ -20,7 +20,7 @@
     <!-- POIs Api -->
     <string name="gf_api_pois_path" translatable="false">pois</string>
     <string name="gf_api_pois_search_path" translatable="false">search</string>
-    <string name="gf_api_pois_next_path" translatable="false">next</string>
+    <string name="gf_api_pois_route_path" translatable="false">route</string>
     <string name="gf_api_pois_recommend_path" translatable="false">recommend</string>
     <string name="gf_api_pois_categories_like_path" translatable="false">categories/like</string>
 </resources>

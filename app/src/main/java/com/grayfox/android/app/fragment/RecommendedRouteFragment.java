@@ -412,7 +412,7 @@ public class RecommendedRouteFragment extends RoboFragment implements OnMapReady
 
         @Override
         public Pair<Poi[], DirectionsRoute> call() throws Exception {
-            Poi[] nextPois = poisApi.awaitNextPois(seed);
+            Poi[] nextPois = poisApi.awaitRoute(seed.getFoursquareId());
             List<Poi> pois = new ArrayList<>();
             pois.add(seed);
             pois.addAll(Arrays.asList(nextPois));
