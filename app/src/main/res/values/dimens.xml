@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="recommendations_overlap">100dp</dimen>
+    <dimen name="recommendations_overlap">168dp</dimen>
     <dimen name="drawer_item_padding">8dp</dimen>
     <dimen name="drawer_item_vertical_padding">16dp</dimen>
     <dimen name="drawer_item_text">14sp</dimen>

@@ -4,6 +4,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -20,6 +21,7 @@ public class RecommendationAdapter extends RecyclerView.Adapter<RecommendationAd
     private final List<Recommendation> recommendations;
 
     private OnClickListener onClickListener;
+    private OnBuildRouteButtonClickListener onBuildRouteButtonClickListener;
 
     public RecommendationAdapter() {
         recommendations = new ArrayList<>();
@@ -37,6 +39,10 @@ public class RecommendationAdapter extends RecyclerView.Adapter<RecommendationAd
         this.onClickListener = onClickListener;
     }
 
+    public void setOnBuildRouteButtonClickListener(OnBuildRouteButtonClickListener onBuildRouteButtonClickListener) {
+        this.onBuildRouteButtonClickListener = onBuildRouteButtonClickListener;
+    }
+
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.recommendation_item, parent, false));
@@ -49,6 +55,12 @@ public class RecommendationAdapter extends RecyclerView.Adapter<RecommendationAd
             @Override
             public void onClick(View view) {
                 if (onClickListener != null) onClickListener.onClick(recommendation);
+            }
+        });
+        holder.buildRouteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (onBuildRouteButtonClickListener != null) onBuildRouteButtonClickListener.onClick(recommendation);
             }
         });
         switch (recommendation.getType()) {
@@ -67,6 +79,7 @@ public class RecommendationAdapter extends RecyclerView.Adapter<RecommendationAd
                 .placeholder(R.drawable.ic_generic_category)
                 .into(holder.categoryImageView);
         holder.poiNameTextView.setText(recommendation.getPoi().getName());
+        if (recommendation.getPoi().getFoursquareRating() != null) holder.poiRatingTextView.setText(String.valueOf(recommendation.getPoi().getFoursquareRating()));
         holder.reasonTextView.setText(recommendation.getReason());
     }
 
@@ -79,17 +92,25 @@ public class RecommendationAdapter extends RecyclerView.Adapter<RecommendationAd
         void onClick(Recommendation recommendation);
     }
 
+    public static interface OnBuildRouteButtonClickListener {
+        void onClick(Recommendation recommendation);
+    }
+
     protected static class ViewHolder extends RecyclerView.ViewHolder {
 
         private ImageView categoryImageView;
         private TextView poiNameTextView;
+        private TextView poiRatingTextView;
         private TextView reasonTextView;
+        private Button buildRouteButton;
 
         public ViewHolder(View itemView) {
             super(itemView);
             categoryImageView = (ImageView) itemView.findViewById(R.id.category_image);
             poiNameTextView = (TextView) itemView.findViewById(R.id.poi_name);
+            poiRatingTextView = (TextView) itemView.findViewById(R.id.poi_rating);
             reasonTextView = (TextView) itemView.findViewById(R.id.reason);
+            buildRouteButton = (Button) itemView.findViewById(R.id.build_route);
         }
     }
 }

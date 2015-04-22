@@ -1,8 +1,10 @@
 package com.grayfox.android.app.fragment;
 
+import android.content.Intent;
 import android.content.IntentSender;
 import android.location.Location;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentManager;
@@ -118,7 +120,9 @@ public class ExploreFragment extends RoboFragment implements OnMapReadyCallback,
         });
         searchView.setOnSuggestionListener(new SearchView.OnSuggestionListener() {
             @Override
-            public boolean onSuggestionSelect(int position) { return false; }
+            public boolean onSuggestionSelect(int position) {
+                return false;
+            }
 
             @Override
             public boolean onSuggestionClick(int position) {
@@ -148,14 +152,26 @@ public class ExploreFragment extends RoboFragment implements OnMapReadyCallback,
         poiAdapter.setOnClickListener(new PoiAdapter.OnClickListener() {
             @Override
             public void onClick(Poi poi) {
-                onSelectPoi(poi);
+                gotoFoursquare(poi);
+            }
+        });
+        poiAdapter.setOnBuildRouteButtonClickListener(new PoiAdapter.OnBuildRouteButtonClickListener() {
+            @Override
+            public void onClick(Poi poi) {
+                gotoRecommendedRoute(poi);
             }
         });
         recommendationAdapter = new RecommendationAdapter();
         recommendationAdapter.setOnClickListener(new RecommendationAdapter.OnClickListener() {
             @Override
             public void onClick(Recommendation recommendation) {
-                onSelectRecommendation(recommendation);
+                gotoFoursquare(recommendation.getPoi());
+            }
+        });
+        recommendationAdapter.setOnBuildRouteButtonClickListener(new RecommendationAdapter.OnBuildRouteButtonClickListener() {
+            @Override
+            public void onClick(Recommendation recommendation) {
+                gotoRecommendedRoute(recommendation.getPoi());
             }
         });
         poiList.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
@@ -225,7 +241,6 @@ public class ExploreFragment extends RoboFragment implements OnMapReadyCallback,
     @Override
     public void onMapReady(GoogleMap googleMap) {
         this.googleMap = googleMap;
-        googleMap.setPadding(0, 0, 0, (int) getResources().getDimension(R.dimen.recommendations_overlap));
         googleMap.getUiSettings().setMapToolbarEnabled(false);
         googleMap.getUiSettings().setMyLocationButtonEnabled(false);
         LatLng latLng = new LatLng(
@@ -239,7 +254,6 @@ public class ExploreFragment extends RoboFragment implements OnMapReadyCallback,
     }
 
     private void onSuggestionClicked(int position) {
-        shouldRestoreCurrentLocationInMap = false;
         searchViewMenuItem.collapseActionView();
         searchView.setQuery(null, false);
         Category category = categoryAdapter.get(position);
@@ -252,16 +266,15 @@ public class ExploreFragment extends RoboFragment implements OnMapReadyCallback,
 
     private void showCurrentLocationInMap() {
         if (currentLocation != null) {
-            LatLng latLng = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
             googleMap.addMarker(new MarkerOptions()
-                    .position(latLng)
+                    .position(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()))
                     .title(getString(R.string.current_location))
                     .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_map_location)));
-            googleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
         }
     }
 
     private void restoreRecommendationsInMap() {
+        if (recommendations.length > 0) googleMap.setPadding(0, 0, 0, (int) getResources().getDimension(R.dimen.recommendations_overlap));
         for (Recommendation recommendation : recommendations) {
             Marker marker = googleMap.addMarker(new MarkerOptions()
                     .position(new LatLng(recommendation.getPoi().getLocation().getLatitude(), recommendation.getPoi().getLocation().getLongitude()))
@@ -286,6 +299,7 @@ public class ExploreFragment extends RoboFragment implements OnMapReadyCallback,
     }
 
     private void restorePoisInMap() {
+        if (pois.length > 0) googleMap.setPadding(0, 0, 0, (int) getResources().getDimension(R.dimen.recommendations_overlap));
         for (Poi poi : pois) {
             Marker marker = googleMap.addMarker(new MarkerOptions()
                     .position(new LatLng(poi.getLocation().getLatitude(), poi.getLocation().getLongitude()))
@@ -299,6 +313,7 @@ public class ExploreFragment extends RoboFragment implements OnMapReadyCallback,
 
     private void onPreLocationUpdate() {
         currentLocation = null;
+        googleMap.setPadding(0, 0, 0, 0);
         poiList.setVisibility(View.GONE);
         progressBar.setVisibility(View.VISIBLE);
     }
@@ -334,6 +349,10 @@ public class ExploreFragment extends RoboFragment implements OnMapReadyCallback,
         onCompleteLocationUpdate();
         googleMap.clear();
         showCurrentLocationInMap();
+        LatLng latLng = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
+        float zoom = googleMap.getCameraPosition().zoom;
+        if (zoom < 12.5f) googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 12.5f));
+        else googleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
         recommendationsTask = new RecommendationsTask()
                 .location(location)
                 .radius(getRadiusFromMapProjection());
@@ -379,6 +398,7 @@ public class ExploreFragment extends RoboFragment implements OnMapReadyCallback,
         recommendationAdapter.add(recommendations);
         recommendationAdapter.notifyDataSetChanged();
         googleMap.clear();
+        if (recommendations.length > 0) googleMap.setPadding(0, 0, 0, (int) getResources().getDimension(R.dimen.recommendations_overlap));
         showCurrentLocationInMap();
         for (Recommendation recommendation : recommendations) {
             Marker marker = googleMap.addMarker(new MarkerOptions()
@@ -413,6 +433,7 @@ public class ExploreFragment extends RoboFragment implements OnMapReadyCallback,
     }
 
     private void onPreExecutePoisTask() {
+        googleMap.setPadding(0, 0, 0, 0);
         poiList.setVisibility(View.GONE);
         progressBar.setVisibility(View.VISIBLE);
     }
@@ -427,6 +448,8 @@ public class ExploreFragment extends RoboFragment implements OnMapReadyCallback,
         poiAdapter.add(pois);
         poiAdapter.notifyDataSetChanged();
         googleMap.clear();
+        showCurrentLocationInMap();
+        if (pois.length > 0) googleMap.setPadding(0, 0, 0, (int) getResources().getDimension(R.dimen.recommendations_overlap));
         for (Poi poi : pois) {
             Marker marker = googleMap.addMarker(new MarkerOptions()
                     .position(new LatLng(poi.getLocation().getLatitude(), poi.getLocation().getLongitude()))
@@ -443,13 +466,12 @@ public class ExploreFragment extends RoboFragment implements OnMapReadyCallback,
         progressBar.setVisibility(View.GONE);
     }
 
-    private void onSelectRecommendation(Recommendation recommendation) {
-        if (currentLocation != null) {
-            getActivity().startActivity(RecommendedRouteActivity.getIntent(getActivity(), currentLocation, recommendation.getPoi()));
-        }
+    private void gotoFoursquare(Poi poi) {
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.url_view_fsq_venue, poi.getFoursquareId())));
+        startActivity(intent);
     }
 
-    private void onSelectPoi(Poi poi) {
+    private void gotoRecommendedRoute(Poi poi) {
         if (currentLocation != null) {
             getActivity().startActivity(RecommendedRouteActivity.getIntent(getActivity(), currentLocation, poi));
         }
