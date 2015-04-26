@@ -9,6 +9,8 @@
     <string name="foursquare_oauth_error_message_format">Error de autenticación: %1$s [%2$s]</string>
     <string name="foursquare_unknown_error_message_format">Error desconocido: %s</string>
     <string name="register_in_progress">Registrando&#8230;</string>
+    <string name="continue_wo_sign_in">Continuar sin iniciar sesión</string>
+    <string name="sign_in_why">Inicia sesión con tu cuenta de Foursquare para obtener recomendaciones personalizadas</string>
 
     <!-- SettingsActivity -->
     <string name="title_activity_settings">Ajustes</string>

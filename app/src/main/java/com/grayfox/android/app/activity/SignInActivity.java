@@ -38,6 +38,7 @@ public class SignInActivity extends RoboActionBarActivity {
     private static final int REQUEST_CODE_FOURSQUARE_CONNECT = 200;
 
     @InjectView(R.id.connect_to_foursquare_button) private Button connectToFoursquareButton;
+    @InjectView(R.id.continue_button)              private Button continueButton;
 
     @Inject private AccessTokenDao accessTokenDao;
 
@@ -47,9 +48,15 @@ public class SignInActivity extends RoboActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getSupportActionBar().hide();
         if (accessTokenDao.fetchAccessToken() != null) finishAndGotoMainActivity();
         else {
-            setTitle(R.string.title_activity_sign_in);
+            continueButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    finishAndGotoMainActivity();
+                }
+            });
             connectToFoursquareButton.setOnClickListener(new View.OnClickListener() {
 
                 @Override
