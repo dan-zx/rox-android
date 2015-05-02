@@ -10,8 +10,8 @@ android {
         applicationId 'com.grayfox.android.app'
         minSdkVersion 15
         targetSdkVersion 22
-        versionCode 1
-        versionName '1.0-SNAPSHOT'
+        versionCode 2
+        versionName '1.0-BETA1'
     }
     signingConfigs {
         debug {

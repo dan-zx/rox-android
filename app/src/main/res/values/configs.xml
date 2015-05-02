@@ -5,6 +5,6 @@
     Release AIzaSyC0M1fZjX-VLg7E0nquzpjICZUYbofgk1c
     Debug   AIzaSyAd-aJgCw96V97fR9ljOvUZhpdA0jZOvc8
     -->
-    <string name="google_maps_v2_api_key" translatable="false">AIzaSyAd-aJgCw96V97fR9ljOvUZhpdA0jZOvc8</string>
+    <string name="google_maps_v2_api_key" translatable="false">AIzaSyC0M1fZjX-VLg7E0nquzpjICZUYbofgk1c</string>
     <string name="google_maps_services_key" translatable="false">AIzaSyDOlvprOKugsGJCS4ymjFVKyhGmmASfhm8</string>
 </resources>
