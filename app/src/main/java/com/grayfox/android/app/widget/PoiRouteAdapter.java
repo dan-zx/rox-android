@@ -17,9 +17,11 @@ import android.widget.TextView;
 import com.daimajia.swipe.SwipeLayout;
 import com.daimajia.swipe.adapters.RecyclerSwipeAdapter;
 import com.daimajia.swipe.util.Attributes;
+
 import com.grayfox.android.app.R;
 import com.grayfox.android.app.util.ColorTransformation;
 import com.grayfox.android.client.model.Poi;
+
 import com.squareup.picasso.Picasso;
 
 import java.io.IOException;

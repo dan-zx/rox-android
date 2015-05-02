@@ -334,13 +334,15 @@ public class RecommendedRouteFragment extends RoboFragment implements OnMapReady
     }
 
     private void onReorderPoisInRoute(int from, int to) {
-        int poiFromPosition = from-1;
-        int poiToPosition = to-1;
-        Poi removed = pois.remove(poiFromPosition);
-        pois.add(poiToPosition, removed);
-        poiRouteAdapter.move(from, to);
-        poiRouteAdapter.notifyDataSetChanged();
-        recalculateRoute(getCurrentTravelMode());
+        if (to > 0) {
+            int poiFromPosition = from-1;
+            int poiToPosition = to-1;
+            Poi removed = pois.remove(poiFromPosition);
+            pois.add(poiToPosition, removed);
+            poiRouteAdapter.move(from, to);
+            poiRouteAdapter.notifyDataSetChanged();
+            recalculateRoute(getCurrentTravelMode());
+        }
     }
 
     private Location getCurrentLocationArg() {
