@@ -17,7 +17,7 @@ import javax.inject.Inject;
 public class UserSqliteDao implements UserDao {
 
     private static final int USER_ID = 1;
-    private static final String TAG = UserSqliteDao.class.getSimpleName();
+    private static final String TAG = "UserSqliteDao";
     private static final String WHERE_ID_CLAUSE = UserEntry._ID + " = ?";
 
     private final SQLiteOpenHelper databaseHelper;
@@ -121,7 +121,6 @@ public class UserSqliteDao implements UserDao {
     }
 
     private static class UserEntry implements BaseColumns {
-
         private static final String TABLE_NAME = "user";
         private static final String NAME = "name";
         private static final String LAST_NAME = "last_name";

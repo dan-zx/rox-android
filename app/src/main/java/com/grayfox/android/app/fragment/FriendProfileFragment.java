@@ -117,7 +117,7 @@ public class FriendProfileFragment extends RoboFragment {
 
     private void setUpUserArg() {
         friend = getFriendArg();
-        String userFullName = friend.getLastName() == null || friend.getLastName().trim().isEmpty() ? friend.getName() : new StringBuilder().append(friend.getName()).append(" ").append(friend.getLastName()).toString();
+        String userFullName = friend.getLastName() == null || friend.getLastName().trim().isEmpty() ? friend.getName() : friend.getName() + " " + friend.getLastName();
         userNameTextView.setText(userFullName);
         Picasso.with(getActivity())
                 .load(friend.getPhotoUrl())

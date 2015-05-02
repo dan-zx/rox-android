@@ -36,9 +36,6 @@ public class UpdateResponse implements Serializable {
 
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("UpdateResponse [success=").append(success).append("]");
-        return builder.toString();
+        return "UpdateResponse [success=" + success + "]";
     }
-    
 }

@@ -33,8 +33,7 @@ public class LikeDeletableAdapter extends RecyclerSwipeAdapter<LikeDeletableAdap
     }
 
     public boolean add(Category category) {
-        if (!categories.contains(category)) return categories.add(category);
-        return false;
+        return !categories.contains(category) && categories.add(category);
     }
 
     public void setOnRemoveLikeListener(OnRemoveLikeListener removeLikeListener) {
@@ -80,7 +79,7 @@ public class LikeDeletableAdapter extends RecyclerSwipeAdapter<LikeDeletableAdap
         return R.id.swipe;
     }
 
-    public static interface OnRemoveLikeListener {
+    public interface OnRemoveLikeListener {
         void onRemove(Category like);
     }
 

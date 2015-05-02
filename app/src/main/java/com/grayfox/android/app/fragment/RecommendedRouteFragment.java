@@ -451,13 +451,11 @@ public class RecommendedRouteFragment extends RoboFragment implements OnMapReady
         }
 
         private String toGoogleMapsServicesLatLng(Location location) {
-            return new StringBuilder().append(location.getLatitude())
-                    .append(',').append(location.getLongitude()).toString();
+            return String.valueOf(location.getLatitude()) + ',' + location.getLongitude();
         }
 
         private String toGoogleMapsServicesLatLng(com.grayfox.android.client.model.Location location) {
-            return new StringBuilder().append(location.getLatitude())
-                    .append(',').append(location.getLongitude()).toString();
+            return String.valueOf(location.getLatitude()) + ',' + location.getLongitude();
         }
     }
 
@@ -520,13 +518,11 @@ public class RecommendedRouteFragment extends RoboFragment implements OnMapReady
         }
 
         private String toGoogleMapsServicesLatLng(Location location) {
-            return new StringBuilder().append(location.getLatitude())
-                    .append(',').append(location.getLongitude()).toString();
+            return String.valueOf(location.getLatitude()) + ',' + location.getLongitude();
         }
 
         private String toGoogleMapsServicesLatLng(com.grayfox.android.client.model.Location location) {
-            return new StringBuilder().append(location.getLatitude())
-                    .append(',').append(location.getLongitude()).toString();
+            return String.valueOf(location.getLatitude()) + ',' + location.getLongitude();
         }
     }
 }

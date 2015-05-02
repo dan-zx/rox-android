@@ -26,12 +26,6 @@ import java.lang.ref.WeakReference;
 
 import javax.inject.Inject;
 
-/**
- * Connects this app with Foursquare.
- *
- * @author Daniel Pedraza-Arcega
- * @since version 1.0
- */
 @ContentView(R.layout.activity_sign_in)
 public class SignInActivity extends RoboActionBarActivity {
 

@@ -62,7 +62,7 @@ public class ExploreFragment extends RoboFragment implements OnMapReadyCallback,
 
     private static final int GOOGLE_API_CLIENT_CONNECTION_FAILURE_RESOLUTION_REQUEST = 5;
     private static final String MAP_FRAGMENT_TAG = "MAP_FRAGMENT";
-    private static final String TAG = ExploreFragment.class.getSimpleName();
+    private static final String TAG = "ExploreFragment";
 
     @InjectView(R.id.my_location_button) private FloatingActionButton myLocationButton;
     @InjectView(R.id.progress_bar)       private ProgressBar progressBar;
@@ -330,7 +330,7 @@ public class ExploreFragment extends RoboFragment implements OnMapReadyCallback,
             LocationRequest locationRequest = LocationRequest.create()
                     .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
                     .setInterval(10 * 1_000)        // 10 seconds
-                    .setFastestInterval(1 * 1_000); // 1 second
+                    .setFastestInterval(1_000); // 1 second
             LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, locationRequest, this);
         } else {
             Toast.makeText(getActivity().getApplicationContext(),

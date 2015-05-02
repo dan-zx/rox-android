@@ -89,8 +89,6 @@ public class Poi implements Serializable {
 
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("Poi [name=").append(name).append(", location=").append(location).append(", foursquareId=").append(foursquareId).append(", foursquareRating=").append(foursquareRating).append(", categories=").append(categories).append("]");
-        return builder.toString();
+        return "Poi [name=" + name + ", location=" + location + ", foursquareId=" + foursquareId + ", foursquareRating=" + foursquareRating + ", categories=" + categories + "]";
     }
 }

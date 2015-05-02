@@ -79,11 +79,11 @@ public class PoiAdapter extends RecyclerView.Adapter<PoiAdapter.ViewHolder> {
         return pois.size();
     }
 
-    public static interface OnClickListener {
+    public interface OnClickListener {
         void onClick(Poi poi);
     }
 
-    public static interface OnBuildRouteButtonClickListener {
+    public interface OnBuildRouteButtonClickListener {
         void onClick(Poi poi);
     }
 

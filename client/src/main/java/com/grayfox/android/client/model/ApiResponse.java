@@ -49,9 +49,7 @@ public class ApiResponse<T> {
 
         @Override
         public String toString() {
-            StringBuilder builder = new StringBuilder();
-            builder.append("ErrorResponse [errorCode=").append(errorCode).append(", errorMessage=").append(errorMessage).append("]");
-            return builder.toString();
+            return "ErrorResponse [errorCode=" + errorCode + ", errorMessage=" + errorMessage + "]";
         }
     }
 
@@ -101,8 +99,6 @@ public class ApiResponse<T> {
 
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("ApiResponse [error =").append(error).append(", response=").append(response).append("]");
-        return builder.toString();
+        return "ApiResponse [error =" + error + ", response=" + response + "]";
     }
 }

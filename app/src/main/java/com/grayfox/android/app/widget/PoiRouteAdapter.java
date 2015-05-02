@@ -32,9 +32,9 @@ import java.util.Locale;
 
 public class PoiRouteAdapter extends RecyclerSwipeAdapter<RecyclerView.ViewHolder> {
 
-    private static final String TAG = PoiRouteAdapter.class.getSimpleName();
+    private static final String TAG = "PoiRouteAdapter";
 
-    private static enum ViewType {TOP, MIDDLE, BOTTOM}
+    private enum ViewType {TOP, MIDDLE, BOTTOM}
 
     private final List<Poi> poiSequence;
     private final Location currentLocation;
@@ -179,8 +179,7 @@ public class PoiRouteAdapter extends RecyclerSwipeAdapter<RecyclerView.ViewHolde
         }
     }
 
-    public static interface OnDeleteItemListener {
-
+    public interface OnDeleteItemListener {
         void onDelete(Poi poi, int position);
     }
 

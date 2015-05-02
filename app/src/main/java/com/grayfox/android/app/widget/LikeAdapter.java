@@ -27,8 +27,7 @@ public class LikeAdapter extends RecyclerView.Adapter<LikeAdapter.ViewHolder> {
     }
 
     public boolean add(Category category) {
-        if (!categories.contains(category)) return categories.add(category);
-        return false;
+        return !categories.contains(category) && categories.add(category);
     }
 
     @Override

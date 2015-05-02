@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 public class Recommendation implements Serializable {
 
-    public static enum Type {GLOBAL, SELF, SOCIAL}
+    public enum Type {GLOBAL, SELF, SOCIAL}
 
     private static final long serialVersionUID = 4322497520093419157L;
 
@@ -64,8 +64,6 @@ public class Recommendation implements Serializable {
 
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("Recommendation [type=").append(type).append(", reason=").append(reason).append(", poi=").append(poi).append("]");
-        return builder.toString();
+        return "Recommendation [type=" + type + ", reason=" + reason + ", poi=" + poi + "]";
     }
 }

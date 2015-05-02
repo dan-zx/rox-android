@@ -41,8 +41,6 @@ public class Pair<T0, T1> implements Serializable {
 
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("<").append(_0).append(", ").append(_1).append(">");
-        return builder.toString();
+        return "<" + _0 + ", " + _1 + ">";
     }
 }

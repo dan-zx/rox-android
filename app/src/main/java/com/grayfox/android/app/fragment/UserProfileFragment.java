@@ -100,7 +100,7 @@ public class UserProfileFragment extends RoboFragment {
 
     private void setUpUserArg() {
         user = getUserArg();
-        String userFullName = user.getLastName() == null || user.getLastName().trim().isEmpty() ? user.getName() : new StringBuilder().append(user.getName()).append(" ").append(user.getLastName()).toString();
+        String userFullName = user.getLastName() == null || user.getLastName().trim().isEmpty() ? user.getName() : user.getName() + " " + user.getLastName();
         userNameTextView.setText(userFullName);
         Picasso.with(getActivity())
                 .load(user.getPhotoUrl())

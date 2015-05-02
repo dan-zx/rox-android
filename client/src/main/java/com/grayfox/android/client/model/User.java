@@ -100,8 +100,6 @@ public class User implements Serializable {
 
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("User [foursquareId=").append(foursquareId).append(", name=").append(name).append(", lastName=").append(lastName).append(", photoUrl=").append(photoUrl).append(", friends").append(Arrays.toString(friends)).append(", likes").append(Arrays.toString(likes)).append("]").toString();
-        return builder.toString();
+        return "User [foursquareId=" + foursquareId + ", name=" + name + ", lastName=" + lastName + ", photoUrl=" + photoUrl + ", friends=" + Arrays.toString(friends) + ", likes=" + Arrays.toString(likes) + "]";
     }
 }

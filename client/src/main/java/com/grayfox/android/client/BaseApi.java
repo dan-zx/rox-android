@@ -23,7 +23,7 @@ import java.util.Locale;
 
 abstract class BaseApi {
 
-    private static final String TAG = BaseApi.class.getSimpleName();
+    private static final String TAG = "BaseApi";
     private static final MediaType JSON_MEDIA_TYPE = MediaType.parse("application/json; charset=utf-8");
 
     private final Context context;
@@ -78,22 +78,16 @@ abstract class BaseApi {
         try {
             Response response = client.newCall(request).execute();
             Log.d(TAG, "Response code -> " + response.code());
-            String json = response.body().string();
-            if (json != null) {
-                JsonObject obj = new JsonParser().parse(json).getAsJsonObject();
-                ApiResponse.ErrorResponse error = new Gson().fromJson(obj.get("error"), ApiResponse.ErrorResponse.class);
-                T responseObject = new Gson().fromJson(obj.get("response"), responseClass);
-                ApiResponse<T> apiResponse = new ApiResponse<>();
-                apiResponse.setError(error);
-                apiResponse.setResponse(responseObject);
-                if (apiResponse.getError() == null) return apiResponse.getResponse();
-                else {
-                    Log.e(TAG, "Response error -> " + apiResponse.getError());
-                    throw new ApiException(apiResponse.getError().getErrorMessage());
-                }
-            } else {
-                Log.e(TAG, "Null response");
-                throw new ApiException(getString(R.string.grayfox_api_request_error));
+            JsonObject obj = new JsonParser().parse(response.body().string()).getAsJsonObject();
+            ApiResponse.ErrorResponse error = new Gson().fromJson(obj.get("error"), ApiResponse.ErrorResponse.class);
+            T responseObject = new Gson().fromJson(obj.get("response"), responseClass);
+            ApiResponse<T> apiResponse = new ApiResponse<>();
+            apiResponse.setError(error);
+            apiResponse.setResponse(responseObject);
+            if (apiResponse.getError() == null) return apiResponse.getResponse();
+            else {
+                Log.e(TAG, "Response error -> " + apiResponse.getError());
+                throw new ApiException(apiResponse.getError().getErrorMessage());
             }
         } catch (IOException ex) {
             Log.e(TAG, "Error while making request", ex);

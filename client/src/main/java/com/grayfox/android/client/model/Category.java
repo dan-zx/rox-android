@@ -64,8 +64,6 @@ public class Category implements Serializable {
 
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("Category [name=").append(name).append(", iconUrl=").append(iconUrl).append(", foursquareId=").append(foursquareId).append("]");
-        return builder.toString();
+        return "Category [name=" + name + ", iconUrl=" + iconUrl + ", foursquareId=" + foursquareId + "]";
     }
 }

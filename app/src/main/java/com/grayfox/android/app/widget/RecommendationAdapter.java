@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.grayfox.android.app.R;
 import com.grayfox.android.client.model.Recommendation;
+
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -88,11 +89,11 @@ public class RecommendationAdapter extends RecyclerView.Adapter<RecommendationAd
         return recommendations.size();
     }
 
-    public static interface OnClickListener {
+    public interface OnClickListener {
         void onClick(Recommendation recommendation);
     }
 
-    public static interface OnBuildRouteButtonClickListener {
+    public interface OnBuildRouteButtonClickListener {
         void onClick(Recommendation recommendation);
     }
 

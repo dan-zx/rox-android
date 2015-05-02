@@ -65,7 +65,7 @@ public class DrawerItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 DrawerHeader drawerHeader = (DrawerHeader) drawerItem;
                 if (drawerHeader.getUser() != null) {
                     HeaderViewHolder headerViewHolder = (HeaderViewHolder) holder;
-                    String userFullName = drawerHeader.getUser().getLastName() == null || drawerHeader.getUser().getLastName().trim().isEmpty() ? drawerHeader.getUser().getName() : new StringBuilder().append(drawerHeader.getUser().getName()).append(" ").append(drawerHeader.getUser().getLastName()).toString();
+                    String userFullName = drawerHeader.getUser().getLastName() == null || drawerHeader.getUser().getLastName().trim().isEmpty() ? drawerHeader.getUser().getName() : drawerHeader.getUser().getName() + " " + drawerHeader.getUser().getLastName();
                     headerViewHolder.userNameTextView.setText(userFullName);
                     Picasso.with(context)
                             .load(drawerHeader.getUser().getPhotoUrl())
@@ -110,7 +110,7 @@ public class DrawerItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         notifyDataSetChanged();
     }
 
-    public static interface OnItemClickListener {
+    public interface OnItemClickListener {
         void onClick(int position);
     }
 

@@ -38,7 +38,7 @@ public class FriendAdapter extends RecyclerView.Adapter<FriendAdapter.ViewHolder
                 if (listener != null) listener.onClick(position);
             }
         });
-        String userFullName = friends[position].getLastName() == null || friends[position].getLastName().trim().isEmpty() ? friends[position].getName() : new StringBuilder().append(friends[position].getName()).append(" ").append(friends[position].getLastName()).toString();
+        String userFullName = friends[position].getLastName() == null || friends[position].getLastName().trim().isEmpty() ? friends[position].getName() : friends[position].getName() + " " + friends[position].getLastName();
         holder.userNameTextView.setText(userFullName);
         Picasso.with(context)
                 .load(friends[position].getPhotoUrl())
@@ -67,7 +67,7 @@ public class FriendAdapter extends RecyclerView.Adapter<FriendAdapter.ViewHolder
         }
     }
 
-    public static interface OnItemClickListener {
+    public interface OnItemClickListener {
         void onClick(int position);
     }
 }
