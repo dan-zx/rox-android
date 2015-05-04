@@ -26,12 +26,14 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"/>
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/poi_list"
+    <android.support.v4.view.ViewPager
+        android:id="@+id/pager"
         android:layout_width="match_parent"
         android:layout_height="@dimen/recommendations_overlap"
         android:layout_alignParentBottom="true"
-        android:background="@android:color/transparent"/>
+        android:background="@android:color/transparent"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"/>
 
     <View
         android:layout_width="match_parent"
@@ -43,8 +45,8 @@
         android:id="@+id/my_location_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
         android:layout_margin="16dp"
         android:src="@drawable/ic_my_location"
         fab:fab_colorNormal="@color/accent"

@@ -6,10 +6,11 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentManager;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -44,8 +45,6 @@ import com.grayfox.android.app.dao.AccessTokenDao;
 import com.grayfox.android.app.task.NetworkAsyncTask;
 import com.grayfox.android.app.util.PicassoMarker;
 import com.grayfox.android.app.widget.CategoryCursorAdapter;
-import com.grayfox.android.app.widget.PoiAdapter;
-import com.grayfox.android.app.widget.RecommendationAdapter;
 import com.grayfox.android.client.PoisApi;
 import com.grayfox.android.client.model.Category;
 import com.grayfox.android.client.model.Poi;
@@ -66,7 +65,7 @@ public class ExploreFragment extends RoboFragment implements OnMapReadyCallback,
 
     @InjectView(R.id.my_location_button) private FloatingActionButton myLocationButton;
     @InjectView(R.id.progress_bar)       private ProgressBar progressBar;
-    @InjectView(R.id.poi_list)           private RecyclerView poiList;
+    @InjectView(R.id.pager)              private ViewPager viewPager;
 
     @Inject private LocationManager locationManager;
     @Inject private InputMethodManager inputMethodManager;
@@ -85,8 +84,6 @@ public class ExploreFragment extends RoboFragment implements OnMapReadyCallback,
     private RecommendationsTask recommendationsTask;
     private CategoryFilteringTask categoryFilteringTask;
     private PoisTask poisTask;
-    private RecommendationAdapter recommendationAdapter;
-    private PoiAdapter poiAdapter;
     private CategoryCursorAdapter categoryAdapter;
 
     @Override
@@ -102,6 +99,7 @@ public class ExploreFragment extends RoboFragment implements OnMapReadyCallback,
         inflater.inflate(R.menu.fragment_explore, menu);
         categoryAdapter = new CategoryCursorAdapter(getActivity());
         searchViewMenuItem = menu.findItem(R.id.action_search);
+        viewPager.setClipToPadding(false);
         searchView = (SearchView) searchViewMenuItem.getActionView();
         searchView.setQueryHint(getString(R.string.search_for_places));
         searchView.setSuggestionsAdapter(categoryAdapter);
@@ -148,33 +146,6 @@ public class ExploreFragment extends RoboFragment implements OnMapReadyCallback,
                     .replace(R.id.map_container, fragment, MAP_FRAGMENT_TAG)
                     .commit();
         }
-        poiAdapter = new PoiAdapter();
-        poiAdapter.setOnClickListener(new PoiAdapter.OnClickListener() {
-            @Override
-            public void onClick(Poi poi) {
-                gotoFoursquare(poi);
-            }
-        });
-        poiAdapter.setOnBuildRouteButtonClickListener(new PoiAdapter.OnBuildRouteButtonClickListener() {
-            @Override
-            public void onClick(Poi poi) {
-                gotoRecommendedRoute(poi);
-            }
-        });
-        recommendationAdapter = new RecommendationAdapter();
-        recommendationAdapter.setOnClickListener(new RecommendationAdapter.OnClickListener() {
-            @Override
-            public void onClick(Recommendation recommendation) {
-                gotoFoursquare(recommendation.getPoi());
-            }
-        });
-        recommendationAdapter.setOnBuildRouteButtonClickListener(new RecommendationAdapter.OnBuildRouteButtonClickListener() {
-            @Override
-            public void onClick(Recommendation recommendation) {
-                gotoRecommendedRoute(recommendation.getPoi());
-            }
-        });
-        poiList.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
         myLocationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -314,7 +285,7 @@ public class ExploreFragment extends RoboFragment implements OnMapReadyCallback,
     private void onPreLocationUpdate() {
         currentLocation = null;
         googleMap.setPadding(0, 0, 0, 0);
-        poiList.setVisibility(View.GONE);
+        viewPager.setVisibility(View.GONE);
         progressBar.setVisibility(View.VISIBLE);
     }
 
@@ -379,12 +350,12 @@ public class ExploreFragment extends RoboFragment implements OnMapReadyCallback,
     }
 
     private void onCompleteLocationUpdate() {
-        poiList.setVisibility(View.GONE);
+        viewPager.setVisibility(View.GONE);
         progressBar.setVisibility(View.GONE);
     }
 
     private void onPreExecuteRecommendationsTask() {
-        poiList.setVisibility(View.GONE);
+        viewPager.setVisibility(View.GONE);
         progressBar.setVisibility(View.VISIBLE);
     }
 
@@ -393,10 +364,7 @@ public class ExploreFragment extends RoboFragment implements OnMapReadyCallback,
         shouldRestorePois = false;
         this.recommendations = recommendations;
         pois = null;
-        poiList.setAdapter(recommendationAdapter);
-        recommendationAdapter.clear();
-        recommendationAdapter.add(recommendations);
-        recommendationAdapter.notifyDataSetChanged();
+        viewPager.setAdapter(new RecommentationPagerAdaper(recommendations, currentLocation));
         googleMap.clear();
         if (recommendations.length > 0) googleMap.setPadding(0, 0, 0, (int) getResources().getDimension(R.dimen.recommendations_overlap));
         showCurrentLocationInMap();
@@ -424,7 +392,7 @@ public class ExploreFragment extends RoboFragment implements OnMapReadyCallback,
     }
 
     private void onCompleteRecommendationsTask() {
-        poiList.setVisibility(View.VISIBLE);
+        viewPager.setVisibility(View.VISIBLE);
         progressBar.setVisibility(View.GONE);
     }
 
@@ -434,7 +402,7 @@ public class ExploreFragment extends RoboFragment implements OnMapReadyCallback,
 
     private void onPreExecutePoisTask() {
         googleMap.setPadding(0, 0, 0, 0);
-        poiList.setVisibility(View.GONE);
+        viewPager.setVisibility(View.GONE);
         progressBar.setVisibility(View.VISIBLE);
     }
 
@@ -443,10 +411,7 @@ public class ExploreFragment extends RoboFragment implements OnMapReadyCallback,
         shouldRestorePois = true;
         this.pois = pois;
         recommendations = null;
-        poiList.setAdapter(poiAdapter);
-        poiAdapter.clear();
-        poiAdapter.add(pois);
-        poiAdapter.notifyDataSetChanged();
+        viewPager.setAdapter(new PoiPagerAdaper(pois, currentLocation));
         googleMap.clear();
         showCurrentLocationInMap();
         if (pois.length > 0) googleMap.setPadding(0, 0, 0, (int) getResources().getDimension(R.dimen.recommendations_overlap));
@@ -462,19 +427,8 @@ public class ExploreFragment extends RoboFragment implements OnMapReadyCallback,
     }
 
     private void onCompletePoisTaskTask() {
-        poiList.setVisibility(View.VISIBLE);
+        viewPager.setVisibility(View.VISIBLE);
         progressBar.setVisibility(View.GONE);
-    }
-
-    private void gotoFoursquare(Poi poi) {
-        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.url_view_fsq_venue, poi.getFoursquareId())));
-        startActivity(intent);
-    }
-
-    private void gotoRecommendedRoute(Poi poi) {
-        if (currentLocation != null) {
-            getActivity().startActivity(RecommendedRouteActivity.getIntent(getActivity(), currentLocation, poi));
-        }
     }
 
     @Override
@@ -506,6 +460,60 @@ public class ExploreFragment extends RoboFragment implements OnMapReadyCallback,
             }
         } else {
             Log.i(TAG, "Location services connection failed with code " + connectionResult.getErrorCode());
+        }
+    }
+
+    private class RecommentationPagerAdaper extends FragmentStatePagerAdapter {
+
+        private Recommendation[] recommendations;
+        private Location location;
+
+        public RecommentationPagerAdaper(Recommendation[] recommendations, Location location) {
+            super(getChildFragmentManager());
+            this.recommendations = recommendations;
+            this.location = location;
+        }
+
+        @Override
+        public RecommendationFragment getItem(int position) {
+            return RecommendationFragment.newInstance(recommendations[position], location);
+        }
+
+        @Override
+        public int getCount() {
+            return recommendations.length;
+        }
+
+        @Override
+        public void restoreState(Parcelable state, ClassLoader loader) {
+            // Do nothing here!
+        }
+    }
+
+    private class PoiPagerAdaper extends FragmentStatePagerAdapter {
+
+        private Poi[] pois;
+        private Location location;
+
+        public PoiPagerAdaper(Poi[] pois, Location location) {
+            super(getChildFragmentManager());
+            this.pois = pois;
+            this.location = location;
+        }
+
+        @Override
+        public PoiFragment getItem(int position) {
+            return PoiFragment.newInstance(pois[position], location);
+        }
+
+        @Override
+        public int getCount() {
+            return pois.length;
+        }
+
+        @Override
+        public void restoreState(Parcelable state, ClassLoader loader) {
+            // Do nothing here!
         }
     }
 
