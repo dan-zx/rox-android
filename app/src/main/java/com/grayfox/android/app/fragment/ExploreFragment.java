@@ -1,10 +1,8 @@
 package com.grayfox.android.app.fragment;
 
-import android.content.Intent;
 import android.content.IntentSender;
 import android.location.Location;
 import android.location.LocationManager;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.preference.PreferenceManager;
@@ -40,7 +38,6 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import com.grayfox.android.app.R;
-import com.grayfox.android.app.activity.RecommendedRouteActivity;
 import com.grayfox.android.app.dao.AccessTokenDao;
 import com.grayfox.android.app.task.NetworkAsyncTask;
 import com.grayfox.android.app.util.PicassoMarker;
@@ -54,6 +51,9 @@ import com.squareup.picasso.Picasso;
 
 import roboguice.fragment.RoboFragment;
 import roboguice.inject.InjectView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -81,10 +81,15 @@ public class ExploreFragment extends RoboFragment implements OnMapReadyCallback,
     private Location currentLocation;
     private Recommendation[] recommendations;
     private Poi[] pois;
+    private List<Marker> currentMarkers;
     private RecommendationsTask recommendationsTask;
     private CategoryFilteringTask categoryFilteringTask;
     private PoisTask poisTask;
     private CategoryCursorAdapter categoryAdapter;
+
+    public ExploreFragment() {
+        currentMarkers = new ArrayList<>();
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -100,12 +105,29 @@ public class ExploreFragment extends RoboFragment implements OnMapReadyCallback,
         categoryAdapter = new CategoryCursorAdapter(getActivity());
         searchViewMenuItem = menu.findItem(R.id.action_search);
         viewPager.setClipToPadding(false);
+        viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) { }
+
+            @Override
+            public void onPageScrollStateChanged(int state) { }
+
+            @Override
+            public void onPageSelected(int position) {
+                Marker marker = currentMarkers.get(position);
+                marker.showInfoWindow();
+                googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(marker.getPosition(), 15f));
+            }
+        });
         searchView = (SearchView) searchViewMenuItem.getActionView();
         searchView.setQueryHint(getString(R.string.search_for_places));
         searchView.setSuggestionsAdapter(categoryAdapter);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
-            public boolean onQueryTextSubmit(String query) { return false; }
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
 
             @Override
             public boolean onQueryTextChange(String newText) {
@@ -219,6 +241,14 @@ public class ExploreFragment extends RoboFragment implements OnMapReadyCallback,
                 PreferenceManager.getDefaultSharedPreferences(getActivity()).getFloat(getString(R.string.last_map_location_lng_key), 0f));
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng,
                 PreferenceManager.getDefaultSharedPreferences(getActivity()).getFloat(getString(R.string.last_map_zoom_key), 0f)));
+        googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker marker) {
+                int position = currentMarkers.indexOf(marker);
+                viewPager.setCurrentItem(position, true);
+                return false;
+            }
+        });
         if (shouldRestoreCurrentLocationInMap) showCurrentLocationInMap();
         if (shouldRestoreRecommendationsInMap) restoreRecommendationsInMap();
         if (shouldRestorePois) restorePoisInMap();
@@ -245,6 +275,7 @@ public class ExploreFragment extends RoboFragment implements OnMapReadyCallback,
     }
 
     private void restoreRecommendationsInMap() {
+        currentMarkers.clear();
         if (recommendations.length > 0) googleMap.setPadding(0, 0, 0, (int) getResources().getDimension(R.dimen.recommendations_overlap));
         for (Recommendation recommendation : recommendations) {
             Marker marker = googleMap.addMarker(new MarkerOptions()
@@ -266,10 +297,12 @@ public class ExploreFragment extends RoboFragment implements OnMapReadyCallback,
                     .load(recommendation.getPoi().getCategories()[0].getIconUrl())
                     .placeholder(R.drawable.ic_generic_category)
                     .into(new PicassoMarker(marker, backgroundResource, getActivity()));
+            currentMarkers.add(marker);
         }
     }
 
     private void restorePoisInMap() {
+        currentMarkers.clear();
         if (pois.length > 0) googleMap.setPadding(0, 0, 0, (int) getResources().getDimension(R.dimen.recommendations_overlap));
         for (Poi poi : pois) {
             Marker marker = googleMap.addMarker(new MarkerOptions()
@@ -279,6 +312,7 @@ public class ExploreFragment extends RoboFragment implements OnMapReadyCallback,
                     .load(poi.getCategories()[0].getIconUrl())
                     .placeholder(R.drawable.ic_generic_category)
                     .into(new PicassoMarker(marker, R.drawable.ic_map_pin_light_blue, getActivity()));
+            currentMarkers.add(marker);
         }
     }
 
@@ -368,6 +402,7 @@ public class ExploreFragment extends RoboFragment implements OnMapReadyCallback,
         googleMap.clear();
         if (recommendations.length > 0) googleMap.setPadding(0, 0, 0, (int) getResources().getDimension(R.dimen.recommendations_overlap));
         showCurrentLocationInMap();
+        currentMarkers.clear();
         for (Recommendation recommendation : recommendations) {
             Marker marker = googleMap.addMarker(new MarkerOptions()
                     .position(new LatLng(recommendation.getPoi().getLocation().getLatitude(), recommendation.getPoi().getLocation().getLongitude()))
@@ -388,6 +423,7 @@ public class ExploreFragment extends RoboFragment implements OnMapReadyCallback,
                     .load(recommendation.getPoi().getCategories()[0].getIconUrl())
                     .placeholder(R.drawable.ic_generic_category)
                     .into(new PicassoMarker(marker, backgroundResource, getActivity()));
+            currentMarkers.add(marker);
         }
     }
 
@@ -414,6 +450,7 @@ public class ExploreFragment extends RoboFragment implements OnMapReadyCallback,
         viewPager.setAdapter(new PoiPagerAdaper(pois, currentLocation));
         googleMap.clear();
         showCurrentLocationInMap();
+        currentMarkers.clear();
         if (pois.length > 0) googleMap.setPadding(0, 0, 0, (int) getResources().getDimension(R.dimen.recommendations_overlap));
         for (Poi poi : pois) {
             Marker marker = googleMap.addMarker(new MarkerOptions()
@@ -423,6 +460,7 @@ public class ExploreFragment extends RoboFragment implements OnMapReadyCallback,
                     .load(poi.getCategories()[0].getIconUrl())
                     .placeholder(R.drawable.ic_generic_category)
                     .into(new PicassoMarker(marker, R.drawable.ic_map_pin_light_blue, getActivity()));
+            currentMarkers.add(marker);
         }
     }
 
