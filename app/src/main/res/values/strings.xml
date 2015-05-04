@@ -23,8 +23,8 @@
     <string name="waiting_location_update">Waiting for location&#8230;</string>
     <string name="location_update_timeout">Location update timeout</string>
     <string name="enable_location_updates">Enable location providers</string>
-    <string name="search_for_places">Search for places</string>
-    <string name="build_route">Build route</string>
+    <string name="search_for_places">Search by categories</string>
+    <string name="build_route">View recommended route</string>
 
     <!-- RecommendedRouteFragment -->
     <string name="recommended_route_title">Recommended route</string>
