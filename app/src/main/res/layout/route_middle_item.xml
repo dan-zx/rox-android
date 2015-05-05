@@ -30,19 +30,31 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="30dp"
-            android:layout_marginRight="4dp"
             android:layout_marginTop="4dp"
+            android:layout_toLeftOf="@+id/reorder_icon"
             android:layout_toRightOf="@id/category_image"
+            android:layout_toStartOf="@+id/reorder_icon"
             android:textAppearance="?android:attr/textAppearanceLarge"/>
 
         <TextView
             android:id="@+id/category_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignEnd="@+id/poi_name"
+            android:layout_alignRight="@+id/poi_name"
             android:layout_below="@id/poi_name"
             android:layout_marginLeft="30dp"
-            android:layout_marginRight="4dp"
             android:layout_toRightOf="@id/category_image"
             android:textAppearance="?android:attr/textAppearanceMedium"/>
+
+        <ImageView
+            android:id="@+id/reorder_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/category_image"
+            android:layout_alignParentRight="true"
+            android:layout_marginBottom="8dp"
+            android:layout_marginRight="8dp"
+            android:src="@drawable/ic_reorder"/>
     </RelativeLayout>
 </com.daimajia.swipe.SwipeLayout>

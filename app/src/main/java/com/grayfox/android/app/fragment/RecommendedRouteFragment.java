@@ -161,7 +161,7 @@ public class RecommendedRouteFragment extends RoboFragment implements OnMapReady
         });
         routeList.setAdapter(poiRouteAdapter);
         final DragSortRecycler dragSortRecycler = new DragSortRecycler();
-        dragSortRecycler.setViewHandleId(R.id.category_image);
+        dragSortRecycler.setViewHandleId(R.id.reorder_icon);
         dragSortRecycler.setOnItemMovedListener(new DragSortRecycler.OnItemMovedListener() {
             @Override
             public void onItemMoved(int from, int to) {
