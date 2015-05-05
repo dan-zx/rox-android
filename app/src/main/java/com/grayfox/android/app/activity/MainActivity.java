@@ -125,7 +125,7 @@ public class MainActivity extends RoboActionBarActivity {
         drawerItems = Arrays.asList(
                 new DrawerHeader(),
                 new DrawerItem(DrawerItem.Type.DIVIDER),
-                new DrawerOption().setUnselectedIconRes(R.drawable.ic_search_black_24dp).setSelectedIconRes(R.drawable.ic_search_white_24dp).setNameRes(R.string.drawer_explore_option),
+                new DrawerOption().setUnselectedIconRes(R.drawable.ic_search_black).setSelectedIconRes(R.drawable.ic_search_white).setNameRes(R.string.drawer_explore_option),
                 new DrawerItem(DrawerItem.Type.DIVIDER),
                 new DrawerOption().setUnselectedIconRes(R.drawable.ic_settings).setNameRes(R.string.drawer_settings_option)
         );
