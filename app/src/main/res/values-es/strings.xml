@@ -50,6 +50,7 @@
     <string name="drawer_close">Menú cerrado</string>
     <string name="drawer_explore_option">Explorar</string>
     <string name="drawer_settings_option">Ajustes</string>
+    <string name="view_profile">Ver Perfil</string>
 
     <!-- Errors -->
     <string name="network_unavailable">Una conexión estable es necesaria para hacer la petición</string>

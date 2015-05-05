@@ -65,8 +65,8 @@ public class DrawerItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 DrawerHeader drawerHeader = (DrawerHeader) drawerItem;
                 if (drawerHeader.getUser() != null) {
                     HeaderViewHolder headerViewHolder = (HeaderViewHolder) holder;
-                    String userFullName = drawerHeader.getUser().getLastName() == null || drawerHeader.getUser().getLastName().trim().isEmpty() ? drawerHeader.getUser().getName() : drawerHeader.getUser().getName() + " " + drawerHeader.getUser().getLastName();
-                    headerViewHolder.userNameTextView.setText(userFullName);
+                    headerViewHolder.viewProfileTextView.setVisibility(View.VISIBLE);
+                    headerViewHolder.userNameTextView.setText(drawerHeader.getUser().getName());
                     Picasso.with(context)
                             .load(drawerHeader.getUser().getPhotoUrl())
                             .placeholder(R.drawable.ic_contact_picture)
@@ -118,11 +118,13 @@ public class DrawerItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
         private CircleImageView profileImageView;
         private TextView userNameTextView;
+        private TextView viewProfileTextView;
 
         public HeaderViewHolder(View rootView) {
             super(rootView);
             profileImageView = (CircleImageView) rootView.findViewById(R.id.profile);
             userNameTextView = (TextView) rootView.findViewById(R.id.user_name);
+            viewProfileTextView = (TextView) rootView.findViewById(R.id.view_profile_text);
         }
     }
 

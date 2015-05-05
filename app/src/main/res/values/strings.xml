@@ -55,6 +55,7 @@
     <string name="drawer_close">Menu closed</string>
     <string name="drawer_explore_option">Explore</string>
     <string name="drawer_settings_option">Settings</string>
+    <string name="view_profile">View Profile</string>
 
     <!-- Errors -->
     <string name="network_unavailable">A stable connection is required to perform request</string>
