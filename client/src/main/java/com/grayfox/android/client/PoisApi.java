@@ -15,46 +15,42 @@ public class PoisApi extends BaseApi {
     }
 
     public Poi[] awaitSearchByCategory(Location location, Integer radius, String categoryFoursquareId) {
-        String url = Uri.parse(getString(R.string.gf_api_base_url)).buildUpon()
+        Uri.Builder uriBuilder = Uri.parse(getString(R.string.gf_api_base_url)).buildUpon()
                 .appendEncodedPath(getString(R.string.gf_api_pois_path))
-                .appendEncodedPath(getString(R.string.gf_api_pois_search_path))
-                .appendQueryParameter("location", location != null ? location.stringValues() : null)
-                .appendQueryParameter("radius", radius != null ? radius.toString() : null)
-                .appendQueryParameter("category_foursquare_id", categoryFoursquareId)
-                .build().toString();
+                .appendEncodedPath(getString(R.string.gf_api_pois_search_path));
+        if (location != null) uriBuilder.appendQueryParameter("location", location.stringValues());
+        if (radius != null) uriBuilder.appendQueryParameter("radius", radius.toString());
+        if (categoryFoursquareId != null) uriBuilder.appendQueryParameter("category_foursquare_id", categoryFoursquareId);
 
-        return get(url, Poi[].class);
+        return get(uriBuilder.build().toString(), Poi[].class);
     }
 
     public Poi[] awaitRoute(String poiFoursquareId) {
-        String url = Uri.parse(getString(R.string.gf_api_base_url)).buildUpon()
+        Uri.Builder uriBuilder = Uri.parse(getString(R.string.gf_api_base_url)).buildUpon()
                 .appendEncodedPath(getString(R.string.gf_api_pois_path))
-                .appendEncodedPath(getString(R.string.gf_api_pois_route_path))
-                .appendQueryParameter("poi_foursquare_id", poiFoursquareId)
-                .build().toString();
+                .appendEncodedPath(getString(R.string.gf_api_pois_route_path));
+        if (poiFoursquareId != null) uriBuilder.appendQueryParameter("poi_foursquare_id", poiFoursquareId);
 
-        return get(url, Poi[].class);
+        return get(uriBuilder.build().toString(), Poi[].class);
     }
 
     public Category[] awaitCategoriesLikeName(String partialName) {
-        String url = Uri.parse(getString(R.string.gf_api_base_url)).buildUpon()
+        Uri.Builder uriBuilder = Uri.parse(getString(R.string.gf_api_base_url)).buildUpon()
                 .appendEncodedPath(getString(R.string.gf_api_pois_path))
-                .appendEncodedPath(getString(R.string.gf_api_pois_categories_like_path))
-                .appendPath(partialName)
-                .build().toString();
+                .appendEncodedPath(getString(R.string.gf_api_pois_categories_like_path));
+        if (partialName != null) uriBuilder.appendPath(partialName);
 
-        return get(url, Category[].class);
+        return get(uriBuilder.build().toString(), Category[].class);
     }
 
     public Recommendation[] awaitRecommendations(String accessToken, Location location, Integer radius) {
-        String url = Uri.parse(getString(R.string.gf_api_base_url)).buildUpon()
+        Uri.Builder uriBuilder = Uri.parse(getString(R.string.gf_api_base_url)).buildUpon()
                 .appendEncodedPath(getString(R.string.gf_api_pois_path))
-                .appendEncodedPath(getString(R.string.gf_api_pois_recommend_path))
-                .appendQueryParameter("access_token", accessToken)
-                .appendQueryParameter("location", location != null ? location.stringValues() : null)
-                .appendQueryParameter("radius", radius != null ? radius.toString() : null)
-                .build().toString();
+                .appendEncodedPath(getString(R.string.gf_api_pois_recommend_path));
+        if (accessToken != null) uriBuilder.appendQueryParameter("access_token", accessToken);
+        if (location != null) uriBuilder.appendQueryParameter("location", location.stringValues());
+        if (radius != null) uriBuilder.appendQueryParameter("radius", radius.toString());
 
-        return get(url, Recommendation[].class);
+        return get(uriBuilder.build().toString(), Recommendation[].class);
     }
 }
