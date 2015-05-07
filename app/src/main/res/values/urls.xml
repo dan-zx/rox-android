@@ -2,4 +2,6 @@
 <resources>
     <string name="url_view_fsq_venue" translatable="false">https://foursquare.com/venue/%s</string>
     <string name="url_view_fsq_user" translatable="false">https://foursquare.com/users/%s</string>
+    <string name="url_github_rox" translatable="false">https://github.com/dan-zx/gray-fox-android</string>
+    <string name="url_licenses" translatable="false">"file:///android_asset/licenses.html"</string>
 </resources>

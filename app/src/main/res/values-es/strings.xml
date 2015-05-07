@@ -52,6 +52,19 @@
     <string name="drawer_settings_option">Ajustes</string>
     <string name="view_profile">Ver Perfil</string>
 
+    <!-- Settings -->
+    <string name="app_preferences">Ajustes de la aplicación</string>
+    <string name="about_preferences">Acerca de</string>
+    <string name="close_session_title">Cerrar sesión</string>
+    <string name="close_session_summary">Cerrar sesión y borrar datos</string>
+    <string name="close_session_alert_message">Cerrar sesión borrará todos los datos relacionados con en RoX en este dispositivo ¿Realmente desea cerrar sesión?</string>
+    <string name="github_title">RoX en GitHub</string>
+    <string name="github_summary">Libreria y wikis</string>
+    <string name="licenses_title">Licencias</string>
+    <string name="licenses_summary">Detalles de licencias de software de código abierto</string>
+    <string name="licenses_dialog_tile">Licencias de software de código abierto</string>
+    <string name="app_version_title">Versión de la aplicación</string>
+
     <!-- Errors -->
     <string name="network_unavailable">Una conexión estable es necesaria para hacer la petición</string>
 </resources>

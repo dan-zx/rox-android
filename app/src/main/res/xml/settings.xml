@@ -1,4 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory android:key="app_pref"
+        android:title="@string/app_preferences" >
+        <Preference
+            android:key="close_session_pref"
+            android:summary="@string/close_session_summary"
+            android:title="@string/close_session_title" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/about_preferences" >
+        <PreferenceScreen
+            android:key="github_pref"
+            android:summary="@string/github_summary"
+            android:title="@string/github_title" >
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="@string/url_github_rox" />
+        </PreferenceScreen>
 
+        <Preference
+            android:key="licences_pref"
+            android:summary="@string/licenses_summary"
+            android:title="@string/licenses_title" />
+        <Preference
+            android:enabled="false"
+            android:key="app_version_pref"
+            android:title="@string/app_version_title" />
+    </PreferenceCategory>
 </PreferenceScreen>

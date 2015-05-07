@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name" translatable="false">Gray Fox</string>
+    <string name="app_name" translatable="false">RoX</string>
 
     <!-- SignInActivity -->
     <string name="title_activity_sign_in">Connect to Foursquare</string>
@@ -56,6 +56,19 @@
     <string name="drawer_explore_option">Explore</string>
     <string name="drawer_settings_option">Settings</string>
     <string name="view_profile">View Profile</string>
+
+    <!-- Settings -->
+    <string name="app_preferences">App settings</string>
+    <string name="about_preferences">About</string>
+    <string name="close_session_title">Close session</string>
+    <string name="close_session_summary">Closes session and deletes all stored data</string>
+    <string name="close_session_alert_message">Closing session will delete all RoX related data in this device. Do you really want to close session?</string>
+    <string name="github_title">RoX on GitHub</string>
+    <string name="github_summary">Library code and wikis</string>
+    <string name="licenses_title">Licenses</string>
+    <string name="licenses_summary">License details for open source software</string>
+    <string name="licenses_dialog_tile">Open source licenses</string>
+    <string name="app_version_title">App version</string>
 
     <!-- Errors -->
     <string name="network_unavailable">A stable connection is required to perform request</string>
