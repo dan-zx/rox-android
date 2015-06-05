@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!--
-    http://gray-fox.herokuapp.com/api
-    http://192.168.1.123:8080/gray-fox-server/api
-    http://10.0.2.2:8080/gray-fox-server/api
+    http://rox.herokuapp.com/api
+    http://192.168.1.75:8080/rox-server/api
+    http://10.0.2.2:8080/rox-server/api
     -->
-    <string name="gf_api_base_url" translatable="false">http://gray-fox.herokuapp.com/api</string>
+    <string name="gf_api_base_url" translatable="false">http://rox.herokuapp.com/api</string>
 
     <!-- Users API -->
     <string name="gf_api_users_path" translatable="false">users</string>
