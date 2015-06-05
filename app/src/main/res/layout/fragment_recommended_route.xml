@@ -117,13 +117,14 @@
         android:id="@+id/directions_menu"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
         android:layout_margin="16dp"
         fab:menu_colorNormal="@color/accent"
         fab:menu_colorPressed="@color/accent_dark"
         fab:menu_colorRipple="@color/accent"
-        fab:menu_icon="@drawable/ic_directions">
+        fab:menu_icon="@drawable/ic_directions"
+        fab:menu_openDirection="down">
 
         <com.github.clans.fab.FloatingActionButton
             android:id="@+id/walking_directions_button"

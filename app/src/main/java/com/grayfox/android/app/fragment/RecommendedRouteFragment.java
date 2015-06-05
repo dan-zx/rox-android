@@ -58,7 +58,6 @@ import javax.inject.Inject;
 
 public class RecommendedRouteFragment extends RoboFragment implements OnMapReadyCallback {
 
-    private static final int SCROLL_OFFSET = 4;
     private static final String MAP_FRAGMENT_TAG = "MAP_FRAGMENT";
     private static final String CURRENT_LOCATION_ARG = "CURRENT_LOCATION";
     private static final String SEED_ARG = "SEED";
@@ -170,21 +169,8 @@ public class RecommendedRouteFragment extends RoboFragment implements OnMapReady
         });
         routeList.addItemDecoration(dragSortRecycler);
         routeList.addOnItemTouchListener(dragSortRecycler);
-        routeList.setOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                dragSortRecycler.getScrollListener().onScrolled(recyclerView, dx, dy);
-                if (Math.abs(dy) > SCROLL_OFFSET) {
-                    if (dy > 0) directionsMenu.hideMenuButton(true);
-                    else directionsMenu.showMenuButton(true);
-                }
-            }
-        });
         verticalShowAnimation = AnimationUtils.loadAnimation(getActivity(), R.anim.vertical_show);
         verticalHideAnimation = AnimationUtils.loadAnimation(getActivity(), R.anim.vertical_hide);
-        directionsMenu.setMenuButtonShowAnimation(verticalShowAnimation);
-        directionsMenu.setMenuButtonHideAnimation(verticalHideAnimation);
         fragment.getMapAsync(this);
     }
 
