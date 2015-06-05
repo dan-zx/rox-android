@@ -37,7 +37,7 @@ public class UsersApiTest {
     @BeforeClass
     public static void setUpClass() throws Exception {
         mockWebServer = new MockWebServer();
-        mockWebServer.play();
+        mockWebServer.start();
     }
 
     @AfterClass

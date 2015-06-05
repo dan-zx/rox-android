@@ -51,7 +51,7 @@ abstract class BaseApi {
             requestBuilder.header(Header.CONTENT_TYPE.getValue(), ContentType.APPLICATION_JSON.getMimeType())
                     .put(RequestBody.create(JSON_MEDIA_TYPE, new Gson().toJson(payload)))
                     .build();
-        } else requestBuilder.put(null);
+        } else requestBuilder.put(RequestBody.create(null, new byte[0]));
         return callForResult(requestBuilder.build(), responseClass);
     }
 

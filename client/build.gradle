@@ -1,10 +1,6 @@
 apply plugin: 'com.android.library'
 apply plugin: 'robolectric'
-apply plugin: 'maven'
 apply plugin: 'idea'
-
-group = 'com.grayfox'
-version = '1.0-SNAPSHOT'
 
 android {
     compileSdkVersion 22
@@ -43,14 +39,18 @@ repositories {
     jcenter()
 }
 
+ext {
+    okHttpVersion = '2.4.0'
+}
+
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.squareup.okhttp:okhttp:2.2.0'
+    compile "com.squareup.okhttp:okhttp:${okHttpVersion}"
     compile 'com.google.code.gson:gson:2.3.1'
     androidTestCompile 'junit:junit:4.12'
     androidTestCompile 'org.assertj:assertj-core:1.7.1'
     androidTestCompile 'org.mockito:mockito-core:1.10.19'
-    androidTestCompile 'com.squareup.okhttp:mockwebserver:2.2.0'
+    androidTestCompile "com.squareup.okhttp:mockwebserver:${okHttpVersion}"
     androidTestCompile('org.robolectric:robolectric:2.4') {
         exclude group: 'commons-logging', module: 'commons-logging'
         exclude group: 'org.apache.httpcomponents', module: 'httpclient'
@@ -60,13 +60,5 @@ dependencies {
 idea {
     module {
         testOutputDir = file('build/test-classes/debug')
-    }
-}
-
-uploadArchives {
-    repositories {
-        mavenDeployer {
-            repository(url: "file:///home/daniel/Dropbox/Public/m2repository/")
-        }
     }
 }
